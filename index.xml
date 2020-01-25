@@ -6,10 +6,32 @@
     <description>Recent content on XiaoWu</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 03 Jan 2020 08:00:00 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 04 Jan 2020 08:00:00 +0800</lastBuildDate>
     
 	<atom:link href="https://nuhuo08.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>ORB-SLAM2</title>
+      <link>https://nuhuo08.github.io/orb-slam2/</link>
+      <pubDate>Sat, 04 Jan 2020 08:00:00 +0800</pubDate>
+      
+      <guid>https://nuhuo08.github.io/orb-slam2/</guid>
+      <description>Tracking Initialization SearchForInitialization --&amp;gt; Initialize(RANSAC) --&amp;gt; GlobalBundleAdjustemnt --&amp;gt; ComputeSceneMedianDepth
+SearchForInitialization:
+GetFeaturesInArea --&amp;gt; DescriptorDistance --&amp;gt; ComputeThreeMaxima
+ORB特征
+Oriented FAST关键点：
+ 比较像素点周围圆上的像素间亮度的差异 非极大值抑制，在一定区域内仅保留响应极大值的角点，避免太集中 对角点计算Harris响应值，仅保留前N个具有最大响应值的角点 构建金字塔，在金字塔每一层检测角点。实现尺度不变 灰度质心法，连接图像块的几何中心与质心。实现旋转不变  BRIEF描述子：
+ 随机选点并比较灰度，组成128维的二进制数组 使用Hamming distance作为度量，即不同位数的个数  F矩阵
+https://zhuanlan.zhihu.com/p/61614421
+在求解F和H矩阵之前，应该首先进行特征点归一化，保证坐标均值为0，一阶绝对矩为1。(MVG P67，归一化才能消除坐标变换的影响)
+设\(p1\)，\(p2\)为像素坐标，可知：
+\[ p_2 = K (RP + t) \\ p_1 = KP \]
+从上述\(p1\)，\(p2\)的关系式出发，导出：
+\[ (K^{-1} p_2)^T t^{\wedge} K^{-1} p_2 = 0 = p_2^T K^{-T} t^{\wedge} R K^{-1} p_1 = p_2^T F p_1 \]
+一对匹配的像素点可以写1个方程，考虑到尺度等价性，使用八点法即可求解\(F\)矩阵。</description>
+    </item>
     
     <item>
       <title>MSCKF</title>

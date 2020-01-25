@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+	<script>
+		renderMathInElement(document.body,
+			{
+				delimiters: [
+					{left: "$$", right: "$$", display: true},
+					{left: "$", right: "$", display: false},
+				]
+			}
+		);
+
+		var inlineMathArray = document.querySelectorAll("script[type='math/tex']");
+		for (var i = 0; i < inlineMathArray.length; i++) {
+			var inlineMath = inlineMathArray[i];
+			var tex = inlineMath.innerText || inlineMath.textContent;
+			var replaced = document.createElement("span");
+			replaced.innerHTML = katex.renderToString(tex, {displayMode: false});
+			inlineMath.parentNode.replaceChild(replaced, inlineMath);
+		}
+
+		var displayMathArray = document.querySelectorAll("script[type='math/tex; mode=display']");
+		for (var i = 0; i < displayMathArray.length; i++) {
+			var displayMath = displayMathArray[i];
+			var tex = displayMath.innerHTML;
+			var replaced = document.createElement("span");
+			replaced.innerHTML = katex.renderToString(tex.replace(/%.*/g, ''), {displayMode: true});
+			displayMath.parentNode.replaceChild(replaced, displayMath);
+		}
+	</script>
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+
+    <link rel="canonical" href="https://nuhuo08.github.io/orb-slam2/">
+    <meta name="generator" content="Hugo 0.62.2" />
+    <title>ORB-SLAM2 | XiaoWu</title>
+
+    
+    <link rel="stylesheet" href="/css/uswds.min.c480a9b2a1fc1e7e564e62752462b22cd5f508a047f0340cb3725722f627fb1d.css">
+    
+    
+    <link rel="stylesheet" href="/css/custom.364c63f6f777ce9ed0218c1a24c574f775cafbb414bfb129dcbcd91fa8a16f5c.min.css">
+  </head>
+  <body>
+    <a class="usa-skipnav" href="#main-content">Skip to main content</a>
+
+    <header class="usa-header usa-header--basic" role="banner">
+      <div class="usa-nav-container">
+        <div class="usa-navbar">
+          <div class="usa-logo" id="basic-mega-logo">
+            <em class="usa-logo__text">
+              <a href="/" title="Home" aria-label="Home">XiaoWu</a>
+            </em>
+          </div>
+          <button class="usa-menu-btn">Menu</button>
+        </div>
+
+        <nav role="navigation" class="usa-nav">
+          <button class="usa-nav__close">
+            <img src="/img/close.svg" alt="close" />
+          </button>
+          <ul class="usa-nav__primary usa-accordion">
+            
+            
+              
+              
+              
+              
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link " href="/">
+                  <span>Home</span>
+                </a>
+              </li>
+            
+              
+              
+              
+              
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link usa-current" href="/blog/">
+                  <span>Blog</span>
+                </a>
+              </li>
+            
+              
+              
+              
+              
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link " href="/about/index.html">
+                  <span>About</span>
+                </a>
+              </li>
+            
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="usa-section" id="main-content">
+      <div class="grid-container">
+        <div class="grid-row grid-gap">
+          <div class="tablet:grid-col usa-prose">
+            
+  <h1>ORB-SLAM2</h1>
+  
+  <p class="text-gray-50">
+    
+    
+    
+    <strong>Published: </strong>2020-01-04
+
+    
+    
+      
+      
+    
+    
+    
+    
+    </span>
+  </p>
+  
+  
+    
+
+<div class="toc">
+  <strong>Table of contents</strong>
+  <ol>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#tracking">
+        Tracking
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#localmapping">
+        LocalMapping
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#loopclosing">
+        LoopClosing
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#optimization">
+        Optimization
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#bowvector--featurevector">
+        BowVector &amp; FeatureVector
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#g2o">
+        g2o
+      </a>
+    </li>
+    
+  </ol>
+</div>
+
+
+  
+  
+  
+
+<h2 id="tracking">Tracking <a aria-label="header link for Tracking" href="#tracking" class="header-link">#</a></h2>
+
+<h3 id="initialization">Initialization</h3>
+
+<p><code>SearchForInitialization</code> --&gt; <code>Initialize</code>(RANSAC) --&gt; GlobalBundleAdjustemnt --&gt; ComputeSceneMedianDepth</p>
+
+<p>SearchForInitialization:<br>
+GetFeaturesInArea --&gt; DescriptorDistance --&gt; ComputeThreeMaxima</p>
+
+<p><strong>ORB特征</strong><br>
+Oriented FAST关键点：</p>
+
+<ol>
+<li>比较像素点周围圆上的像素间亮度的差异</li>
+<li>非极大值抑制，在一定区域内仅保留响应极大值的角点，避免太集中</li>
+<li>对角点计算Harris响应值，仅保留前N个具有最大响应值的角点</li>
+<li>构建金字塔，在金字塔每一层检测角点。实现尺度不变</li>
+<li>灰度质心法，连接图像块的几何中心与质心。实现旋转不变</li>
+</ol>
+
+<p>BRIEF描述子：</p>
+
+<ol>
+<li>随机选点并比较灰度，组成128维的二进制数组</li>
+<li>使用Hamming distance作为度量，即不同位数的个数</li>
+</ol>
+
+<p><strong>F矩阵</strong><br>
+<a href="https://zhuanlan.zhihu.com/p/61614421">https://zhuanlan.zhihu.com/p/61614421</a></p>
+
+<p>在求解F和H矩阵之前，应该首先进行特征点归一化，保证坐标均值为0，一阶绝对矩为1。(MVG P67，归一化才能消除坐标变换的影响)<br>
+设<span  class="math">\(p1\)</span>，<span  class="math">\(p2\)</span>为像素坐标，可知：</p>
+
+<p><span  class="math">\[
+p_2 = K (RP + t) \\
+p_1 = KP
+\]</span></p>
+
+<p>从上述<span  class="math">\(p1\)</span>，<span  class="math">\(p2\)</span>的关系式出发，导出：</p>
+
+<p><span  class="math">\[
+(K^{-1} p_2)^T t^{\wedge} K^{-1} p_2 = 0 = p_2^T K^{-T} t^{\wedge} R K^{-1} p_1 = p_2^T F p_1
+\]</span></p>
+
+<p>一对匹配的像素点可以写1个方程，考虑到尺度等价性，使用八点法即可求解<span  class="math">\(F\)</span>矩阵。</p>
+
+<p>TODO: 由基础矩阵F分解出R和t</p>
+
+<p><strong>多余的话</strong><br>
+opencv中，cv::findFundamentalMat()如果选择8点法，则是直接将所有点进行最小二乘计算，没有外点剔除功能。<br>
+<a href="https://stackoverflow.com/questions/25251676/opencv-findfundamentalmat-very-unstable-and-sensitive/48394798">https://stackoverflow.com/questions/25251676/opencv-findfundamentalmat-very-unstable-and-sensitive/48394798</a></p>
+
+<p><strong>H矩阵</strong><br>
+平面方程为：</p>
+
+<p><span  class="math">\[
+aX + bY + cZ + d = 0 \\
+-\frac{n^TP}{d} = -1
+\]</span></p>
+
+<p>依旧从<span  class="math">\(p1\)</span>，<span  class="math">\(p2\)</span>的关系式出发，导出：</p>
+
+<p><span  class="math">\[
+p_2 = K (RP + t \cdot (-\frac{n^TP}{d})) = K (R - \frac{tn^T}{d}) K^{-1} p_1 = Hp_1
+\]</span></p>
+
+<p>一对匹配的像素点可以写2个方程，因此4对匹配特征点即可求解<span  class="math">\(H\)</span>矩阵。</p>
+
+<p>TODO: 由单应矩阵H恢复出R和t</p>
+
+<p><strong>F与H的评分</strong><br>
+<figure><img src="https://note.youdao.com/yws/res/5044/A5E656FC6E994852AB9DCBA429743527" alt="image"></figure></p>
+
+<p><span  class="math">\(\Gamma\)</span> is defined equal to <span  class="math">\(T_H\)</span> so that both models score equally for the same d in their inlier region, again to make the process homogeneous.</p>
+
+<p><span  class="math">\[
+R_H=\frac{S_H}{S_H+S_F}
+\]</span></p>
+
+<p>select the homography if <span  class="math">\(R_H>0.45\)</span>, which adequately captures the planar and low parallax cases. Otherwise, we select the fundamental matrix.</p>
+
+<p><strong>三角化</strong><br>
+<a href="https://blog.csdn.net/weixin_43795395/article/details/93769148">https://blog.csdn.net/weixin_43795395/article/details/93769148</a><br>
+<a href="https://www.cnblogs.com/yepeichu/p/10792899.html">https://www.cnblogs.com/yepeichu/p/10792899.html</a></p>
+
+<p>已知匹配的像素点，及两帧图像的变换关系，则：</p>
+
+<p><span  class="math">\[
+x = PX \\
+x' = P'X
+\]</span></p>
+
+<p>根据<span  class="math">\(x^\wedge PX = 0\)</span>性质，可得到如下方程：</p>
+
+<p><span  class="math">\[
+AX = \begin{bmatrix} xp^{3T}-p^{1T} \\ yp^{3T}-p^{2T} \\ x'p'^{3T}-p'^{1T} \\ y'p'^{3T}-p'^{2T} \end{bmatrix} X = 0
+\]</span></p>
+
+<p>对矩阵<span  class="math">\(A\)</span>进行SVD分解，可知：</p>
+
+<p><span  class="math">\[
+J(y) = \min \|Ax\| = \min \|UDV^Tx\| = \min \|DV^Tx\|
+\]</span></p>
+
+<p>由于对角阵<span  class="math">\(D\)</span>是矩阵<span  class="math">\(A\)</span>的奇异值从大到小降序排列而成，因此<span  class="math">\(J(y)\)</span> 的最小值在<span  class="math">\(D\)</span>矩阵奇异值最小的地方取到。可知：</p>
+
+<p><span  class="math">\[
+V^Tx = y = [0, 0, 0, 1]^T \\
+x = Vy
+\]</span></p>
+
+<p>于是，<span  class="math">\(x\)</span>的解就变成了正交矩阵<span  class="math">\(V\)</span>的最后一列的列向量。</p>
+
+<p><strong>多余的话——解方程</strong><br>
+<a href="http://eigen.tuxfamily.org/dox/group__LeastSquares.html">http://eigen.tuxfamily.org/dox/group__LeastSquares.html</a></p>
+
+<p>对于方程：</p>
+
+<p><span  class="math">\[
+Mx = b
+\]</span></p>
+
+<p>可以使用最小二乘解<span  class="math">\(x = (M^T M)^{-1} M^T b\)</span>，或者利用QR分解<span  class="math">\(x = R^{-1} Q^T b\)</span>。</p>
+
+<p>将b移到左边，并设最后一个参数为1，可转换成如下方程：</p>
+
+<p><span  class="math">\[
+Mx = 0
+\]</span></p>
+
+<p>可以通过SVD分解，解对应于<span  class="math">\(M\)</span>最小特征值对应的特征向量。关于<span  class="math">\(M\)</span>与<span  class="math">\(M^T M\)</span>的SVD分解的关系， 可以参考“矩阵”一篇的笔记。</p>
+
+<h3 id="tracking-1">Tracking</h3>
+
+<p><strong>TrackWithMotionModel</strong><br>
+<code>SearchByProjection</code> --&gt; PoseOptimization</p>
+
+<p>SearchByProjection:<br>
+GetFeaturesInArea --&gt; DescriptorDistance</p>
+
+<p><strong>TrackWithReferenceKeyFrame</strong><br>
+<code>SearchByBow</code> --&gt; PoseOptimization</p>
+
+<p>SearchByBow:<br>
+FeatureVector --&gt; DescriptorDistance --&gt; ComputeThreeMaxima</p>
+
+<p><strong>Relocalization</strong><br>
+SearchByBow --&gt; <code>EPnP</code>(RANSAC) --&gt; PoseOptimization --&gt; SearchByProjection --&gt; PoseOptimization</p>
+
+<p>EPnP:<br>
+<a href="https://zhuanlan.zhihu.com/p/59070440">https://zhuanlan.zhihu.com/p/59070440</a></p>
+
+<ol>
+<li>3D点的齐次坐标被表示为4个控制点齐次坐标的线性组合，然后将其作为已知量拿到相机坐标系下使用。</li>
+<li>结合上一步，将相机坐标系下的空间点坐标，转换成4个控制点在摄像机坐标系下的坐标的线性组合，并结合对应的像素点坐标，建立方程，从而解算出控制点在摄像机坐标系下的坐标。</li>
+<li>最后根据4个控制点，将所有的3D点在摄像机坐标系下的坐标恢复出来。接着采用ICP方法，求解出R和t。</li>
+</ol>
+
+<p>ICP:</p>
+
+<ol>
+<li>计算两组点的质心位置，然后计算每个点的去质心坐标</li>
+</ol>
+
+<p><span  class="math">\[
+q_i = p_i - p \\
+q_i' = p_i' - p'
+\]</span></p>
+
+<ol start="2">
+<li>求取R</li>
+</ol>
+
+<p><span  class="math">\[
+W = \sum_{i=1}^n q_i q_i'^T = U \Sigma V^T \\
+R = UV^T
+\]</span></p>
+
+<ol start="3">
+<li>求取t</li>
+</ol>
+
+<p><span  class="math">\[
+t = p - R p'
+\]</span></p>
+
+<p><figure><img src="https://note.youdao.com/yws/res/5049/86F326709A7D4D51BE165DCD283919E6" alt="image"></figure></p>
+
+<p>题外话———未知对应关系的ICP：</p>
+
+<ol>
+<li>根据距离最小寻找对应点</li>
+<li>根据对应点，计算R和t</li>
+<li>对点云进行转换，计算误差</li>
+<li>重新寻找对应点，不断迭代，直至误差小于某一个值</li>
+</ol>
+
+<p>属于EM算法的一种，待求变量为<span  class="math">\( [R | t] \)</span>，隐变量为点的对应关系。先固定第一个变量，优化另一个；再固定另一个，优化第一个变量。通过多次优化后，两个变量都达到最优值。</p>
+
+<p><strong>UpdateLocalMap</strong><br>
+SearchByProjection --&gt; PoseOptimization</p>
+
+<h2 id="localmapping">LocalMapping <a aria-label="header link for LocalMapping" href="#localmapping" class="header-link">#</a></h2>
+
+<p>ComputeBow --&gt; <code>SearchForTriangulation</code> --&gt; LocalBA</p>
+
+<p>SearchForTriangulation:<br>
+FeatureVector --&gt; DescriptorDistance --&gt; CheckDistEpipolarLine --&gt; ComputeThreeMaxima</p>
+
+<p><strong>关于优化中的卡方分布外点剔除</strong></p>
+
+<p><a href="https://zhuanlan.zhihu.com/p/58556978">https://zhuanlan.zhihu.com/p/58556978</a></p>
+
+<p>高斯白噪声的平方服从卡方分布，有几个观测量就代表几个自由度。</p>
+
+<h2 id="loopclosing">LoopClosing <a aria-label="header link for LoopClosing" href="#loopclosing" class="header-link">#</a></h2>
+
+<h3 id="tfidf">TF-IDF</h3>
+
+<p>TF: Term Frequency, 指某个特征在单幅图像中出现的频率。</p>
+
+<p><span  class="math">\[
+TF_i = \frac{n_i}{n}
+\]</span></p>
+
+<p>IDF: Inverse Document Frequency, 指单词在字典中出现的频率越高，则分类图像时区分度越高。</p>
+
+<p><span  class="math">\[
+IDF_i = \log \frac{n}{n_i}
+\]</span></p>
+
+<h3 id="computesim3">ComputeSim3</h3>
+
+<p>SearchByBow --&gt; <code>sim3</code>(RANSAC) --&gt; <code>SearchBySim3</code> --&gt; OptimizeSim3 --&gt; SearchByProjection</p>
+
+<p>当两个姿态比较接近时，sim3求解不出有效值。这也是闭环成功后，后续很长一段时间里，不再进行闭环的原因。</p>
+
+<p>sim3:<br>
+<figure><img src="https://note.youdao.com/yws/res/5151/A819E79785EE4C1BB4B5357D16974760" alt="image"></figure></p>
+
+<h3 id="loopclosing-1">LoopClosing</h3>
+
+<p>OptimizeEssentialGraph --&gt; RunGlobalBundleAdjustment</p>
+
+<h2 id="optimization">Optimization <a aria-label="header link for Optimization" href="#optimization" class="header-link">#</a></h2>
+
+<p><strong>点与位姿优化</strong></p>
+
+<p><span  class="math">\[
+\xi^* = \arg \min_\xi \frac{1}{2} \sum_{i=1}^n {\| u_i - \frac{1}{s} K \exp(\xi^\wedge) P_i \|}_2^2 \\
+P' = TP = RP + t \\
+\begin{bmatrix} u \\ v \end{bmatrix} = 
+\begin{bmatrix}f_x &0 &c_x \\ 0 &f_y &c_y\end{bmatrix}
+\begin{bmatrix}\frac{X'}{Z'} \\ \frac{Y'}{Z'}\end{bmatrix}
+\]</span></p>
+
+<p><strong>回环（采用左扰动）</strong><br>
+实际ORB-SLAM的Pose Graph是采用的Sim3变换。此处仅推导SE(3)上的公式。</p>
+
+<p><span  class="math">\[
+e_{ij} = \ln (T_{ij}^{-1} T_i^{-1} T_j)^\vee \\
+\ln (T_{ij}^{-1} T_i^{-1} \exp((-\xi_i)^\wedge) T_j)^\vee \\
+= \ln (T_{ij}^{-1} T_i^{-1} T_j \exp((-Ad(T_j^{-1})\delta\xi_i)^\wedge))^\vee \\
+= \ln (\exp(e_{ij}^\wedge) \exp((-Ad(T_j^{-1})\delta\xi_i)^\wedge))^\vee \\
+= \mathcal{J}_r^{-1}(e_{ij}) (-Ad(T_j^{-1})\delta\xi_i) + e_{ij} \\
+\frac{ \partial{e_{ij}} }{ \partial{\delta\xi_i} }
+= -\mathcal{J}_r^{-1}(e_{ij}) Ad(T_j^{-1})
+\]</span></p>
+
+<p>同理可得：</p>
+
+<p><span  class="math">\[
+\frac{ \partial{e_{ij}} }{ \partial{\delta\xi_j} }
+= \mathcal{J}_r^{-1}(e_{ij}) Ad(T_j^{-1})
+\]</span></p>
+
+<p>有以下近似关系：</p>
+
+<p><span  class="math">\[
+\mathcal{J}_r^{-1}(e_{ij}) \approx I + \frac{1}{2} \begin{bmatrix} \phi_e^\wedge &\rho_e^\wedge \\ 0 &\phi_e^\wedge \end{bmatrix}
+\]</span></p>
+
+<h2 id="bowvector--featurevector">BowVector &amp; FeatureVector <a aria-label="header link for BowVector &amp; FeatureVector" href="#bowvector--featurevector" class="header-link">#</a></h2>
+
+<p>BowVector存储着叶子节点，信息最细微，仅用在DetectRelocalizationCandidates()函数中，用来选取备选帧。</p>
+
+<p>FeatureVector存储着倒数第4层的节点，信息比较粗糙，用在各种SearchBy*函数中，用来加速特征点的匹配。</p>
+
+<p>FeatureVector --&gt; FClass 计算特征向量之间的距离，用于加速特征点匹配<br>
+BowVector --&gt; ScoringObject 计算单词之间的分数，用于匹配回环关键帧</p>
+
+<p>HKmeasStep --&gt; createWords --&gt; setNodeWeights<br>
+先使用Kmeans++分为分层node；再将最后一层编码为word；最后每张图片对某个word计数最多加一次，计算权值</p>
+
+<h2 id="g2o">g2o <a aria-label="header link for g2o" href="#g2o" class="header-link">#</a></h2>
+
+<p>采用se3表达参数；<br>
+首先进行块分解，BlockSolver默认使用舒尔补消除变量;<br>
+之后进行线性求解。其中LinearSolverDense直接进行Cholesky分解，LinearSolverEigen需要调用Eigen的稀疏Cholesky分解，且默认不reordering。因为在Schur之后，矩阵比较稠密，reordering影响不大；</p>
+
+<p>Veterx: oplusImpl<br>
+Edge: ComputeError &amp; linearizeOplus</p>
+
+<p><a href="https://zhuanlan.zhihu.com/p/100522179">https://zhuanlan.zhihu.com/p/100522179</a></p>
+
+
+
+  
+
+  
+    <br>
+    <strong>Previous:</strong> <a href="/msckf/">MSCKF</a>
+  
+  
+  
+    <div id="disqus-container">
+  
+</div>
+
+  
+
+
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="usa-footer usa-footer--slim" role="contentinfo">
+      
+      <div class="usa-footer__secondary-section" id="footer-main">
+        <div class="grid-container">
+          <div class="grid-row grid-gap">
+            <div class="grid-col-12 text-center">
+              
+              
+                Made with <a href="https://gohugo.io/">Hugo</a> • Content in <a href="https://github.com/nuhuo08/uswds-hugo-theme">GitHub</a>
+                <br>
+                Last deployed on 2020-01-25
+              
+
+              
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    
+    <script src="/js/uswds.min.fcd9b25a27c51de427f4c618dee88490c2ff0a792a573531e316730d07df3f3d.js"></script>
+
+  </body>
+</html>
