@@ -5,11 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
-<script type="text/javascript"
-  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            }
+        };
+    </script>
 
-    
+    <script id="MathJax-script" async
+            src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+    </script>
+
     <link rel="canonical" href="https://nuhuo08.github.io/">
     <meta name="generator" content="Hugo 0.62.2" />
     <title> | XiaoWu</title>
@@ -66,7 +73,7 @@
               
               
               <li class="usa-nav__primary-item">
-                <a class="usa-nav__link " href="/about/">
+                <a class="usa-nav__link " href="/about/index.html">
                   <span>About</span>
                 </a>
               </li>
@@ -84,7 +91,7 @@
   <h1></h1>
   <h2 id="工具软件">工具软件</h2>
 <ol>
-<li>Hugo搭建网站</li>
+<li><a href="hugo-website">Hugo搭建网站</a></li>
 <li>CI系统</li>
 <li>git</li>
 <li>vim</li>
@@ -120,7 +127,7 @@
 <ol>
 <li>ROS Tutorial</li>
 <li>GMapping</li>
-<li>AMCL</li>
+<li><a href="amcl">AMCL</a></li>
 </ol>
 <h2 id="mvg数学基础">MVG数学基础</h2>
 <ol>
