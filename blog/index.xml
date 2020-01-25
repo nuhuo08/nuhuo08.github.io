@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Blogs on XiaoWu</title>
+    <link>https://nuhuo08.github.io/blog/</link>
+    <description>Recent content in Blogs on XiaoWu</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 01 Jan 2020 08:00:00 +0800</lastBuildDate>
+    
+	<atom:link href="https://nuhuo08.github.io/blog/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Hugo搭建个人网站</title>
+      <link>https://nuhuo08.github.io/hugo-website/</link>
+      <pubDate>Wed, 01 Jan 2020 08:00:00 +0800</pubDate>
+      
+      <guid>https://nuhuo08.github.io/hugo-website/</guid>
+      <description>申请Github账号 Github私人博客仓库 新建Hugo_Blogs仓库，此仓库保存个人的markdown源文件等。可设置为private仓库。
+Github Pages 新建username.github.io的仓库，此仓库保存Hugo生成出来的html文件等。https://username.github.io/即为最终的个人博客地址。必须设置为public仓库。
+安装Hugo Hugo Tutorial
+Binary Package
+新建私人博客文件夹 创建网站文件夹 新建网站文件夹，并用hugo生成基本网站文件
+mkdir MyWebsite &amp;amp;&amp;amp; cd MyWebsite hugo new site . 链接Github私人博客仓库 添加git源，保存私人的markdown源文件
+git init git remote add origin https://github.com/username/Hugo_Blogs.git 添加并使用新的theme git submodule add https://github.com/nuhuo08/uswds-hugo-theme.git themes/uswds-hugo-theme git submodule update --remote --merge cp themes/uswds-hugo-theme/exampleSite/config.yaml . 编辑网页 链接Github Pages 为了能够使用git submodule，需要先在仓库里添加点文件，之后再把它删掉。
+mkdir public &amp;amp;&amp;amp; cd public &amp;amp;&amp;amp; touch abc git remote add origin https://github.com/username/username.github.io.git git add . git commit -m &amp;quot;abc&amp;quot; git push orign master cd .</description>
+    </item>
+    
+  </channel>
+</rss>
