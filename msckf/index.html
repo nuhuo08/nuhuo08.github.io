@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+	<script>
+		renderMathInElement(document.body,
+			{
+				delimiters: [
+					{left: "$$", right: "$$", display: true},
+					{left: "$", right: "$", display: false},
+				]
+			}
+		);
+
+		var inlineMathArray = document.querySelectorAll("script[type='math/tex']");
+		for (var i = 0; i < inlineMathArray.length; i++) {
+			var inlineMath = inlineMathArray[i];
+			var tex = inlineMath.innerText || inlineMath.textContent;
+			var replaced = document.createElement("span");
+			replaced.innerHTML = katex.renderToString(tex, {displayMode: false});
+			inlineMath.parentNode.replaceChild(replaced, inlineMath);
+		}
+
+		var displayMathArray = document.querySelectorAll("script[type='math/tex; mode=display']");
+		for (var i = 0; i < displayMathArray.length; i++) {
+			var displayMath = displayMathArray[i];
+			var tex = displayMath.innerHTML;
+			var replaced = document.createElement("span");
+			replaced.innerHTML = katex.renderToString(tex.replace(/%.*/g, ''), {displayMode: true});
+			displayMath.parentNode.replaceChild(replaced, displayMath);
+		}
+	</script>
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+
+    <link rel="canonical" href="https://nuhuo08.github.io/msckf/">
+    <meta name="generator" content="Hugo 0.62.2" />
+    <title>MSCKF | XiaoWu</title>
+
+    
+    <link rel="stylesheet" href="/css/uswds.min.c480a9b2a1fc1e7e564e62752462b22cd5f508a047f0340cb3725722f627fb1d.css">
+    
+    
+    <link rel="stylesheet" href="/css/custom.364c63f6f777ce9ed0218c1a24c574f775cafbb414bfb129dcbcd91fa8a16f5c.min.css">
+  </head>
+  <body>
+    <a class="usa-skipnav" href="#main-content">Skip to main content</a>
+
+    <header class="usa-header usa-header--basic" role="banner">
+      <div class="usa-nav-container">
+        <div class="usa-navbar">
+          <div class="usa-logo" id="basic-mega-logo">
+            <em class="usa-logo__text">
+              <a href="/" title="Home" aria-label="Home">XiaoWu</a>
+            </em>
+          </div>
+          <button class="usa-menu-btn">Menu</button>
+        </div>
+
+        <nav role="navigation" class="usa-nav">
+          <button class="usa-nav__close">
+            <img src="/img/close.svg" alt="close" />
+          </button>
+          <ul class="usa-nav__primary usa-accordion">
+            
+            
+              
+              
+              
+              
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link " href="/">
+                  <span>Home</span>
+                </a>
+              </li>
+            
+              
+              
+              
+              
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link usa-current" href="/blog/">
+                  <span>Blog</span>
+                </a>
+              </li>
+            
+              
+              
+              
+              
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link " href="/about/index.html">
+                  <span>About</span>
+                </a>
+              </li>
+            
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="usa-section" id="main-content">
+      <div class="grid-container">
+        <div class="grid-row grid-gap">
+          <div class="tablet:grid-col usa-prose">
+            
+  <h1>MSCKF</h1>
+  
+  <p class="text-gray-50">
+    
+    
+    
+    <strong>Published: </strong>2020-01-03
+
+    
+    
+      
+      
+    
+    
+    
+    
+    </span>
+  </p>
+  
+  
+    
+
+<div class="toc">
+  <strong>Table of contents</strong>
+  <ol>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#qr%e5%88%86%e8%a7%a3">
+        QR分解
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e7%8a%b6%e6%80%81%e9%87%8f">
+        状态量
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e7%8a%b6%e6%80%81%e5%a2%9e%e5%b9%bf">
+        状态增广
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e4%b8%89%e8%a7%92%e5%8c%96%e7%82%b9">
+        三角化点
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e8%a7%82%e6%b5%8b%e6%a8%a1%e5%9e%8b">
+        观测模型
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e6%bb%a4%e6%b3%a2%e6%9b%b4%e6%96%b0">
+        滤波更新
+      </a>
+    </li>
+    
+  </ol>
+</div>
+
+
+  
+  
+  
+
+<h2 id="qr分解">QR分解 <a aria-label="header link for QR分解" href="#qr分解" class="header-link">#</a></h2>
+
+<p><span  class="math">\[
+A_{2m \times 3} = Q_{2m \times 2m}R_{2m \times 3} = \begin{bmatrix} B_{2m \times 3} &C_{2m \times (2m - 3)} \end{bmatrix} \begin{bmatrix} D_{3 \times 3} \\ 0_{(2m - 3) \times 3} \end{bmatrix}
+\]</span></p>
+
+<p>其中，<span  class="math">\(Q\)</span> 为正交矩阵，每一列代表一个基向量，与除了自身以外的其他基向量的点积都为0。Where <span  class="math">\(B\)</span> and <span  class="math">\(C\)</span> are unitary matrices whose columns form bases for the range and nullspace of <span  class="math">\(A\)</span>.</p>
+
+<p><span  class="math">\[
+{C^T}_{(2m-3) * 2m} A_{2m \times 3} = \begin{bmatrix} 0_{(2m-3) \times 3} &I_{(2m-3) \times (2m - 3)} \end{bmatrix} \begin{bmatrix} D_{3 \times 3} \\ 0_{(2m - 3) \times 3} \end{bmatrix} = 0_{(2m-3) \times 3}
+\]</span></p>
+
+<p><span  class="math">\(C\)</span>称为<span  class="math">\(A\)</span>的左零空间，当左乘<span  class="math">\(C^T\)</span>以后，整个矩阵都变为0。</p>
+
+<p><span  class="math">\[
+{B^T}_{3 * 2m} A_{2m \times 3} = \begin{bmatrix} I_{3 \times 3} &0_{3 \times (2m - 3)} \end{bmatrix} \begin{bmatrix} D_{3 \times 3} \\ 0_{(2m - 3) \times 3} \end{bmatrix} = D_{3 \times 3}
+\]</span></p>
+
+<p>当左乘<span  class="math">\(B^T\)</span>以后，仅重要信息被保留下来为<span  class="math">\(D\)</span></p>
+
+<h2 id="状态量">状态量 <a aria-label="header link for 状态量" href="#状态量" class="header-link">#</a></h2>
+
+<p>当前IMU状态<span  class="math">\(15\)</span>维，加上滑窗内<span  class="math">\(N\)</span>帧图像，每个相机位姿6维，共计<span  class="math">\(15+6N\)</span></p>
+
+<p><span  class="math">\[
+{\hat{X}}_k = \begin{bmatrix} ^I_G\bar{q} \\ {b_g} \\ {^Gv_I} \\ {b_a} \\ {^Gp_I} \\ {^{C_1}_G\hat{\bar{q}}} \\ ^G\hat{p}_{C_1} \\ \vdots \\ {^{C_N}_G\hat{\bar{q}}} \\ ^G\hat{p}_{C_N}
+\end{bmatrix}
+\]</span></p>
+
+<h2 id="状态增广">状态增广 <a aria-label="header link for 状态增广" href="#状态增广" class="header-link">#</a></h2>
+
+<p>当增加第<span  class="math">\(N+1\)</span>个新的相机位姿时，状态向量需要增广。</p>
+
+<p><span  class="math">\[
+\begin{bmatrix} ^I_G\bar{q}^T \\ {b_g}^T \\ {^Gv_I}^T \\ {b_a}^T \\ {^Gp_I}^T \\ {^{C_1}_G\hat{\bar{q}}}^T \\ ^G\hat{p}_{C_1}^T \\ \vdots \\ {^{C_N}_G\hat{\bar{q}}}^T \\ ^G\hat{p}_{C_N}^T \\ {^{C_{N+1}}_G\hat{\bar{q}}}^T \\ ^G\hat{p}_{C_{N+1}}^T
+\end{bmatrix} = \underbrace{\begin{bmatrix}
+I &0 &0 &0 &0 &0 &0 &\cdots &0 &0\\
+0 &I &0 &0 &0 &0 &0 &\cdots &0 &0\\
+0 &0 &I &0 &0 &0 &0 &\cdots &0 &0\\
+0 &0 &0 &I &0 &0 &0 &\cdots &0 &0\\
+0 &0 &0 &0 &I &0 &0 &\cdots &0 &0\\
+0 &0 &0 &0 &0 &I &0 &\cdots &0 &0\\
+0 &0 &0 &0 &0 &0 &I &\cdots &0 &0\\
+ & & & &\vdots \\
+0 &0 &0 &0 &0 &0 &0 &\cdots &I &0\\
+0 &0 &0 &0 &0 &0 &0 &\cdots &0 &I\\
+C(^C_I\bar{q}) & 0 & 0 & 0 & 0 & 0 & 0 &\cdots &0 &0 \\
+\lfloor C_{\hat{q}}^T p_C \times \rfloor &0 &0 & 0 &I &0 &0 &\cdots &0 &0
+\end{bmatrix}}_A *
+\begin{bmatrix} ^I_G\bar{q}^T \\ {b_g}^T \\ {^Gv_I}^T \\ {b_a}^T \\ {^Gp_I}^T \\ {^{C_1}_G\hat{\bar{q}}}^T \\ ^G\hat{p}_{C_1}^T \\ \vdots \\ {^{C_N}_G\hat{\bar{q}}}^T \\ ^G\hat{p}_{C_N}^T
+\end{bmatrix}
+\]</span></p>
+
+<p>对应的协方差矩阵也需要进行传播。
+<span  class="math">\(
+P_{k|k} = A P_{k|k} A^T
+\)</span></p>
+
+<p><strong>多余的话</strong><br>
+关于协方差增广，可以与 slam for dummies 进行对比学习。在该文中，新的特征点与当前的机器人位姿、激光观测量都有关系，其协方差为：</p>
+
+<p><span  class="math">\[
+P^{N+1 \  N+1} = J_{xr} P J_{xr}^T + J_z R J_z^T
+\]</span></p>
+
+<h2 id="三角化点">三角化点 <a aria-label="header link for 三角化点" href="#三角化点" class="header-link">#</a></h2>
+
+<p>将相机坐标当作已知值，优化共同观测到的某个特征点坐标</p>
+
+<p><span  class="math">\[
+h = \begin{pmatrix} h_0 \\ h_1 \\ h_2 \end{pmatrix}
+= R \begin{pmatrix} \frac{X}{Z} \\ \frac{Y}{Z} \\ 1 \end{pmatrix} + \frac{1}{Z} t
+= R \begin{pmatrix} \alpha \\ \beta \\ 1 \end{pmatrix} + \rho t \\
+z = \begin{pmatrix} \frac{h_0}{h_2} \\ \frac{h_1}{h_2} \end{pmatrix}
+\]</span></p>
+
+<p>由此得到雅可比矩阵：</p>
+
+<p><span  class="math">\[
+J = \frac{\partial e_i}{\partial(\alpha, \beta, \rho)}
+= -\frac{\partial z}{\partial h} \begin{bmatrix} \frac{\partial h}{\partial \alpha} & \frac{\partial h}{\partial \beta} & \frac{\partial h}{\partial \rho} \end{bmatrix} \\
+= -\begin{bmatrix} \frac{1}{h_2} & 0 & -\frac{h_0}{h_2^2} \\
+0 & \frac{1}{h_2} & -\frac{h_1}{h_2^2} \end{bmatrix}
+\begin{bmatrix} R\begin{pmatrix} 1 \\ 0 \\ 0 \end{pmatrix} 
+& R\begin{pmatrix} 0 \\ 1 \\ 0 \end{pmatrix} & t \end{bmatrix} \\
+\]</span></p>
+
+<h2 id="观测模型">观测模型 <a aria-label="header link for 观测模型" href="#观测模型" class="header-link">#</a></h2>
+
+<p>特征点坐标是根据相机坐标计算出来的，而观测量误差同时与特征点和相机的坐标误差相关。</p>
+
+<p><span  class="math">\[
+^{C_i} p_j = \begin{bmatrix} ^{C_i} \hat X_j \\ ^{C_i} \hat Y_j \\ ^{C_i} \hat Z_j \end{bmatrix}
+=C(^{C_i} _G \hat q)(^G \hat p _{j} - ^G \hat p _{C_i}) \\
+\hat z_i^{(j)} = \begin{bmatrix} \frac{^{C_i} \hat X_j}{^{C_i} \hat Z_j} \\ \frac{^{C_i} \hat Y_j}{^{C_i} \hat Z_j} \end{bmatrix}
+\]</span></p>
+
+<p>对相机位姿、特征点位置的误差求雅可比：</p>
+
+<p><span  class="math">\[
+r_i^{(j)} \approx \frac{\partial z_i^{(j)}}{\partial ^{C_i} p_j} \frac{\partial ^{C_i} p_j}{\partial X_{C_i}} \tilde X +
+\frac{\partial z_i^{(j)}}{\partial ^{C_i} p_j} \frac{\partial ^{C_i} p_j}{\partial ^Gp_j} {^G}{\tilde{p}_{j}} \\
+= \begin{bmatrix} \frac{1}{^{C_i} \hat Z_j} & 0 & -\frac{^{C_i} \hat X_j}{^{C_i} \hat Z_j} \\
+0 & \frac{1}{^{C_i} \hat Z_j} & -\frac{^{C_i} \hat Y_j}{^{C_i} \hat Z_j} \end{bmatrix}
+\begin{bmatrix} \lfloor {^{C_i} \hat p _{j}}_\times \rfloor & -C(^{C_i} _G \hat q) \end{bmatrix} \tilde X +
+\begin{bmatrix} \frac{1}{^{C_i} \hat Z_j} & 0 & -\frac{^{C_i} \hat X_j}{^{C_i} \hat Z_j} \\
+0 & \frac{1}{^{C_i} \hat Z_j} & -\frac{^{C_i} \hat Y_j}{^{C_i} \hat Z_j} \end{bmatrix} \begin{bmatrix} C(^{C_i} _G \hat q) \end{bmatrix} {^G}{\tilde{p}_{j}}
+\]</span></p>
+
+<p>精华：将观测到该特征点的多个相机观测值累积到一起形成大型矩阵，并将观测量误差投影到相机坐标误差雅可比矩阵的左零空间中，消去特征点坐标误差。由此，观测量误差仅与相机坐标误差相关！</p>
+
+<p><span  class="math">\[
+r^{(j)} \simeq H_X^{(j)} \tilde{X} + H_f^{(j)} {^G}{\tilde{p}_{f_j}} + n^{(j)} \\
+r_o^{(j)} = A^T r^{(j)} \simeq A^T H_X^{(j)} \tilde{X} + A^Tn^{(j)} = H_o^{(j)} \tilde{X} ^{(j)} + n_o^{(j)}
+\]</span></p>
+
+<h2 id="滤波更新">滤波更新 <a aria-label="header link for 滤波更新" href="#滤波更新" class="header-link">#</a></h2>
+
+<p>使用QR分解，仅保留观测值中的有效信息。</p>
+
+<p><span  class="math">\[
+r_o = \begin{bmatrix} Q_1 &Q_2 \end{bmatrix} \begin{bmatrix} T_H \\ 0 \end{bmatrix} \tilde{X} + n_o \\
+r_n = Q_1^Tr_o = T_H \tilde{X} + n_n
+\]</span></p>
+
+
+
+  
+
+  
+    <br>
+    <strong>Previous:</strong> <a href="/amcl/">AMCL Localization</a>
+  
+  
+  
+    <div id="disqus-container">
+  
+</div>
+
+  
+
+
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="usa-footer usa-footer--slim" role="contentinfo">
+      
+      <div class="usa-footer__secondary-section" id="footer-main">
+        <div class="grid-container">
+          <div class="grid-row grid-gap">
+            <div class="grid-col-12 text-center">
+              
+              
+                Made with <a href="https://gohugo.io/">Hugo</a> • Content in <a href="https://github.com/nuhuo08/uswds-hugo-theme">GitHub</a>
+                <br>
+                Last deployed on 2020-01-25
+              
+
+              
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    
+    <script src="/js/uswds.min.fcd9b25a27c51de427f4c618dee88490c2ff0a792a573531e316730d07df3f3d.js"></script>
+
+  </body>
+</html>

@@ -6,10 +6,21 @@
     <description>Recent content in Blogs on XiaoWu</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 02 Jan 2020 08:00:00 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 03 Jan 2020 08:00:00 +0800</lastBuildDate>
     
 	<atom:link href="https://nuhuo08.github.io/blog/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>MSCKF</title>
+      <link>https://nuhuo08.github.io/msckf/</link>
+      <pubDate>Fri, 03 Jan 2020 08:00:00 +0800</pubDate>
+      
+      <guid>https://nuhuo08.github.io/msckf/</guid>
+      <description>QR分解 \[ A_{2m \times 3} = Q_{2m \times 2m}R_{2m \times 3} = \begin{bmatrix} B_{2m \times 3} &amp;C_{2m \times (2m - 3)} \end{bmatrix} \begin{bmatrix} D_{3 \times 3} \\ 0_{(2m - 3) \times 3} \end{bmatrix} \]
+其中，\(Q\) 为正交矩阵，每一列代表一个基向量，与除了自身以外的其他基向量的点积都为0。Where \(B\) and \(C\) are unitary matrices whose columns form bases for the range and nullspace of \(A\).
+\[ {C^T}_{(2m-3) * 2m} A_{2m \times 3} = \begin{bmatrix} 0_{(2m-3) \times 3} &amp;I_{(2m-3) \times (2m - 3)} \end{bmatrix} \begin{bmatrix} D_{3 \times 3} \\ 0_{(2m - 3) \times 3} \end{bmatrix} = 0_{(2m-3) \times 3} \]</description>
+    </item>
     
     <item>
       <title>AMCL Localization</title>
