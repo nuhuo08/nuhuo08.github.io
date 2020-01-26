@@ -6,10 +6,39 @@
     <description>Recent content on XiaoWu</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 04 Jan 2020 08:00:00 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 06 Jan 2020 08:00:00 +0800</lastBuildDate>
     
 	<atom:link href="https://nuhuo08.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Non-Linear</title>
+      <link>https://nuhuo08.github.io/non-linear/</link>
+      <pubDate>Mon, 06 Jan 2020 08:00:00 +0800</pubDate>
+      
+      <guid>https://nuhuo08.github.io/non-linear/</guid>
+      <description>g2o g2o在ORB-SLAM2中的用法 Ceres http://ceres-solver.org/nnls_modeling.html
+对于以下代价函数：
+\[ \frac{1}{2} \sum_i \rho_i(\parallel f_i(x_{i1}, x_{i2}, \cdots, x_{ik}) \parallel ^2) \]
+在Ceres中，\(\rho\)为loss function，用于减弱外点的影响；\(f\)为cost function，定义了残差的计算方式；\((x_{i1}, x_{i2}, \cdots, x_{ik})\)为parameter block，定义了需要估计的变量；\(\rho_i(\parallel f_i(x_{i1}, x_{i2}, \cdots, x_{ik}) \parallel ^2)\)为residual block，定义了一个残差块。
+AddResidualBlock problem.AddResidualBlock(costfunction, lossfunction, x1, x2 ... xn)
+其中，\(x_1, x_2, \cdots x_n\)要与costfunction中的变量维数要对应起来。
+costfunction有两种典型的定义方式：
+ 自己实现残差、雅可比  templateclass SizedCostFunction : public CostFunction { public: virtual bool Evaluate(double const* const* parameters, double* residuals, double** jacobians) const = 0; }; 这种情况下，需要指定残差维数、参数块维数，并自己实现Evaluate()，计算cost和jacobian。
+自己实现残差即可  template class AutoDiffCostFunction : public SizedCostFunction{ public: explicit AutoDiffCostFunction(CostFunctor* functor); // Ignore the template parameter kNumResiduals and use // num_residuals instead.</description>
+    </item>
+    
+    <item>
+      <title>VINS-MONO</title>
+      <link>https://nuhuo08.github.io/vins-mono/</link>
+      <pubDate>Sun, 05 Jan 2020 08:00:00 +0800</pubDate>
+      
+      <guid>https://nuhuo08.github.io/vins-mono/</guid>
+      <description>代码流程图      动态方程 预积分公式推导 \(b_k^a\)和\(b_k^g\)作为随机游走噪声，在推导\(k \sim k+1\)时认为是常数！不像\(w\)和\(a\)，要添加\(n_k^g\)和\(n_k^a\)噪声进去
+\[ \omega=\frac{1}{2}( (\omega^{b_k}+n_k^g-b_k^g) + (\omega^{b_{k+1}}+n_{k+1}^g-b_k^g) ) \\[2mm] q_{b_ib_{k+1}}=q_{b_ib_k}\otimes\begin{bmatrix}1 \\ \frac{1}{2}\omega\delta{t}\end{bmatrix} \\[2mm] a=\frac{1}{2}( q_{b_ib_k}(a^{b_k}+n_k^a-b_k^a) + q_{b_ib_{k+1}}(a^{b_{k+1}}+n_{k+1}^a-b_k^a) ) \\[2mm] \beta_{b_ib_{k+1}}=\beta_{b_ib_k}+a\delta{t} \\[2mm] \alpha_{b_ib_{k+1}}=\alpha_{b_ib_k}+\beta_{b_ib_k}\delta{t}+\frac{1}{2}a\delta{t}^2 \\[2mm] b_{k+1}^a=b_k^a+n_{b_k^a}\delta{t} \\[2mm] b_{k+1}^g=b_k^g+n_{b_k^g}\delta{t} \\[2mm] \]
+写成矩阵形式：
+\[ \begin{bmatrix}\alpha_{b_ib_{k+1}} \\ \theta_{b_ib_{k+1}} \\ \beta_{b_ib_{k+1}} \\ b_{k+1}^a \\ b_{k+1}^g\end{bmatrix} =F*\begin{bmatrix}\alpha_{b_ib_{k}} \\ \theta_{b_ib_{k}} \\ \beta_{b_ib_{k}} \\ b_{k}^a \\ b_{k}^g\end{bmatrix} +G*\begin{bmatrix}n_k^a \\ n_k^g \\ n_{k+1}^a \\ n_{k+1}^g \\ n_{k}^a \\ n_{k}^g \end{bmatrix} \]</description>
+    </item>
     
     <item>
       <title>ORB-SLAM2</title>

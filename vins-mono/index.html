@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+	<script>
+		renderMathInElement(document.body,
+			{
+				delimiters: [
+					{left: "$$", right: "$$", display: true},
+					{left: "$", right: "$", display: false},
+				]
+			}
+		);
+
+		var inlineMathArray = document.querySelectorAll("script[type='math/tex']");
+		for (var i = 0; i < inlineMathArray.length; i++) {
+			var inlineMath = inlineMathArray[i];
+			var tex = inlineMath.innerText || inlineMath.textContent;
+			var replaced = document.createElement("span");
+			replaced.innerHTML = katex.renderToString(tex, {displayMode: false});
+			inlineMath.parentNode.replaceChild(replaced, inlineMath);
+		}
+
+		var displayMathArray = document.querySelectorAll("script[type='math/tex; mode=display']");
+		for (var i = 0; i < displayMathArray.length; i++) {
+			var displayMath = displayMathArray[i];
+			var tex = displayMath.innerHTML;
+			var replaced = document.createElement("span");
+			replaced.innerHTML = katex.renderToString(tex.replace(/%.*/g, ''), {displayMode: true});
+			displayMath.parentNode.replaceChild(replaced, displayMath);
+		}
+	</script>
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+
+    <link rel="canonical" href="https://nuhuo08.github.io/vins-mono/">
+    <meta name="generator" content="Hugo 0.62.2" />
+    <title>VINS-MONO | XiaoWu</title>
+
+    
+    <link rel="stylesheet" href="/css/uswds.min.c480a9b2a1fc1e7e564e62752462b22cd5f508a047f0340cb3725722f627fb1d.css">
+    
+    
+    <link rel="stylesheet" href="/css/custom.364c63f6f777ce9ed0218c1a24c574f775cafbb414bfb129dcbcd91fa8a16f5c.min.css">
+  </head>
+  <body>
+    <a class="usa-skipnav" href="#main-content">Skip to main content</a>
+
+    <header class="usa-header usa-header--basic" role="banner">
+      <div class="usa-nav-container">
+        <div class="usa-navbar">
+          <div class="usa-logo" id="basic-mega-logo">
+            <em class="usa-logo__text">
+              <a href="/" title="Home" aria-label="Home">XiaoWu</a>
+            </em>
+          </div>
+          <button class="usa-menu-btn">Menu</button>
+        </div>
+
+        <nav role="navigation" class="usa-nav">
+          <button class="usa-nav__close">
+            <img src="/img/close.svg" alt="close" />
+          </button>
+          <ul class="usa-nav__primary usa-accordion">
+            
+            
+              
+              
+              
+              
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link " href="/">
+                  <span>Home</span>
+                </a>
+              </li>
+            
+              
+              
+              
+              
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link usa-current" href="/blog/">
+                  <span>Blog</span>
+                </a>
+              </li>
+            
+              
+              
+              
+              
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link " href="/about/index.html">
+                  <span>About</span>
+                </a>
+              </li>
+            
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="usa-section" id="main-content">
+      <div class="grid-container">
+        <div class="grid-row grid-gap">
+          <div class="tablet:grid-col usa-prose">
+            
+  <h1>VINS-MONO</h1>
+  
+  <p class="text-gray-50">
+    
+    
+    
+    <strong>Published: </strong>2020-01-05
+
+    
+    
+      
+      
+    
+    
+    
+    
+    </span>
+  </p>
+  
+  
+    
+
+<div class="toc">
+  <strong>Table of contents</strong>
+  <ol>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e4%bb%a3%e7%a0%81%e6%b5%81%e7%a8%8b%e5%9b%be">
+        代码流程图
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e5%8a%a8%e6%80%81%e6%96%b9%e7%a8%8b">
+        动态方程
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e8%a7%82%e6%b5%8b%e6%96%b9%e7%a8%8b">
+        观测方程
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e5%9c%a8%e7%ba%bf%e6%a0%87%e5%ae%9a">
+        在线标定
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e6%b1%82%e8%a7%a3">
+        求解
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#ceres%e5%9c%a8vinsmono%e4%b8%ad%e7%9a%84%e4%bd%bf%e7%94%a8">
+        Ceres在VINS-MONO中的使用
+      </a>
+    </li>
+    
+  </ol>
+</div>
+
+
+  
+  
+  
+
+<h2 id="代码流程图">代码流程图 <a aria-label="header link for 代码流程图" href="#代码流程图" class="header-link">#</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/vins-mono/vins-codeflow.png">
+    <img src="/vins-mono/vins-codeflow_hu452a3c2708b57bcfa074a6d92c5e817d_159990_1200x0_resize_box_2.png" alt="VINS-MONO Codeflow">
+  </a>
+  <div class="usa-image-text-block">
+    <small>
+      <p class="usa-image-text text-gray-50"></p>
+    </small>
+  </div>
+</div>
+
+
+<h2 id="动态方程">动态方程 <a aria-label="header link for 动态方程" href="#动态方程" class="header-link">#</a></h2>
+
+<h3 id="预积分公式推导">预积分公式推导</h3>
+
+<p><span  class="math">\(b_k^a\)</span>和<span  class="math">\(b_k^g\)</span>作为随机游走噪声，在推导<span  class="math">\(k \sim k+1\)</span>时认为是常数！不像<span  class="math">\(w\)</span>和<span  class="math">\(a\)</span>，要添加<span  class="math">\(n_k^g\)</span>和<span  class="math">\(n_k^a\)</span>噪声进去</p>
+
+<p><span  class="math">\[
+\omega=\frac{1}{2}( (\omega^{b_k}+n_k^g-b_k^g) + (\omega^{b_{k+1}}+n_{k+1}^g-b_k^g) ) \\[2mm]
+q_{b_ib_{k+1}}=q_{b_ib_k}\otimes\begin{bmatrix}1 \\ \frac{1}{2}\omega\delta{t}\end{bmatrix} \\[2mm]
+a=\frac{1}{2}( q_{b_ib_k}(a^{b_k}+n_k^a-b_k^a) + q_{b_ib_{k+1}}(a^{b_{k+1}}+n_{k+1}^a-b_k^a) ) \\[2mm]
+\beta_{b_ib_{k+1}}=\beta_{b_ib_k}+a\delta{t} \\[2mm]
+\alpha_{b_ib_{k+1}}=\alpha_{b_ib_k}+\beta_{b_ib_k}\delta{t}+\frac{1}{2}a\delta{t}^2 \\[2mm]
+b_{k+1}^a=b_k^a+n_{b_k^a}\delta{t} \\[2mm]
+b_{k+1}^g=b_k^g+n_{b_k^g}\delta{t} \\[2mm]
+\]</span></p>
+
+<p>写成矩阵形式：</p>
+
+<p><span  class="math">\[
+\begin{bmatrix}\alpha_{b_ib_{k+1}} \\ \theta_{b_ib_{k+1}} \\ \beta_{b_ib_{k+1}} \\ b_{k+1}^a \\ b_{k+1}^g\end{bmatrix}
+=F*\begin{bmatrix}\alpha_{b_ib_{k}} \\ \theta_{b_ib_{k}} \\ \beta_{b_ib_{k}} \\ b_{k}^a \\ b_{k}^g\end{bmatrix}
++G*\begin{bmatrix}n_k^a \\ n_k^g \\ n_{k+1}^a \\ n_{k+1}^g \\ n_{k}^a \\ n_{k}^g \end{bmatrix}
+\]</span></p>
+
+<p><span  class="math">\[
+F=\begin{bmatrix}I &f_{12} &I\delta{t} &-\frac{1}{4}(q_{b_ib_k}+q_{b_ib_{k+1}})\delta{t}^2 &f_{15}\\
+0 &I-[\omega]_{\times} &0 &0 &-I\delta{t}\\
+0 &f_{32} &I &-\frac{1}{2}(q_{b_ib_k}+q_{b_ib_{k+1}})\delta{t} &f_{35}\\
+0 &0 &0 &I &0\\
+0 &0 &0 &0 &I
+\end{bmatrix} \\[2mm]
+G=\begin{bmatrix}\frac{1}{4}q_{b_ib_k}\delta{t}^2 &g_{12} &\frac{1}{4}q_{b_ib_{k+1}}\delta{t}^2 &g_{14} &0 &0 \\
+0 &\frac{1}{2}I\delta{t} &0 &\frac{1}{2}I\delta{t} &0 &0\\
+\frac{1}{2}q_{b_ib_k}\delta{t} &g_{32} &\frac{1}{2}q_{b_ib_{k+1}}\delta{t} &g_{34} &0 &0\\
+0 &0 &0 &0 &I\delta{t} &0\\
+0 &0 &0 &0 &0 &I\delta{t}\end{bmatrix} \\[2mm]
+f_{12}=-\frac{1}{4}( R_{b_ib_k}[a^{b_k}-b_k^a]_\times\delta{t}^2 + R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times(I-[\omega]_\times\delta{t})\delta{t}^2) \\[2mm]
+f_{32}=-\frac{1}{2}( R_{b_ib_k}[a^{b_k}-b_k^a]_\times\delta{t} + R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times(I-[\omega]_\times\delta{t})\delta{t}) \\[2mm]
+f_{15}=-\frac{1}{4}(R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times\delta{t}^2)(-\delta{t}) \\[2mm]
+f_{35}=-\frac{1}{2}(R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times\delta{t})(-\delta{t}) \\[2mm]
+g_{12}=g_{14}=-\frac{1}{4}(R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times\delta{t}^2)(\frac{1}{2}\delta{t}) \\[2mm]
+g_{32}=g_{34}=-\frac{1}{2}(R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times\delta{t})(\frac{1}{2}\delta{t})
+\]</span></p>
+
+<h3 id="终极大矩阵">终极大矩阵</h3>
+
+<p>将所有值带进去并展开，得到原始等式</p>
+
+<p><span  class="math">\[
+q_{b_ib_{k+1}}=q_{b_ib_k}\otimes\begin{bmatrix}1 \\ \frac{1}{2}\{\frac{1}{2}( (\omega^{b_k}+n_k^g-b_k^g) + (\omega^{b_{k+1}}+n_{k+1}^g-b_k^g) )\}\delta{t}\end{bmatrix} \\[2mm]
+\beta_{b_ib_{k+1}}=\beta_{b_ib_k}+\{\frac{1}{2}( q_{b_ib_k}(a^{b_k}+n_k^a-b_k^a) + \{q_{b_ib_k}\otimes\begin{bmatrix}1 \\ \frac{1}{2}\{\frac{1}{2}( (\omega^{b_k}+n_k^g-b_k^g) + (\omega^{b_{k+1}}+n_{k+1}^g-b_k^g) )\}\delta{t}\end{bmatrix}\}(a^{b_{k+1}}+n_{k+1}^a-b_k^a) )\}\delta{t} \\[2mm]
+\alpha_{b_ib_{k+1}}=\alpha_{b_ib_k}+\beta_{b_ib_k}\delta{t}+\frac{1}{2}\{\frac{1}{2}( q_{b_ib_k}(a^{b_k}+n_k^a-b_k^a) + \{q_{b_ib_k}\otimes\begin{bmatrix}1 \\ \frac{1}{2}\{\frac{1}{2}( (\omega^{b_k}+n_k^g-b_k^g) + (\omega^{b_{k+1}}+n_{k+1}^g-b_k^g) )\}\delta{t}\end{bmatrix}\}(a^{b_{k+1}}+n_{k+1}^a-b_k^a) )\}\delta{t}^2 \\[2mm]
+b_{k+1}^a=b_k^a+n_{b_k^a}\delta{t} \\[2mm]
+b_{k+1}^g=b_k^g+n_{b_k^g}\delta{t}
+\]</span></p>
+
+<p>矩阵形式</p>
+
+<p><span  class="math">\[
+\begin{bmatrix}\alpha_{b_ib_{k+1}} \\ \theta_{b_ib_{k+1}} \\ \beta_{b_ib_{k+1}} \\ b_{k+1}^a \\ b_{k+1}^g\end{bmatrix}
+=\begin{bmatrix}I &-\frac{1}{4}( R_{b_ib_k}[a^{b_k}-b_k^a]_\times\delta{t}^2 + R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times(I-[\omega]_\times\delta{t})\delta{t}^2) &I\delta{t} &-\frac{1}{4}(q_{b_ib_k}+q_{b_ib_{k+1}})\delta{t}^2 &-\frac{1}{4}(R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times\delta{t}^2)(-\delta{t})\\
+0 &I-[\omega]_{\times} &0 &0 &-I\delta{t}\\
+0 &-\frac{1}{2}( R_{b_ib_k}[a^{b_k}-b_k^a]_\times\delta{t} + R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times(I-[\omega]_\times\delta{t})\delta{t}) &I &-\frac{1}{2}(q_{b_ib_k}+q_{b_ib_{k+1}})\delta{t} &-\frac{1}{2}(R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times\delta{t})(-\delta{t})\\
+0 &0 &0 &I &0\\
+0 &0 &0 &0 &I
+\end{bmatrix}
+*\begin{bmatrix}\alpha_{b_ib_{k}} \\ \theta_{b_ib_{k}} \\ \beta_{b_ib_{k}} \\ b_{k}^a \\ b_{k}^g\end{bmatrix}\\
++\begin{bmatrix}\frac{1}{4}q_{b_ib_k}\delta{t}^2 &-\frac{1}{4}(R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times\delta{t}^2)(\frac{1}{2}\delta{t}) &\frac{1}{4}q_{b_ib_{k+1}}\delta{t}^2 &-\frac{1}{4}(R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times\delta{t}^2)(\frac{1}{2}\delta{t}) &0 &0 \\
+0 &\frac{1}{2}I\delta{t} &0 &\frac{1}{2}I\delta{t} &0 &0\\
+\frac{1}{2}q_{b_ib_k}\delta{t} &-\frac{1}{2}(R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times\delta{t})(\frac{1}{2}\delta{t}) &\frac{1}{2}q_{b_ib_{k+1}}\delta{t} &-\frac{1}{2}(R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times\delta{t})(\frac{1}{2}\delta{t}) &0 &0\\
+0 &0 &0 &0 &I\delta{t} &0\\
+0 &0 &0 &0 &0 &I\delta{t}\end{bmatrix}
+*\begin{bmatrix}n_k^a \\ n_k^g \\ n_{k+1}^a \\ n_{k+1}^g \\ n_{k}^a \\ n_{k}^g \end{bmatrix}
+\]</span></p>
+
+<h2 id="观测方程">观测方程 <a aria-label="header link for 观测方程" href="#观测方程" class="header-link">#</a></h2>
+
+<h3 id="相机">相机</h3>
+
+<p>观测方程：</p>
+
+<p><span  class="math">\[
+P_{w_l}=R_{b_i}^w(R_c^b\frac{1}{\lambda_l}\pi_c^{-1}(\begin{bmatrix}\mu_l^{c_i}\\\nu_l^{c_i}\end{bmatrix})+p_c^b)+p_{b_i}^w \\[2mm]
+P_{w_l}=R_{b_j}^w(R_c^bP_l^{c_j}+p_c^b)+p_{b_j}^w \\[2mm]
+P_l^{c_j}=R_b^c\{R_w^{b_j}[R_{b_i}^w(R_c^b\frac{1}{\lambda_l}\overline{P}_l^{c_i}+p_c^b)+p_{b_i}^w-p_{b_j}^w]-p_c^b\}
+\]</span></p>
+
+<p>转换成矩阵形式：</p>
+
+<p><span  class="math">\[
+P_l^{c_j}=\begin{bmatrix}
+R_b^cR_w^{b_j} \\
+-R_b^cR_w^{b_j}R_{b_i}^w(R_c^b\frac{1}{\lambda_l}\overline{P}_l^{c_i}+p_c^b)^{\wedge} \\
+-R_b^cR_w^{b_j} \\
+R_b^c\{R_w^{b_j}[R_{b_i}^w(R_c^b\frac{1}{\lambda_l}\overline{P}_l^{c_i}+p_c^b)+p_{b_i}^w-p_{b_j}^w]\}^\wedge \\
+R_b^c(R_w^{b_j}R_{b_i}^w-I_{3\times3}) \\
+-R_b^cR_w^{b_j}R_{b_i}^wR_c^b(\frac{1}{\lambda_l}\overline{P}_l^{c_i})^{\wedge}+(R_b^cR_w^{b_j}R_{b_i}^wR_c^b\frac{1}{\lambda_l}\overline{P}_l^{c_i})^{\wedge}+\{R_b^c[R_w^{b_j}(R_{b_i}^wp_c^b+p_{b_i}^w-p_{b_j}^w)-p_c^b]\}^{\wedge} \\
+-R_b^cR_w^{b_j}R_{b_i}^wR_c^b\frac{1}{\lambda_l^2}\overline{P}_l^{c_i}
+\end{bmatrix}^T
+*\begin{bmatrix}
+p_{b_i}^w \\ q_{b_i}^w \\ p_{b_j}^w \\ q_{b_j}^w \\ p_c^b \\ q_c^b \\ \lambda_l
+\end{bmatrix}
+\]</span></p>
+
+<h3 id="imu">IMU</h3>
+
+<p>观测方程：</p>
+
+<p><span  class="math">\[
+\gamma_B=\begin{bmatrix}
+R_w^{b_k}(p_{b_{k+1}}^w-p_{b_k}^w-\nu_{b_k}^w\Delta{t_k}+\frac{1}{2}g^w\Delta{t_k^2})-\alpha_{b_{k+1}}^{b_k} \\
+2[\gamma_{b_{k+1}}^{b_k}{\otimes}{q_{b_k}^w}^{-1}\otimes{q_{b_{k+1}}^w}] \\
+R_w^{b_k}(\nu_{b_{k+1}}^w-\nu_{b_k}^w+g^w\Delta{t_k})-\beta_{b_{k+1}}^{b_k} \\
+b_{a_{b_{k+1}}}-b_{a_{b_k}} \\
+b_{\omega_{b_{k+1}}}-b_{\omega_{b_k}}
+\end{bmatrix}
+\]</span></p>
+
+<p>转换成矩阵形式：</p>
+
+<p><span  class="math">\[
+\gamma_B=\begin{bmatrix}
+-R_w^{b_k} &0 &0 &0 &0 \\
+[R_w^{b_k}(p_{b_{k+1}}^w-p_{b_k}^w-\nu_{b_k}^w\Delta{t_k}+\frac{1}{2}g^w\Delta{t_k^2})]^\wedge &-\mathcal{L}[{q_{b_{k+1}}^w}^{-1}\otimes{q_{b_k}^w}]\mathcal{R}[\gamma_{b_{k+1}}^{b_k}] &[R_w^{b_k}(\nu_{b_{k+1}}^w-\nu_{b_k}^w+g^w\Delta{t_k})]^\wedge &0 &0\\
+-R_w^{b_k}\Delta{t} &0 &-R_w^{b_k} &0 &0\\
+-\mathcal{J}_{b_a}^\alpha &0 &-\mathcal{J}_{b_a}^\beta &-I &0 \\
+-\mathcal{J}_{b_\omega}^\alpha &-\mathcal{L}[{q_{b_{k+1}}^w}^{-1}\otimes{q_{b_k}^w}\otimes\gamma_{b_{k+1}}^{b_k}]\mathcal{J}_{b_\omega}^\gamma &-\mathcal{J}_{b_\omega}^\beta &0 &-I \\
+R_w^{b_k} &0 &0 &0 &0 \\
+0 &\mathcal{L}[{\gamma_{b_{k+1}}^{b_k}}^{-1}\otimes{q_{b_{k}}^w}^{-1}\otimes{q_{b_{k+1}}^w}] &0 &0 &0\\
+0 &0 &R_w^{b_k} &0 &0\\
+0 &0 &0 &I &0\\
+0 &0 &0 &0 &I
+\end{bmatrix}^T
+*\begin{bmatrix}
+p_{b_k}^w \\ q_{b_k}^w \\ v_{b_k}^w \\ b_{a_k} \\ b_{\omega_k} \\
+p_{b_{k+1}}^w \\ q_{b_{k+1}}^w \\ v_{b_{k+1}}^w \\ b_{a_{k+1}} \\ b_{\omega_{k+1}} 
+\end{bmatrix}
+\]</span></p>
+
+<h2 id="在线标定">在线标定 <a aria-label="header link for 在线标定" href="#在线标定" class="header-link">#</a></h2>
+
+<h2 id="求解">求解 <a aria-label="header link for 求解" href="#求解" class="header-link">#</a></h2>
+
+<h3 id="使方程满秩可求解">使方程满秩可求解</h3>
+
+<p>信息矩阵 <span  class="math">\(H\)</span> 不满秩</p>
+
+<ol>
+<li>用LM方法求解，会导致H满秩 --&gt; 解在空间中整体变化</li>
+<li>添加先验约束，增加系统可观性。例如固定第一个相机，<span  class="math">\(H_{[11]}+=I\)</span></li>
+<li>添加超强先验，使得对应的信息矩阵巨大<span  class="math">\(H_{[11]}=\infty\)</span>，就能使得<span  class="math">\(\Delta{x}=H^{-1}b=0\)</span></li>
+<li>设定对应雅克比矩阵为 0，则<span  class="math">\(H_{[11]}=0\)</span>，<span  class="math">\(b_{[1]}=0\)</span>。则在求解时，<span  class="math">\((0+\lambda{I})\Delta{x}=0\)</span></li>
+</ol>
+
+<h3 id="舒尔补">舒尔补</h3>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/vins-mono/schur-complement.png">
+    <img src="/vins-mono/schur-complement_hud09faf581864ceeae4d726789adcc87a_60910_1200x0_resize_box_2.png" alt="Schur Complement">
+  </a>
+  <div class="usa-image-text-block">
+    <small>
+      <p class="usa-image-text text-gray-50"></p>
+    </small>
+  </div>
+</div>
+
+
+<h3 id="更新先验残差">更新先验残差</h3>
+
+<p><span  class="math">\[
+b_p^{'}=b_p+\frac{\partial{b_p}}{\partial{x_p}}\delta{x_p}\\
+=b_p+\frac{\partial{(-J^T\Sigma^{-1}r)}}{\partial{x_p}}\delta{x_p}\\
+=b_p-\Lambda_p\delta{x_p}
+\]</span></p>
+
+<h2 id="ceres在vinsmono中的使用">Ceres在VINS-MONO中的使用 <a aria-label="header link for Ceres在VINS-MONO中的使用" href="#ceres在vinsmono中的使用" class="header-link">#</a></h2>
+
+<p>Ceres的具体用法，及其在VINS-MONO中的用法，请参考如下文章：
+<a href="../non-linear/#ceres在vins中的用法">non-linear</a></p>
+
+
+
+  
+    <br>
+    <strong>Next:</strong> <a href="/non-linear/">Non-Linear</a>
+  
+
+  
+    <br>
+    <strong>Previous:</strong> <a href="/orb-slam2/">ORB-SLAM2</a>
+  
+  
+  
+    <div id="disqus-container">
+  
+</div>
+
+  
+
+
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="usa-footer usa-footer--slim" role="contentinfo">
+      
+      <div class="usa-footer__secondary-section" id="footer-main">
+        <div class="grid-container">
+          <div class="grid-row grid-gap">
+            <div class="grid-col-12 text-center">
+              
+              
+                Made with <a href="https://gohugo.io/">Hugo</a> • Content in <a href="https://github.com/nuhuo08/uswds-hugo-theme">GitHub</a>
+                <br>
+                Last deployed on 2020-01-26
+              
+
+              
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    
+    <script src="/js/uswds.min.fcd9b25a27c51de427f4c618dee88490c2ff0a792a573531e316730d07df3f3d.js"></script>
+
+  </body>
+</html>

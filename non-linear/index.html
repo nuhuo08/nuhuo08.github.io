@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+	<script>
+		renderMathInElement(document.body,
+			{
+				delimiters: [
+					{left: "$$", right: "$$", display: true},
+					{left: "$", right: "$", display: false},
+				]
+			}
+		);
+
+		var inlineMathArray = document.querySelectorAll("script[type='math/tex']");
+		for (var i = 0; i < inlineMathArray.length; i++) {
+			var inlineMath = inlineMathArray[i];
+			var tex = inlineMath.innerText || inlineMath.textContent;
+			var replaced = document.createElement("span");
+			replaced.innerHTML = katex.renderToString(tex, {displayMode: false});
+			inlineMath.parentNode.replaceChild(replaced, inlineMath);
+		}
+
+		var displayMathArray = document.querySelectorAll("script[type='math/tex; mode=display']");
+		for (var i = 0; i < displayMathArray.length; i++) {
+			var displayMath = displayMathArray[i];
+			var tex = displayMath.innerHTML;
+			var replaced = document.createElement("span");
+			replaced.innerHTML = katex.renderToString(tex.replace(/%.*/g, ''), {displayMode: true});
+			displayMath.parentNode.replaceChild(replaced, displayMath);
+		}
+	</script>
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+
+    <link rel="canonical" href="https://nuhuo08.github.io/non-linear/">
+    <meta name="generator" content="Hugo 0.62.2" />
+    <title>Non-Linear | XiaoWu</title>
+
+    
+    <link rel="stylesheet" href="/css/uswds.min.c480a9b2a1fc1e7e564e62752462b22cd5f508a047f0340cb3725722f627fb1d.css">
+    
+    
+    <link rel="stylesheet" href="/css/custom.364c63f6f777ce9ed0218c1a24c574f775cafbb414bfb129dcbcd91fa8a16f5c.min.css">
+  </head>
+  <body>
+    <a class="usa-skipnav" href="#main-content">Skip to main content</a>
+
+    <header class="usa-header usa-header--basic" role="banner">
+      <div class="usa-nav-container">
+        <div class="usa-navbar">
+          <div class="usa-logo" id="basic-mega-logo">
+            <em class="usa-logo__text">
+              <a href="/" title="Home" aria-label="Home">XiaoWu</a>
+            </em>
+          </div>
+          <button class="usa-menu-btn">Menu</button>
+        </div>
+
+        <nav role="navigation" class="usa-nav">
+          <button class="usa-nav__close">
+            <img src="/img/close.svg" alt="close" />
+          </button>
+          <ul class="usa-nav__primary usa-accordion">
+            
+            
+              
+              
+              
+              
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link " href="/">
+                  <span>Home</span>
+                </a>
+              </li>
+            
+              
+              
+              
+              
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link usa-current" href="/blog/">
+                  <span>Blog</span>
+                </a>
+              </li>
+            
+              
+              
+              
+              
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link " href="/about/index.html">
+                  <span>About</span>
+                </a>
+              </li>
+            
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="usa-section" id="main-content">
+      <div class="grid-container">
+        <div class="grid-row grid-gap">
+          <div class="tablet:grid-col usa-prose">
+            
+  <h1>Non-Linear</h1>
+  
+  <p class="text-gray-50">
+    
+    
+    
+    <strong>Published: </strong>2020-01-06
+
+    
+    
+      
+      
+    
+    
+    
+    
+    </span>
+  </p>
+  
+  
+    
+
+<div class="toc">
+  <strong>Table of contents</strong>
+  <ol>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#g2o">
+        g2o
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#g2o%e5%9c%a8orbslam2%e4%b8%ad%e7%9a%84%e7%94%a8%e6%b3%95">
+        g2o在ORB-SLAM2中的用法
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#ceres">
+        Ceres
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#ceres%e5%9c%a8vins%e4%b8%ad%e7%9a%84%e7%94%a8%e6%b3%95">
+        Ceres在VINS中的用法
+      </a>
+    </li>
+    
+  </ol>
+</div>
+
+
+  
+  
+  
+
+<h2 id="g2o">g2o <a aria-label="header link for g2o" href="#g2o" class="header-link">#</a></h2>
+
+<h2 id="g2o在orbslam2中的用法">g2o在ORB-SLAM2中的用法 <a aria-label="header link for g2o在ORB-SLAM2中的用法" href="#g2o在orbslam2中的用法" class="header-link">#</a></h2>
+
+<h2 id="ceres">Ceres <a aria-label="header link for Ceres" href="#ceres" class="header-link">#</a></h2>
+
+<p><a href="http://ceres-solver.org/nnls_modeling.html">http://ceres-solver.org/nnls_modeling.html</a></p>
+
+<p>对于以下代价函数：</p>
+
+<p><span  class="math">\[
+\frac{1}{2} \sum_i \rho_i(\parallel f_i(x_{i1}, x_{i2}, \cdots, x_{ik}) \parallel ^2)
+\]</span></p>
+
+<p>在Ceres中，<span  class="math">\(\rho\)</span>为loss function，用于减弱外点的影响；<span  class="math">\(f\)</span>为cost function，定义了残差的计算方式；<span  class="math">\((x_{i1}, x_{i2}, \cdots, x_{ik})\)</span>为parameter block，定义了需要估计的变量；<span  class="math">\(\rho_i(\parallel f_i(x_{i1}, x_{i2}, \cdots, x_{ik}) \parallel ^2)\)</span>为residual block，定义了一个残差块。</p>
+
+<h3 id="addresidualblock">AddResidualBlock</h3>
+
+<p>problem.AddResidualBlock(costfunction, lossfunction, x1, x2 ... xn)<br>
+其中，<span  class="math">\(x_1, x_2, \cdots x_n\)</span>要与costfunction中的变量维数要对应起来。</p>
+
+<p>costfunction有两种典型的定义方式：</p>
+
+<ol>
+<li><strong>自己实现残差、雅可比</strong></li>
+</ol>
+<pre><code>template<int kNumResiduals,
+         int N0 = 0, int N1 = 0, int N2 = 0, int N3 = 0, int N4 = 0,
+         int N5 = 0, int N6 = 0, int N7 = 0, int N8 = 0, int N9 = 0>
+class SizedCostFunction : public CostFunction {
+ public:
+  virtual bool Evaluate(double const* const* parameters,
+                        double* residuals,
+                        double** jacobians) const = 0;
+};</code></pre>
+<p>这种情况下，需要指定残差维数、参数块维数，并自己实现Evaluate()，计算cost和jacobian。</p>
+
+<ol start="2">
+<li><strong>自己实现残差即可</strong></li>
+</ol>
+<pre><code>template <typename CostFunctor,
+         int kNumResiduals,
+         int N0 = 0, int N1 = 0, int N2 = 0, int N3 = 0, int N4 = 0,
+         int N5 = 0, int N6 = 0, int N7 = 0, int N8 = 0, int N9 = 0>
+class AutoDiffCostFunction : public
+SizedCostFunction<kNumResiduals, N0, N1, N2, N3, N4, N5, N6, N7, N8, N9> {
+ public:
+  explicit AutoDiffCostFunction(CostFunctor* functor);
+  // Ignore the template parameter kNumResiduals and use
+  // num_residuals instead.
+  AutoDiffCostFunction(CostFunctor* functor, int num_residuals);
+};</code></pre>
+<p>这种情况下，不再需要自己计算jacobian。只需要定义CostFunctor，计算残差，实现operator()函数。例如：</p>
+<pre><code>class MyScalarCostFunctor {
+  MyScalarCostFunctor(double k): k_(k) {}
+
+  template <typename T>
+  bool operator()(const T* const x , const T* const y, T* e) const {
+    e[0] = k_ - x[0] * y[0] - x[1] * y[1];
+    return true;
+  }
+
+ private:
+  double k_;
+};</code></pre>
+<h3 id="addparameterblock">AddParameterBlock</h3>
+<pre><code>ceres::LocalParameterization *local_parameterization = new PoseLocalParameterization();
+problem.AddParameterBlock(para_Pose[i], SIZE_POSE, local_parameterization);
+problem.AddParameterBlock(para_SpeedBias[i], SIZE_SPEEDBIAS);</code></pre>
+<p>Sometimes the parameters <span  class="math">\(x\)</span> can overparameterize a problem. In that case it is desirable to choose a parameterization to remove the null directions of the cost.</p>
+
+<h2 id="ceres在vins中的用法">Ceres在VINS中的用法 <a aria-label="header link for Ceres在VINS中的用法" href="#ceres在vins中的用法" class="header-link">#</a></h2>
+
+<h3 id="factor">Factor</h3>
+
+<p>VINS 中用 IMUFactor 表示 IMU 的 cost function，用 ProjectionFactor 表示图像重投影误差的 cost function。其中定义了对各个参数块的残差、雅可比。</p>
+
+<p>MarginalizationFactor 表达了先验残差的更新方式。在<code>Evaluate()</code>函数中，实现了如下更新：
+<figure><img src="https://note.youdao.com/yws/res/5774/254115EC00054F2386FAD7F227C96B77" alt="image"></figure></p>
+
+<h3 id="residualblockinfo">ResidualBlockInfo</h3>
+
+<p>为了进行 Schur，在 cost function 外面包了一层 <code>ResidualBlockInfo</code>。因为在原生Ceres中，一旦调用 <code>problem.AddResidualBlock(costfunction, lossfunction, x1, x2 ... xn)</code>，便不再能干预内部处理流程。</p>
+
+<p>在这个自定义的 ResidualBlockInfo 的 <code>Evaluate()</code> 中，调用了每个 cost function 原生的 <code>Evaluate()</code>，获得残差、雅可比，然后将 loss function 的功能也在此调用，组装好以后，留给 MarginalizationInfo 做进一步处理。</p>
+
+<h3 id="marginalizationinfo">MarginalizationInfo</h3>
+
+<p><code>addResidualBlockInfo()</code>
+处理优化变量、待边缘化变量</p>
+
+<p><code>preMarginalize()</code></p>
+
+<p><code>marginalize()</code>
+并行化线程，进行舒尔补计算</p>
+
+
+
+  
+
+  
+    <br>
+    <strong>Previous:</strong> <a href="/vins-mono/">VINS-MONO</a>
+  
+  
+  
+    <div id="disqus-container">
+  
+</div>
+
+  
+
+
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="usa-footer usa-footer--slim" role="contentinfo">
+      
+      <div class="usa-footer__secondary-section" id="footer-main">
+        <div class="grid-container">
+          <div class="grid-row grid-gap">
+            <div class="grid-col-12 text-center">
+              
+              
+                Made with <a href="https://gohugo.io/">Hugo</a> • Content in <a href="https://github.com/nuhuo08/uswds-hugo-theme">GitHub</a>
+                <br>
+                Last deployed on 2020-01-26
+              
+
+              
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    
+    <script src="/js/uswds.min.fcd9b25a27c51de427f4c618dee88490c2ff0a792a573531e316730d07df3f3d.js"></script>
+
+  </body>
+</html>
