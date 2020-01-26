@@ -6,10 +6,21 @@
     <description>Recent content on XiaoWu</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 06 Jan 2020 08:00:00 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 07 Jan 2020 08:00:00 +0800</lastBuildDate>
     
 	<atom:link href="https://nuhuo08.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>SLAM for Dummies</title>
+      <link>https://nuhuo08.github.io/slam-for-dummies/</link>
+      <pubDate>Tue, 07 Jan 2020 08:00:00 +0800</pubDate>
+      
+      <guid>https://nuhuo08.github.io/slam-for-dummies/</guid>
+      <description>TO BE CONTINUED
+https://zhuanlan.zhihu.com/p/32937247
+观测方程 \[ \underbrace{\begin{pmatrix} r_1 \\ \theta_1 \\ r_2 \\ \theta_2 \\ \vdots \\ r_n \\ \theta_n \end{pmatrix}}_Z = \underbrace{\begin{bmatrix} A_1 &amp;B_1 &amp;C_1 &amp;-A_1 &amp;-B_1 \\ D_1 &amp;E_1 &amp;F_1 &amp;-D_1 &amp;-E_1 \\ A_2 &amp;B_2 &amp;C_2 &amp; &amp; &amp;-A_2 &amp;-B_2 \\ D_2 &amp;E_2 &amp;F_2 &amp; &amp; &amp;-D_2 &amp;-E_2 \\ &amp;\vdots &amp; &amp; &amp; &amp; &amp; &amp; \ddots \\ A_n &amp;B_n &amp;C_n &amp; &amp; &amp; &amp; &amp; &amp;-A_n &amp;-B_n \\ D_n &amp;E_n &amp;F_n &amp; &amp; &amp; &amp; &amp; &amp;-D_n &amp;-E_n \\ \end{bmatrix}}_H \underbrace{\begin{pmatrix} x_r \\ y_r \\ \theta_r \\ x_1 \\ y_1 \\ x_2 \\ y_2 \\ \vdots \\ x_n \\ y_n \end{pmatrix}}_X \\[2mm] R = \begin{pmatrix} r_c &amp; \\ &amp;r_d \end{pmatrix} \]</description>
+    </item>
     
     <item>
       <title>Non-Linear</title>
@@ -79,7 +90,7 @@ https://zhuanlan.zhihu.com/p/61614421
       <pubDate>Thu, 02 Jan 2020 08:00:00 +0800</pubDate>
       
       <guid>https://nuhuo08.github.io/amcl/</guid>
-      <description>粒子聚类 对外输出的机器人状态不应该是某一个最好的粒子，因为很有可能某些粒子的值都非常接近，可能会引起频繁的粒子切换，导致输出的结果来回跳变。
+      <description>ROS-AMCL      粒子聚类 对外输出的机器人状态不应该是某一个最好的粒子，因为很有可能某些粒子的值都非常接近，可能会引起频繁的粒子切换，导致输出的结果来回跳变。
 基于此考虑， 应该对相似的粒子进行聚类。将最好的那一簇粒子的统计状态作为输出的机器人状态。
 KD-Tree 当涉及到距离查找时，作为算法工程师，我们应该首先想到KD-Tree。树的叶子节点是每一个粒子，而非叶子节点则保存的是该节点的分叉判断的标准，小于此分叉判断标准的在左边，大于此分叉标准的在右边。
 查询的基本思路：首先通过二叉树搜索（比较待查询节点和分裂节点的分裂维的值，小于等于就进入左子树分支，等于就进入右子树分支直到叶子结点），顺着“搜索路径”很快能找到最近邻的近似点，也就是与待查询点处于同一个子空间的叶子结点；然后再回溯搜索路径，并判断搜索路径上的结点的其他子结点空间中是否可能有距离查询点更近的数据点，如果有可能，则需要跳到其他子结点空间中去搜索（将其他子结点加入到搜索路径）。重复这个过程直到搜索路径为空。
@@ -94,8 +105,7 @@ KLD自适应 KLD的计算属于数理统计的知识，可参考论文1。这里
 而当粒子权值都接近时，假设我们采样了100次，每次采样出来的粒子都不同，此时粒子的个数一直增长到100。此时的KLD也随着粒子的个数增长到一个比较大的值。采样的次数虽然持续增加，但是始终超过不了KDL计算出来的次数。此种情况下采样仍将继续。
 距离计算 计算每个粒子的权重时，我们需要计算观测到的障碍物与地图中的障碍物的距离差异。差异越大，权值越小。当某次观测的障碍物全部与地图上的障碍物匹配上了，则差异为0，权值极大。因此，在地图的初始阶段，我们需要计算地图上任一点位置到最近障碍物的距离。这就是似然场模型。
 直接计算 遍历每一个点，计算每一个点到每个障碍物的距离并取最小值。此方法进行了重复计算，效率较低。
-高效算法 从障碍物出发，向外膨胀一个单位。当所有障碍物膨胀完以后，从膨胀出来的地方出发，继续向外膨胀一个单位。此方法没有冗余计算，且实现的代码简洁。
-AMCL参数解读 min_particles / max_particles / kld_err / kld_z : 用来限制粒子数量</description>
+高效算法 从障碍物出发，向外膨胀一个单位。当所有障碍物膨胀完以后，从膨胀出来的地方出发，继续向外膨胀一个单位。此方法没有冗余计算，且实现的代码简洁。</description>
     </item>
     
     <item>

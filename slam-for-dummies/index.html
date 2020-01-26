@@ -49,9 +49,9 @@
     
     
 
-    <link rel="canonical" href="https://nuhuo08.github.io/">
+    <link rel="canonical" href="https://nuhuo08.github.io/slam-for-dummies/">
     <meta name="generator" content="Hugo 0.62.2" />
-    <title> | XiaoWu</title>
+    <title>SLAM for Dummies | XiaoWu</title>
 
     
     <link rel="stylesheet" href="/css/uswds.min.c480a9b2a1fc1e7e564e62752462b22cd5f508a047f0340cb3725722f627fb1d.css">
@@ -85,7 +85,7 @@
               
               
               <li class="usa-nav__primary-item">
-                <a class="usa-nav__link usa-current" href="/">
+                <a class="usa-nav__link " href="/">
                   <span>Home</span>
                 </a>
               </li>
@@ -95,7 +95,7 @@
               
               
               <li class="usa-nav__primary-item">
-                <a class="usa-nav__link " href="/blog/">
+                <a class="usa-nav__link usa-current" href="/blog/">
                   <span>Blog</span>
                 </a>
               </li>
@@ -120,70 +120,137 @@
         <div class="grid-row grid-gap">
           <div class="tablet:grid-col usa-prose">
             
-  <h1></h1>
-  <h2 id="工具软件">工具软件</h2>
-<ol>
-<li><a href="hugo-website">Hugo搭建网站</a></li>
-<li>CI系统</li>
-<li>git</li>
-<li>vim</li>
-</ol>
-<h2 id="传感器标定">传感器标定</h2>
-<h3 id="自标定">自标定</h3>
-<ol>
-<li>里程计</li>
-<li>IMU</li>
-<li>图像</li>
-</ol>
-<h3 id="相对标定">相对标定</h3>
-<ol>
-<li>里程计与图像</li>
-<li>图像与激光</li>
-<li>轨迹对齐evo</li>
-</ol>
-<h2 id="apaavp项目小结">APA/AVP项目小结</h2>
-<ol>
-<li>车位检测与筛选</li>
-<li>路径规划方案</li>
-<li>里程计与闭环检测</li>
-</ol>
-<h2 id="slam系统">SLAM系统</h2>
-<ol>
-<li><a href="orb-slam2">ORB-SLAM2</a></li>
-<li><a href="msckf">MSCKF</a></li>
-<li><a href="vins-mono">VINS-MONO</a></li>
-<li><a href="slam-for-dummies">SLAM for Dummies</a></li>
-<li>LOAM</li>
-</ol>
-<h2 id="ros导航包">ROS导航包</h2>
-<ol>
-<li>ROS Tutorial</li>
-<li>GMapping</li>
-<li><a href="amcl">AMCL</a></li>
-</ol>
-<h2 id="mvg数学基础">MVG数学基础</h2>
-<ol>
-<li>E/F &amp; H matrix</li>
-<li>RANSAC</li>
-<li>KD-Tree</li>
-<li>SVD &amp; QR分解</li>
-<li><a href="non-linear">非线性优化（g2o, ceres的使用）</a></li>
-</ol>
-<h2 id="self-drivnig-car-enigneer">Self-Drivnig Car Enigneer</h2>
-<ol>
-<li>OpenCV Image Processing</li>
-<li>Deep Learning</li>
-<li>Beyesian Filter</li>
-<li>Control</li>
-<li>Path Planning</li>
-<li>ROS Integration</li>
-</ol>
-<h2 id="gps">GPS</h2>
-<ol>
-<li>RTK</li>
-<li>SDR</li>
-<li>组合导航</li>
-</ol>
+  <h1>SLAM for Dummies</h1>
+  
+  <p class="text-gray-50">
+    
+    
+    
+    <strong>Published: </strong>2020-01-07
+
+    
+    
+      
+      
+    
+    
+    
+    
+    </span>
+  </p>
+  
+  
+    
+
+<div class="toc">
+  <strong>Table of contents</strong>
+  <ol>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e8%a7%82%e6%b5%8b%e6%96%b9%e7%a8%8b">
+        观测方程
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e5%8a%a8%e6%80%81%e6%96%b9%e7%a8%8b">
+        动态方程
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e6%96%b0%e5%a2%9e%e8%b7%af%e6%a0%87%e7%82%b9%e7%9a%84%e5%8d%8f%e6%96%b9%e5%b7%ae%e7%9f%a9%e9%98%b5%e5%a2%9e%e5%b9%bf">
+        新增路标点的协方差矩阵增广
+      </a>
+    </li>
+    
+  </ol>
+</div>
+
+
+  
+  
+  
+
+<p>TO BE CONTINUED</p>
+
+<p><a href="https://zhuanlan.zhihu.com/p/32937247">https://zhuanlan.zhihu.com/p/32937247</a></p>
+
+<h2 id="观测方程">观测方程 <a aria-label="header link for 观测方程" href="#观测方程" class="header-link">#</a></h2>
+
+<p><span  class="math">\[
+\underbrace{\begin{pmatrix} r_1 \\ \theta_1 \\ r_2 \\ \theta_2 \\ \vdots \\ r_n \\ \theta_n \end{pmatrix}}_Z
+= \underbrace{\begin{bmatrix} A_1 &B_1 &C_1 &-A_1 &-B_1 \\
+D_1 &E_1 &F_1 &-D_1 &-E_1 \\
+A_2 &B_2 &C_2 & & &-A_2 &-B_2 \\
+D_2 &E_2 &F_2 & & &-D_2 &-E_2 \\
+ &\vdots & & & & & & \ddots \\
+A_n &B_n &C_n & & & & & &-A_n &-B_n \\
+D_n &E_n &F_n & & & & & &-D_n &-E_n \\
+\end{bmatrix}}_H
+\underbrace{\begin{pmatrix} x_r \\ y_r \\ \theta_r \\ x_1 \\ y_1 \\ x_2 \\ y_2 \\ \vdots \\ x_n \\ y_n \end{pmatrix}}_X \\[2mm]
+R = \begin{pmatrix} r_c & \\ &r_d \end{pmatrix}
+\]</span></p>
+
+<h2 id="动态方程">动态方程 <a aria-label="header link for 动态方程" href="#动态方程" class="header-link">#</a></h2>
+
+<p><span  class="math">\[
+\underbrace{\begin{pmatrix} x_r \\ y_r \\ \theta_r \end{pmatrix}}_{X_{k+1}}
+= \underbrace{\begin{bmatrix} 1 & &-\Delta y \\ &1 &\Delta x \\ & &1\end{bmatrix}}_A
+\underbrace{\begin{pmatrix} x_r \\ y_r \\ \theta_r \end{pmatrix}}_{X_k} \\[2mm]
+Q = \begin{pmatrix} c\Delta x^2 \\ & c\Delta y^2 \\ & &c\Delta t^2\end{pmatrix}
+\]</span></p>
+
+<h2 id="新增路标点的协方差矩阵增广">新增路标点的协方差矩阵增广 <a aria-label="header link for 新增路标点的协方差矩阵增广" href="#新增路标点的协方差矩阵增广" class="header-link">#</a></h2>
+
+<h3 id="landmark-wrt-robot-state">landmark wrt. robot state</h3>
+
+<p><span  class="math">\[
+J_{xr} = \begin{bmatrix} 1 & &-\Delta y \\ &1 &\Delta x\end{bmatrix}
+\]</span></p>
+
+<h3 id="landmark-wrt-range-bearing">landmark wrt. [range, bearing]</h3>
+
+<p><span  class="math">\[
+J_z = \begin{bmatrix} \cos(\theta + \Delta \theta) &-\Delta t \cdot \sin(\theta + \Delta \theta) \\
+ \sin(\theta + \Delta \theta) &\Delta t \cdot \cos(\theta + \Delta \theta) \end{bmatrix}
+\]</span></p>
+
+<h3 id="covariance">covariance</h3>
+
+<p><span  class="math">\[
+P^{r \ {N+1}} = P^{rr}J_{xr}^T \\[2mm]
+P^{i \ {N+1}} = P^{ri}J_{xr}^T \\[2mm]
+P^{{N+1} \ {N+1}} = J_{xr}PJ_{xr}^T + J_zRJ_z^T
+\]</span></p>
+
+
+
+  
+
+  
+    <br>
+    <strong>Previous:</strong> <a href="/non-linear/">Non-Linear</a>
+  
+  
+  
+    <div id="disqus-container">
+  
+</div>
+
+  
 
 
           </div>
