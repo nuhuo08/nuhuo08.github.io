@@ -251,7 +251,7 @@ Oriented FAST关键点：</p>
 设<span  class="math">\(p1\)</span>，<span  class="math">\(p2\)</span>为像素坐标，可知：</p>
 
 <p><span  class="math">\[
-p_2 = K (RP + t) \\
+p_2 = K (RP + t) \\[2mm]
 p_1 = KP
 \]</span></p>
 
@@ -273,7 +273,7 @@ opencv中，cv::findFundamentalMat()如果选择8点法，则是直接将所有�
 平面方程为：</p>
 
 <p><span  class="math">\[
-aX + bY + cZ + d = 0 \\
+aX + bY + cZ + d = 0 \\[2mm]
 -\frac{n^TP}{d} = -1
 \]</span></p>
 
@@ -287,8 +287,16 @@ p_2 = K (RP + t \cdot (-\frac{n^TP}{d})) = K (R - \frac{tn^T}{d}) K^{-1} p_1 = H
 
 <p>TODO: 由单应矩阵H恢复出R和t</p>
 
-<p><strong>F与H的评分</strong><br>
-<figure><img src="https://note.youdao.com/yws/res/5044/A5E656FC6E994852AB9DCBA429743527" alt="image"></figure></p>
+<p><strong>F与H的评分</strong></p>
+
+<p><span  class="math">\[
+S_M = \sum_i\{ \rho_M\left(d_{cr}^2\left(x_c^i,x_r^i,M\right)\right)+
+\rho_M\left(d_{rc}^2\left(x_c^i,x_r^i,M\right)\right) \} \\[2mm]
+\rho_M\left(d^2\right)=\begin{cases} \Gamma - d^2, &\text{if } d^2 < T_M \\ 0, &\text{if } d^2 > T_M\end{cases}
+\]</span></p>
+
+<p>其中，<span  class="math">\(M\)</span>为<span  class="math">\(H\)</span>或者<span  class="math">\(F\)</span>。<span  class="math">\(T_M\)</span>为距离阈值，根据95%的<span  class="math">\(\chi^2\)</span>测试设置。
+<span  class="math">\(T_H=5.99\)</span>（两个自由度），<span  class="math">\(T_F=3.84\)</span>（1个自由度）。这里假设标准差为1个像素。</p>
 
 <p><span  class="math">\(\Gamma\)</span> is defined equal to <span  class="math">\(T_H\)</span> so that both models score equally for the same d in their inlier region, again to make the process homogeneous.</p>
 
@@ -305,7 +313,7 @@ R_H=\frac{S_H}{S_H+S_F}
 <p>已知匹配的像素点，及两帧图像的变换关系，则：</p>
 
 <p><span  class="math">\[
-x = PX \\
+x = PX \\[2mm]
 x' = P'X
 \]</span></p>
 
@@ -324,7 +332,7 @@ J(y) = \min \|Ax\| = \min \|UDV^Tx\| = \min \|DV^Tx\|
 <p>由于对角阵<span  class="math">\(D\)</span>是矩阵<span  class="math">\(A\)</span>的奇异值从大到小降序排列而成，因此<span  class="math">\(J(y)\)</span> 的最小值在<span  class="math">\(D\)</span>矩阵奇异值最小的地方取到。可知：</p>
 
 <p><span  class="math">\[
-V^Tx = y = [0, 0, 0, 1]^T \\
+V^Tx = y = [0, 0, 0, 1]^T \\[2mm]
 x = Vy
 \]</span></p>
 
@@ -382,7 +390,7 @@ SearchByBow --&gt; <code>EPnP</code>(RANSAC) --&gt; PoseOptimization --&gt; Sear
 </ol>
 
 <p><span  class="math">\[
-q_i = p_i - p \\
+q_i = p_i - p \\[2mm]
 q_i' = p_i' - p'
 \]</span></p>
 
@@ -391,7 +399,7 @@ q_i' = p_i' - p'
 </ol>
 
 <p><span  class="math">\[
-W = \sum_{i=1}^n q_i q_i'^T = U \Sigma V^T \\
+W = \sum_{i=1}^n q_i q_i'^T = U \Sigma V^T \\[2mm]
 R = UV^T
 \]</span></p>
 
@@ -466,8 +474,8 @@ IDF_i = \log \frac{n}{n_i}
 <p><strong>点与位姿优化</strong></p>
 
 <p><span  class="math">\[
-\xi^* = \arg \min_\xi \frac{1}{2} \sum_{i=1}^n {\| u_i - \frac{1}{s} K \exp(\xi^\wedge) P_i \|}_2^2 \\
-P' = TP = RP + t \\
+\xi^* = \arg \min_\xi \frac{1}{2} \sum_{i=1}^n {\| u_i - \frac{1}{s} K \exp(\xi^\wedge) P_i \|}_2^2 \\[2mm]
+P' = TP = RP + t \\[2mm]
 \begin{bmatrix} u \\ v \end{bmatrix} = 
 \begin{bmatrix}f_x &0 &c_x \\ 0 &f_y &c_y\end{bmatrix}
 \begin{bmatrix}\frac{X'}{Z'} \\ \frac{Y'}{Z'}\end{bmatrix}
@@ -477,13 +485,15 @@ P' = TP = RP + t \\
 实际ORB-SLAM的Pose Graph是采用的Sim3变换。此处仅推导SE(3)上的公式。</p>
 
 <p><span  class="math">\[
-e_{ij} = \ln (T_{ij}^{-1} T_i^{-1} T_j)^\vee \\
-\ln (T_{ij}^{-1} T_i^{-1} \exp((-\xi_i)^\wedge) T_j)^\vee \\
-= \ln (T_{ij}^{-1} T_i^{-1} T_j \exp((-Ad(T_j^{-1})\delta\xi_i)^\wedge))^\vee \\
-= \ln (\exp(e_{ij}^\wedge) \exp((-Ad(T_j^{-1})\delta\xi_i)^\wedge))^\vee \\
-= \mathcal{J}_r^{-1}(e_{ij}) (-Ad(T_j^{-1})\delta\xi_i) + e_{ij} \\
+\begin{aligned}
+e_{ij} &= \ln (T_{ij}^{-1} T_i^{-1} T_j)^\vee \\[2mm]
+&= \ln (T_{ij}^{-1} T_i^{-1} \exp((-\xi_i)^\wedge) T_j)^\vee \\[2mm]
+&= \ln (T_{ij}^{-1} T_i^{-1} T_j \exp((-Ad(T_j^{-1})\delta\xi_i)^\wedge))^\vee \\[2mm]
+&= \ln (\exp(e_{ij}^\wedge) \exp((-Ad(T_j^{-1})\delta\xi_i)^\wedge))^\vee \\[2mm]
+&= \mathcal{J}_r^{-1}(e_{ij}) (-Ad(T_j^{-1})\delta\xi_i) + e_{ij} \\[2mm]
 \frac{ \partial{e_{ij}} }{ \partial{\delta\xi_i} }
-= -\mathcal{J}_r^{-1}(e_{ij}) Ad(T_j^{-1})
+&= -\mathcal{J}_r^{-1}(e_{ij}) Ad(T_j^{-1})
+\end{aligned}
 \]</span></p>
 
 <p>同理可得：</p>
