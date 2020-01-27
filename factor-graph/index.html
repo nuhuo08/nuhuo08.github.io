@@ -49,9 +49,9 @@
     
     
 
-    <link rel="canonical" href="https://nuhuo08.github.io/">
+    <link rel="canonical" href="https://nuhuo08.github.io/factor-graph/">
     <meta name="generator" content="Hugo 0.62.2" />
-    <title> | XiaoWu</title>
+    <title>因子图的一些思考 | XiaoWu</title>
 
     
     <link rel="stylesheet" href="/css/uswds.min.c480a9b2a1fc1e7e564e62752462b22cd5f508a047f0340cb3725722f627fb1d.css">
@@ -85,7 +85,7 @@
               
               
               <li class="usa-nav__primary-item">
-                <a class="usa-nav__link usa-current" href="/">
+                <a class="usa-nav__link " href="/">
                   <span>Home</span>
                 </a>
               </li>
@@ -95,7 +95,7 @@
               
               
               <li class="usa-nav__primary-item">
-                <a class="usa-nav__link " href="/blog/">
+                <a class="usa-nav__link usa-current" href="/blog/">
                   <span>Blog</span>
                 </a>
               </li>
@@ -120,78 +120,102 @@
         <div class="grid-row grid-gap">
           <div class="tablet:grid-col usa-prose">
             
-  <h1></h1>
-  <h2 id="工具软件">工具软件</h2>
+  <h1>因子图的一些思考</h1>
+  
+  <p class="text-gray-50">
+    
+    
+    
+    <strong>Published: </strong>2020-01-11
+
+    
+    
+      
+      
+    
+    
+    
+    
+    </span>
+  </p>
+  
+  
+    
+
+<div class="toc">
+  <strong>Table of contents</strong>
+  <ol>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e4%bd%bf%e7%94%a8%e5%9b%a0%e5%ad%90%e5%9b%be">
+        为什么使用因子图
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e4%b8%8e%e4%bc%a0%e7%bb%9f%e4%bc%98%e5%8c%96%e7%ae%97%e6%b3%95%e7%9a%84%e5%85%b3%e7%b3%bb">
+        与传统优化算法的关系
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e4%bc%98%e5%8a%bf">
+        优势
+      </a>
+    </li>
+    
+  </ol>
+</div>
+
+
+  
+  
+  
+
+<h2 id="为什么使用因子图">为什么使用因子图 <a aria-label="header link for 为什么使用因子图" href="#为什么使用因子图" class="header-link">#</a></h2>
+
+<p>通常我们并不关心观测量，只有在状态确定的情况下，讨论观测量才有意义。因此用因子图表达更突出重点，即状态变量。</p>
+
+<h2 id="与传统优化算法的关系">与传统优化算法的关系 <a aria-label="header link for 与传统优化算法的关系" href="#与传统优化算法的关系" class="header-link">#</a></h2>
+
+<p>通常，传统算法作用在信息矩阵上。信息矩阵对应于一个无向马尔科夫图，通过Cholesky分解LU后，可以求解变量。</p>
+
+<p>因子图直接作用在雅克比矩阵上。通过QR分解逐步消元，得到的R矩阵与上面的LU矩阵存在关系（相同？）。</p>
+
+<h2 id="优势">优势 <a aria-label="header link for 优势" href="#优势" class="header-link">#</a></h2>
+
 <ol>
-<li><a href="hugo-website">Hugo搭建网站</a></li>
-<li>CI系统</li>
-<li>git</li>
-<li>vim</li>
+<li>可以迭代递推，不需要重新对整个雅克比矩阵QR分解</li>
+<li>通过贝叶斯树，可以非常清晰的看到，当新的观测量出现时，哪部分矩阵会受到影响，需要重新计算。避免其他大量不受影响状态的重复计算</li>
 </ol>
-<h2 id="传感器标定">传感器标定</h2>
-<h3 id="自标定">自标定</h3>
-<ol>
-<li>里程计</li>
-<li>IMU</li>
-<li>图像</li>
-</ol>
-<h3 id="相对标定">相对标定</h3>
-<ol>
-<li>里程计与图像</li>
-<li>图像与激光</li>
-<li>轨迹对齐evo</li>
-</ol>
-<h2 id="apaavp项目小结">APA/AVP项目小结</h2>
-<ol>
-<li>车位检测与筛选</li>
-<li>路径规划方案</li>
-<li>里程计与闭环检测</li>
-</ol>
-<h2 id="slam系统">SLAM系统</h2>
-<ol>
-<li><a href="orb-slam2">ORB-SLAM2</a></li>
-<li><a href="msckf">MSCKF</a></li>
-<li><a href="vins-mono">VINS-MONO</a></li>
-<li><a href="slam-for-dummies">SLAM for Dummies</a></li>
-<li>LOAM</li>
-</ol>
-<h2 id="ros导航包">ROS导航包</h2>
-<ol>
-<li><a href="navigation-stack">ROS Navigation Stack</a></li>
-<li><a href="gmapping">GMapping</a></li>
-<li><a href="amcl">AMCL</a></li>
-</ol>
-<h2 id="mvg数学基础">MVG数学基础</h2>
-<ol>
-<li>E/F &amp; H matrix</li>
-<li>RANSAC</li>
-<li>KD-Tree</li>
-<li><a href="factor-graph">Factor Graph</a></li>
-<li><a href="matrix">矩阵分解</a></li>
-<li><a href="non-linear">非线性优化（g2o, ceres的使用）</a></li>
-</ol>
-<h2 id="self-drivnig-car-enigneer">Self-Drivnig Car Enigneer</h2>
-<ol>
-<li>OpenCV Image Processing</li>
-<li>Deep Learning</li>
-<li>Beyesian Filter</li>
-<li>Control</li>
-<li>Path Planning</li>
-<li>ROS Integration</li>
-</ol>
-<h2 id="gps">GPS</h2>
-<ol>
-<li>RTK</li>
-<li>SDR</li>
-<li>组合导航</li>
-</ol>
-<h2 id="大比例尺地形图测绘">大比例尺地形图测绘</h2>
-<ol>
-<li>平面控制测量</li>
-<li>高程控制测量</li>
-<li>数字地形图测绘</li>
-<li>空间数据建库与三维建模</li>
-</ol>
+
+
+
+  
+
+  
+    <br>
+    <strong>Previous:</strong> <a href="/matrix/">Matrix Decomposition</a>
+  
+  
+  
+    <div id="disqus-container">
+  
+</div>
+
+  
 
 
           </div>

@@ -132,6 +132,9 @@
     
       
       
+        | <strong>Lastmod: </strong>2020-01-27
+
+      
     
     
     
@@ -145,6 +148,16 @@
 <div class="toc">
   <strong>Table of contents</strong>
   <ol>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e4%bc%98%e5%8c%96%e6%96%b9%e6%b3%95%e6%af%94%e8%be%83">
+        优化方法比较
+      </a>
+    </li>
     
     <li>
       
@@ -181,8 +194,8 @@
       
       
       
-      <a href="#ceres%e5%9c%a8vins%e4%b8%ad%e7%9a%84%e7%94%a8%e6%b3%95">
-        Ceres在VINS中的用法
+      <a href="#ceres%e5%9c%a8vinsmono%e4%b8%ad%e7%9a%84%e7%94%a8%e6%b3%95">
+        Ceres在VINS-MONO中的用法
       </a>
     </li>
     
@@ -193,6 +206,39 @@
   
   
   
+
+<h2 id="优化方法比较">优化方法比较 <a aria-label="header link for 优化方法比较" href="#优化方法比较" class="header-link">#</a></h2>
+
+<table>
+<thead>
+<tr>
+<th><div style="width:100px">方法</div></th>
+<th>特点</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>梯度下降法</td>
+<td><span  class="math">\(x_{i+1}=x_i-\eta \frac{\partial f}{\partial x}\)</span>，效率高，但可能收敛慢</td>
+</tr>
+
+<tr>
+<td>牛顿法</td>
+<td>二阶泰勒展开，计算Hessian矩阵耗时，离初值远不收敛，极小值处接近二次函数</td>
+</tr>
+
+<tr>
+<td>高斯-牛顿法</td>
+<td>仅适用于最小二乘问题，以Jacobian矩阵<span  class="math">\(J^TJ\)</span>代替<span  class="math">\(H\)</span>，离初值远不收敛，<span  class="math">\(J^TJ\)</span>近奇异不收敛</td>
+</tr>
+
+<tr>
+<td>L-M法</td>
+<td><span  class="math">\(\left(H+\lambda I\right)\Sigma=-J^Tr\)</span>，残差增大时，放大<span  class="math">\(\lambda\)</span>，成为梯度下降；残差减小时，减小<span  class="math">\(\lambda\)</span>，成为高斯-牛顿</td>
+</tr>
+</tbody>
+</table>
 
 <h2 id="g2o">g2o <a aria-label="header link for g2o" href="#g2o" class="header-link">#</a></h2>
 
@@ -265,7 +311,7 @@ problem.AddParameterBlock(para_Pose[i], SIZE_POSE, local_parameterization);
 problem.AddParameterBlock(para_SpeedBias[i], SIZE_SPEEDBIAS);</code></pre>
 <p>Sometimes the parameters <span  class="math">\(x\)</span> can overparameterize a problem. In that case it is desirable to choose a parameterization to remove the null directions of the cost.</p>
 
-<h2 id="ceres在vins中的用法">Ceres在VINS中的用法 <a aria-label="header link for Ceres在VINS中的用法" href="#ceres在vins中的用法" class="header-link">#</a></h2>
+<h2 id="ceres在vinsmono中的用法">Ceres在VINS-MONO中的用法 <a aria-label="header link for Ceres在VINS-MONO中的用法" href="#ceres在vinsmono中的用法" class="header-link">#</a></h2>
 
 <h3 id="factor">Factor</h3>
 
@@ -325,7 +371,7 @@ problem.AddParameterBlock(para_SpeedBias[i], SIZE_SPEEDBIAS);</code></pre>
               
                 Made with <a href="https://gohugo.io/">Hugo</a> • Content in <a href="https://github.com/nuhuo08/uswds-hugo-theme">GitHub</a>
                 <br>
-                Last deployed on 2020-01-27
+                Last deployed on 2020-01-28
               
 
               

@@ -132,6 +132,9 @@
     
       
       
+        | <strong>Lastmod: </strong>2020-01-27
+
+      
     
     
     
@@ -203,6 +206,16 @@
       
       <a href="#%e6%bb%a4%e6%b3%a2%e6%9b%b4%e6%96%b0">
         滤波更新
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e6%bb%91%e7%aa%97%e7%9a%84%e7%89%b9%e6%ae%8a%e6%80%a7">
+        滑窗的特殊性
       </a>
     </li>
     
@@ -339,6 +352,11 @@ r_o = \begin{bmatrix} Q_1 &Q_2 \end{bmatrix} \begin{bmatrix} T_H \\ 0 \end{bmatr
 r_n = Q_1^Tr_o = T_H \tilde{X} + n_n
 \]</span></p>
 
+<h2 id="滑窗的特殊性">滑窗的特殊性 <a aria-label="header link for 滑窗的特殊性" href="#滑窗的特殊性" class="header-link">#</a></h2>
+
+<p>MSCKF采用的是滤波方法，维护的是协方差，当要边缘化一个变量时，直接将其对应的行和列去掉即可！<br>
+这与其他基于图优化的SLAM算法有显著区别。图优化SLAM需要维护H矩阵，即信息矩阵。信息矩阵的某一变量的边际概率，需要进行舒尔补操作！</p>
+
 
 
   
@@ -374,7 +392,7 @@ r_n = Q_1^Tr_o = T_H \tilde{X} + n_n
               
                 Made with <a href="https://gohugo.io/">Hugo</a> • Content in <a href="https://github.com/nuhuo08/uswds-hugo-theme">GitHub</a>
                 <br>
-                Last deployed on 2020-01-27
+                Last deployed on 2020-01-28
               
 
               

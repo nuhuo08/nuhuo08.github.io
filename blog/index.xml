@@ -6,10 +6,33 @@
     <description>Recent content in Blogs on XiaoWu</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 09 Jan 2020 08:00:00 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 11 Jan 2020 08:00:00 +0800</lastBuildDate>
     
 	<atom:link href="https://nuhuo08.github.io/blog/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>因子图的一些思考</title>
+      <link>https://nuhuo08.github.io/factor-graph/</link>
+      <pubDate>Sat, 11 Jan 2020 08:00:00 +0800</pubDate>
+      
+      <guid>https://nuhuo08.github.io/factor-graph/</guid>
+      <description>为什么使用因子图 通常我们并不关心观测量，只有在状态确定的情况下，讨论观测量才有意义。因此用因子图表达更突出重点，即状态变量。
+与传统优化算法的关系 通常，传统算法作用在信息矩阵上。信息矩阵对应于一个无向马尔科夫图，通过Cholesky分解LU后，可以求解变量。
+因子图直接作用在雅克比矩阵上。通过QR分解逐步消元，得到的R矩阵与上面的LU矩阵存在关系（相同？）。
+优势  可以迭代递推，不需要重新对整个雅克比矩阵QR分解 通过贝叶斯树，可以非常清晰的看到，当新的观测量出现时，哪部分矩阵会受到影响，需要重新计算。避免其他大量不受影响状态的重复计算  </description>
+    </item>
+    
+    <item>
+      <title>Matrix Decomposition</title>
+      <link>https://nuhuo08.github.io/matrix/</link>
+      <pubDate>Fri, 10 Jan 2020 08:00:00 +0800</pubDate>
+      
+      <guid>https://nuhuo08.github.io/matrix/</guid>
+      <description>LU &amp;amp; LDU      LDL &amp;amp; LL 只适用于对称矩阵           QR分解      Householder Method 镜像变换，For each i-th column of A, “zero out” rows i+1 and lower
+     Givens Don’t reflect; rotate instead, Introduces zeroes into A one at a time
+     Gram-Schmidt Iteratively express each new column vector as a linear combination of previous columns, plus some (normalized) orthogonal component</description>
+    </item>
     
     <item>
       <title>ROS Navigation Stack</title>
@@ -54,15 +77,12 @@ https://zhuanlan.zhihu.com/p/32937247
       <pubDate>Mon, 06 Jan 2020 08:00:00 +0800</pubDate>
       
       <guid>https://nuhuo08.github.io/non-linear/</guid>
-      <description>g2o g2o在ORB-SLAM2中的用法 Ceres http://ceres-solver.org/nnls_modeling.html
+      <description>优化方法比较    方法 特点     梯度下降法 \(x_{i+1}=x_i-\eta \frac{\partial f}{\partial x}\)，效率高，但可能收敛慢   牛顿法 二阶泰勒展开，计算Hessian矩阵耗时，离初值远不收敛，极小值处接近二次函数   高斯-牛顿法 仅适用于最小二乘问题，以Jacobian矩阵\(J^TJ\)代替\(H\)，离初值远不收敛，\(J^TJ\)近奇异不收敛   L-M法 \(\left(H+\lambda I\right)\Sigma=-J^Tr\)，残差增大时，放大\(\lambda\)，成为梯度下降；残差减小时，减小\(\lambda\)，成为高斯-牛顿    g2o g2o在ORB-SLAM2中的用法 Ceres http://ceres-solver.org/nnls_modeling.html
 对于以下代价函数：
 \[ \frac{1}{2} \sum_i \rho_i(\parallel f_i(x_{i1}, x_{i2}, \cdots, x_{ik}) \parallel ^2) \]
 在Ceres中，\(\rho\)为loss function，用于减弱外点的影响；\(f\)为cost function，定义了残差的计算方式；\((x_{i1}, x_{i2}, \cdots, x_{ik})\)为parameter block，定义了需要估计的变量；\(\rho_i(\parallel f_i(x_{i1}, x_{i2}, \cdots, x_{ik}) \parallel ^2)\)为residual block，定义了一个残差块。
 AddResidualBlock problem.AddResidualBlock(costfunction, lossfunction, x1, x2 ... xn)
-其中，\(x_1, x_2, \cdots x_n\)要与costfunction中的变量维数要对应起来。
-costfunction有两种典型的定义方式：
- 自己实现残差、雅可比  templateclass SizedCostFunction : public CostFunction { public: virtual bool Evaluate(double const* const* parameters, double* residuals, double** jacobians) const = 0; }; 这种情况下，需要指定残差维数、参数块维数，并自己实现Evaluate()，计算cost和jacobian。
-自己实现残差即可  template class AutoDiffCostFunction : public SizedCostFunction{ public: explicit AutoDiffCostFunction(CostFunctor* functor); // Ignore the template parameter kNumResiduals and use // num_residuals instead.</description>
+其中，\(x_1, x_2, \cdots x_n\)要与costfunction中的变量维数要对应起来。</description>
     </item>
     
     <item>

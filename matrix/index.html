@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+	<script>
+		renderMathInElement(document.body,
+			{
+				delimiters: [
+					{left: "$$", right: "$$", display: true},
+					{left: "$", right: "$", display: false},
+				]
+			}
+		);
+
+		var inlineMathArray = document.querySelectorAll("script[type='math/tex']");
+		for (var i = 0; i < inlineMathArray.length; i++) {
+			var inlineMath = inlineMathArray[i];
+			var tex = inlineMath.innerText || inlineMath.textContent;
+			var replaced = document.createElement("span");
+			replaced.innerHTML = katex.renderToString(tex, {displayMode: false});
+			inlineMath.parentNode.replaceChild(replaced, inlineMath);
+		}
+
+		var displayMathArray = document.querySelectorAll("script[type='math/tex; mode=display']");
+		for (var i = 0; i < displayMathArray.length; i++) {
+			var displayMath = displayMathArray[i];
+			var tex = displayMath.innerHTML;
+			var replaced = document.createElement("span");
+			replaced.innerHTML = katex.renderToString(tex.replace(/%.*/g, ''), {displayMode: true});
+			displayMath.parentNode.replaceChild(replaced, displayMath);
+		}
+	</script>
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+
+    <link rel="canonical" href="https://nuhuo08.github.io/matrix/">
+    <meta name="generator" content="Hugo 0.62.2" />
+    <title>Matrix Decomposition | XiaoWu</title>
+
+    
+    <link rel="stylesheet" href="/css/uswds.min.c480a9b2a1fc1e7e564e62752462b22cd5f508a047f0340cb3725722f627fb1d.css">
+    
+    
+    <link rel="stylesheet" href="/css/custom.165c6c17e755269c6e0be21c4fc6f92f3079f99c971997246bcd0568239c62d3.min.css">
+  </head>
+  <body>
+    <a class="usa-skipnav" href="#main-content">Skip to main content</a>
+
+    <header class="usa-header usa-header--basic" role="banner">
+      <div class="usa-nav-container">
+        <div class="usa-navbar">
+          <div class="usa-logo" id="basic-mega-logo">
+            <em class="usa-logo__text">
+              <a href="/" title="Home" aria-label="Home">XiaoWu</a>
+            </em>
+          </div>
+          <button class="usa-menu-btn">Menu</button>
+        </div>
+
+        <nav role="navigation" class="usa-nav">
+          <button class="usa-nav__close">
+            <img src="/img/close.svg" alt="close" />
+          </button>
+          <ul class="usa-nav__primary usa-accordion">
+            
+            
+              
+              
+              
+              
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link " href="/">
+                  <span>Home</span>
+                </a>
+              </li>
+            
+              
+              
+              
+              
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link usa-current" href="/blog/">
+                  <span>Blog</span>
+                </a>
+              </li>
+            
+              
+              
+              
+              
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link " href="/about/index.html">
+                  <span>About</span>
+                </a>
+              </li>
+            
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="usa-section" id="main-content">
+      <div class="grid-container">
+        <div class="grid-row grid-gap">
+          <div class="tablet:grid-col usa-prose">
+            
+  <h1>Matrix Decomposition</h1>
+  
+  <p class="text-gray-50">
+    
+    
+    
+    <strong>Published: </strong>2020-01-10
+
+    
+    
+      
+      
+    
+    
+    
+    
+    </span>
+  </p>
+  
+  
+    
+
+<div class="toc">
+  <strong>Table of contents</strong>
+  <ol>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#lu--ldu">
+        LU &amp; LDU
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#ldl--ll">
+        LDL &amp; LL
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#qr%e5%88%86%e8%a7%a3">
+        QR分解
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#svd%e5%88%86%e8%a7%a3">
+        SVD分解
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e4%bd%9c%e7%94%a8">
+        作用
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e6%96%b9%e7%a8%8b%e6%b1%82%e8%a7%a3">
+        方程求解
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#nullspace">
+        NullSpace
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e7%a8%80%e7%96%8f%e7%9f%a9%e9%98%b5%e7%9a%84%e9%87%8d%e6%8e%92%e5%ba%8f">
+        稀疏矩阵的重排序
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e5%bb%ba%e8%ae%ae">
+        建议
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#svd--pca">
+        SVD &amp; PCA
+      </a>
+    </li>
+    
+  </ol>
+</div>
+
+
+  
+  
+  
+
+<h2 id="lu--ldu">LU &amp; LDU <a aria-label="header link for LU &amp; LDU" href="#lu--ldu" class="header-link">#</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/matrix/lu.png">
+    <img src="/matrix/lu_hufc1d641be7837bd9318e454e464e8465_26182_600x0_resize_box_2.png" alt="LU &amp; LDU">
+  </a>
+  <div class="usa-image-text-block">
+    <small>
+      <p class="usa-image-text text-gray-50"></p>
+    </small>
+  </div>
+</div>
+
+
+<h2 id="ldl--ll">LDL &amp; LL <a aria-label="header link for LDL &amp; LL" href="#ldl--ll" class="header-link">#</a></h2>
+
+<p>只适用于对称矩阵
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/matrix/ldl.png">
+    <img src="/matrix/ldl_hu0461fb19f023b93d71589bb99dfbdf54_15728_600x0_resize_box_2.png" alt="LDL">
+  </a>
+  <div class="usa-image-text-block">
+    <small>
+      <p class="usa-image-text text-gray-50"></p>
+    </small>
+  </div>
+</div>
+</p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/matrix/ll.png">
+    <img src="/matrix/ll_hu38612c6845a9ccba838d02cf473c6438_18335_450x0_resize_box_2.png" alt="LL">
+  </a>
+  <div class="usa-image-text-block">
+    <small>
+      <p class="usa-image-text text-gray-50"></p>
+    </small>
+  </div>
+</div>
+
+
+<h2 id="qr分解">QR分解 <a aria-label="header link for QR分解" href="#qr分解" class="header-link">#</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/matrix/qr.png">
+    <img src="/matrix/qr_hue7e191b248456f110838e40c07826d7c_26651_600x0_resize_box_2.png" alt="QR Decomposition">
+  </a>
+  <div class="usa-image-text-block">
+    <small>
+      <p class="usa-image-text text-gray-50"></p>
+    </small>
+  </div>
+</div>
+
+
+<h3 id="householder-method">Householder Method</h3>
+
+<p>镜像变换，For each i-th column of A, “zero out” rows i+1 and lower</p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/matrix/householder.png">
+    <img src="/matrix/householder_hud6da6abf4da96a4c210e749c19472aa6_21028_400x0_resize_box_2.png" alt="Householder Method">
+  </a>
+  <div class="usa-image-text-block">
+    <small>
+      <p class="usa-image-text text-gray-50"></p>
+    </small>
+  </div>
+</div>
+
+
+<h3 id="givens">Givens</h3>
+
+<p>Don’t reflect; rotate instead, Introduces zeroes into A one at a time</p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/matrix/givens.png">
+    <img src="/matrix/givens_hu02ca7c70dbf209ae3925ba6589f62754_17187_600x0_resize_box_2.png" alt="Givens">
+  </a>
+  <div class="usa-image-text-block">
+    <small>
+      <p class="usa-image-text text-gray-50"></p>
+    </small>
+  </div>
+</div>
+
+
+<h3 id="gramschmidt">Gram-Schmidt</h3>
+
+<p>Iteratively express each new column vector as a linear combination of previous columns, plus some (normalized) orthogonal component</p>
+
+<h2 id="svd分解">SVD分解 <a aria-label="header link for SVD分解" href="#svd分解" class="header-link">#</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/matrix/svd.png">
+    <img src="/matrix/svd_hu01ae2c5f795ff3f8760a5e17ca08e069_25119_400x0_resize_box_2.png" alt="SVD">
+  </a>
+  <div class="usa-image-text-block">
+    <small>
+      <p class="usa-image-text text-gray-50"></p>
+    </small>
+  </div>
+</div>
+
+
+<h2 id="作用">作用 <a aria-label="header link for 作用" href="#作用" class="header-link">#</a></h2>
+
+<p>对角矩阵：对坐标轴进行缩放<br>
+三角矩阵：切变Shear<br>
+正交矩阵：旋转</p>
+
+<h2 id="方程求解">方程求解 <a aria-label="header link for 方程求解" href="#方程求解" class="header-link">#</a></h2>
+
+<p>LU中，LU为三角阵，递归带入求解方程<br>
+QR中Q为正交阵，逆矩阵即转置，容易求解</p>
+
+<h2 id="nullspace">NullSpace <a aria-label="header link for NullSpace" href="#nullspace" class="header-link">#</a></h2>
+
+<p>Let A be an m-by-n matrix with rank n. QR decomposition finds orthonormal m-by-m matrix Q and upper triangular m-by-n matrix R such that A = QR. If we define Q = [Q1 Q2], where Q1 is m-by-n and Q2 is m-by-(m-n), then the columns of Q2 form the null space of A^T.</p>
+
+<p>QR decomposition is computed either by Gram-Schmidt, Givens rotations, or Householder reflections. They have different stability properties and operation counts.</p>
+
+<h2 id="稀疏矩阵的重排序">稀疏矩阵的重排序 <a aria-label="header link for 稀疏矩阵的重排序" href="#稀疏矩阵的重排序" class="header-link">#</a></h2>
+
+<p>（1）原始稀疏矩阵，进行Cholesky分解后，存在大量非零元素8.24%</p>
+
+<table>
+<thead>
+<tr>
+<th align="center">Original Sparse Matrix</th>
+<th align="center">Cholesky Decomposition</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td align="center"><figure><img src="reordering-1.png" alt=""></figure></td>
+<td align="center"><figure><img src="reordering-2.png" alt=""></figure></td>
+</tr>
+</tbody>
+</table>
+
+<p>（2）采用Nested Dissection Permutation方法进行排序后，再进行Cholesky分解，非零元素显著减少，仅0.68%</p>
+
+<table>
+<thead>
+<tr>
+<th align="center">Nested Dissection</th>
+<th align="center">Cholesky Decomposition</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td align="center"><figure><img src="reordering-3.png" alt=""></figure></td>
+<td align="center"><figure><img src="reordering-4.png" alt=""></figure></td>
+</tr>
+</tbody>
+</table>
+
+<p>（3）各排序方法的比较
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/matrix/reordering-5.png">
+    <img src="/matrix/reordering-5.png" alt="SVD">
+  </a>
+  <div class="usa-image-text-block">
+    <small>
+      <p class="usa-image-text text-gray-50"></p>
+    </small>
+  </div>
+</div>
+</p>
+
+<h2 id="建议">建议 <a aria-label="header link for 建议" href="#建议" class="header-link">#</a></h2>
+
+<ol>
+<li>先边缘化掉地图点，因为地图点之间一般是独立的</li>
+<li>再边缘化掉位姿。边缘化位姿时，会造成矩阵稠密</li>
+<li>稠密矩阵解算时，可以先进行排序，再进行Cholesky分解</li>
+</ol>
+
+<h2 id="svd--pca">SVD &amp; PCA <a aria-label="header link for SVD &amp; PCA" href="#svd--pca" class="header-link">#</a></h2>
+
+<p><a href="https://stats.stackexchange.com/questions/134282/relationship-between-svd-and-pca-how-to-use-svd-to-perform-pca">SVD vs PCA</a></p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/matrix/svd-pca1.png">
+    <img src="/matrix/svd-pca1.png" alt="SVD &amp; PCA">
+  </a>
+  <div class="usa-image-text-block">
+    <small>
+      <p class="usa-image-text text-gray-50"></p>
+    </small>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/matrix/svd-pca2.png">
+    <img src="/matrix/svd-pca2.png" alt="SVD &amp; PCA">
+  </a>
+  <div class="usa-image-text-block">
+    <small>
+      <p class="usa-image-text text-gray-50"></p>
+    </small>
+  </div>
+</div>
+
+
+
+
+  
+    <br>
+    <strong>Next:</strong> <a href="/factor-graph/">因子图的一些思考</a>
+  
+
+  
+    <br>
+    <strong>Previous:</strong> <a href="/navigation-stack/">ROS Navigation Stack</a>
+  
+  
+  
+    <div id="disqus-container">
+  
+</div>
+
+  
+
+
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="usa-footer usa-footer--slim" role="contentinfo">
+      
+      <div class="usa-footer__secondary-section" id="footer-main">
+        <div class="grid-container">
+          <div class="grid-row grid-gap">
+            <div class="grid-col-12 text-center">
+              
+              
+                Made with <a href="https://gohugo.io/">Hugo</a> • Content in <a href="https://github.com/nuhuo08/uswds-hugo-theme">GitHub</a>
+                <br>
+                Last deployed on 2020-01-28
+              
+
+              
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    
+    <script src="/js/uswds.min.fcd9b25a27c51de427f4c618dee88490c2ff0a792a573531e316730d07df3f3d.js"></script>
+
+  </body>
+</html>
