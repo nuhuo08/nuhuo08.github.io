@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+	<script>
+		renderMathInElement(document.body,
+			{
+				delimiters: [
+					{left: "$$", right: "$$", display: true},
+					{left: "$", right: "$", display: false},
+				]
+			}
+		);
+
+		var inlineMathArray = document.querySelectorAll("script[type='math/tex']");
+		for (var i = 0; i < inlineMathArray.length; i++) {
+			var inlineMath = inlineMathArray[i];
+			var tex = inlineMath.innerText || inlineMath.textContent;
+			var replaced = document.createElement("span");
+			replaced.innerHTML = katex.renderToString(tex, {displayMode: false});
+			inlineMath.parentNode.replaceChild(replaced, inlineMath);
+		}
+
+		var displayMathArray = document.querySelectorAll("script[type='math/tex; mode=display']");
+		for (var i = 0; i < displayMathArray.length; i++) {
+			var displayMath = displayMathArray[i];
+			var tex = displayMath.innerHTML;
+			var replaced = document.createElement("span");
+			replaced.innerHTML = katex.renderToString(tex.replace(/%.*/g, ''), {displayMode: true});
+			displayMath.parentNode.replaceChild(replaced, displayMath);
+		}
+	</script>
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+
+    <link rel="canonical" href="https://nuhuo08.github.io/navigation-stack/">
+    <meta name="generator" content="Hugo 0.62.2" />
+    <title>ROS Navigation Stack | XiaoWu</title>
+
+    
+    <link rel="stylesheet" href="/css/uswds.min.c480a9b2a1fc1e7e564e62752462b22cd5f508a047f0340cb3725722f627fb1d.css">
+    
+    
+    <link rel="stylesheet" href="/css/custom.165c6c17e755269c6e0be21c4fc6f92f3079f99c971997246bcd0568239c62d3.min.css">
+  </head>
+  <body>
+    <a class="usa-skipnav" href="#main-content">Skip to main content</a>
+
+    <header class="usa-header usa-header--basic" role="banner">
+      <div class="usa-nav-container">
+        <div class="usa-navbar">
+          <div class="usa-logo" id="basic-mega-logo">
+            <em class="usa-logo__text">
+              <a href="/" title="Home" aria-label="Home">XiaoWu</a>
+            </em>
+          </div>
+          <button class="usa-menu-btn">Menu</button>
+        </div>
+
+        <nav role="navigation" class="usa-nav">
+          <button class="usa-nav__close">
+            <img src="/img/close.svg" alt="close" />
+          </button>
+          <ul class="usa-nav__primary usa-accordion">
+            
+            
+              
+              
+              
+              
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link " href="/">
+                  <span>Home</span>
+                </a>
+              </li>
+            
+              
+              
+              
+              
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link usa-current" href="/blog/">
+                  <span>Blog</span>
+                </a>
+              </li>
+            
+              
+              
+              
+              
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link " href="/about/index.html">
+                  <span>About</span>
+                </a>
+              </li>
+            
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="usa-section" id="main-content">
+      <div class="grid-container">
+        <div class="grid-row grid-gap">
+          <div class="tablet:grid-col usa-prose">
+            
+  <h1>ROS Navigation Stack</h1>
+  
+  <p class="text-gray-50">
+    
+    
+    
+    <strong>Published: </strong>2020-01-09
+
+    
+    
+      
+      
+    
+    
+    
+    
+    </span>
+  </p>
+  
+  
+    
+
+<div class="toc">
+  <strong>Table of contents</strong>
+  <ol>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#ros%e7%b3%bb%e7%bb%9f%e7%bb%93%e6%9e%84">
+        ROS系统结构
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#ros%e5%ae%89%e8%a3%85">
+        ROS安装
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e5%af%bc%e8%88%aa%e5%8c%85%e6%bc%94%e7%a4%ba%e6%93%8d%e4%bd%9c">
+        导航包演示操作
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e8%87%aa%e5%ae%9a%e4%b9%89%e6%9c%ba%e5%99%a8%e4%ba%ba">
+        自定义机器人
+      </a>
+    </li>
+    
+  </ol>
+</div>
+
+
+  
+  
+  
+
+<h2 id="ros系统结构">ROS系统结构 <a aria-label="header link for ROS系统结构" href="#ros系统结构" class="header-link">#</a></h2>
+
+<h3 id="ros-node">ROS Node</h3>
+
+<p>ROS Node: 功能模块以Node的形式，处理某一特定的任务。
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/navigation-stack/ros-node.png">
+    <img src="/navigation-stack/ros-node_hub7d49e5f9befe1cbab6fe0552d5ad0af_167163_600x0_resize_box_2.png" alt="ROS Node">
+  </a>
+  <div class="usa-image-text-block">
+    <small>
+      <p class="usa-image-text text-gray-50"></p>
+    </small>
+  </div>
+</div>
+</p>
+
+<p>ROS Master: 记录所有现存的node，保证node之间的信息交流。parameter server运行在其中，实现参数与配置信息的共享。
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/navigation-stack/ros-master.png">
+    <img src="/navigation-stack/ros-master_hu91e5dbe36d1826c7d9b84e0a73b7b0c1_178807_600x0_resize_box_2.png" alt="ROS Master">
+  </a>
+  <div class="usa-image-text-block">
+    <small>
+      <p class="usa-image-text text-gray-50"></p>
+    </small>
+  </div>
+</div>
+</p>
+
+<h3 id="ros信息交互">ROS信息交互</h3>
+
+<p>单向通信：一个node发布topic，一个node订阅该topic
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/navigation-stack/ros-topic.png">
+    <img src="/navigation-stack/ros-topic_hu243ddcd68c1780a29c867aa32f2c9a52_292858_600x0_resize_box_2.png" alt="ROS Topic">
+  </a>
+  <div class="usa-image-text-block">
+    <small>
+      <p class="usa-image-text text-gray-50"></p>
+    </small>
+  </div>
+</div>
+</p>
+
+<p>双向通信：一个node向另一个node发送信息并请求回复，使用service
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/navigation-stack/ros-service.png">
+    <img src="/navigation-stack/ros-service_huff2a55e81a956521187e898375895d45_101045_600x0_resize_box_2.png" alt="ROS Service">
+  </a>
+  <div class="usa-image-text-block">
+    <small>
+      <p class="usa-image-text text-gray-50"></p>
+    </small>
+  </div>
+</div>
+</p>
+
+<h3 id="查看ros信息">查看ROS信息</h3>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">rosnode list
+rostopic list
+rosservice list
+rostopic info /turtle1/cmd_vel
+rosmsg info geometry_msgs/Twist
+rqt_graph</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/navigation-stack/ros-graph.png">
+    <img src="/navigation-stack/ros-graph_hu752ffb7e6e866c9eb29741e93e7094ae_69899_1200x0_resize_box_2.png" alt="ROS Graph">
+  </a>
+  <div class="usa-image-text-block">
+    <small>
+      <p class="usa-image-text text-gray-50"></p>
+    </small>
+  </div>
+</div>
+
+
+<h2 id="ros安装">ROS安装 <a aria-label="header link for ROS安装" href="#ros安装" class="header-link">#</a></h2>
+
+<p>ROS官网教程：<a href="http://wiki.ros.org/ROS/Tutorials">ROS Tutorials</a></p>
+
+<h3 id="安装ros基本功能包">安装ROS基本功能包</h3>
+
+<p>由于Ubuntu默认软件源在国内访问速度较慢，建议切换到阿里云。</p>
+
+<p>安装ROS：</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo sh -c <span style="color:#ba2121">&#39;. /etc/lsb-release &amp;&amp; echo &#34;deb http://mirrors.ustc.edu.cn/ros/ubuntu/ `lsb_release -cs` main&#34; &gt; /etc/apt/sources.list.d/ros-latest.list&#39;</span>
+sudo apt-key adv --keyserver <span style="color:#ba2121">&#39;hkp://keyserver.ubuntu.com:80&#39;</span> --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
+sudo apt-get update
+sudo apt-get install ros-kinetic-desktop-full
+sudo rosdep init
+rosdep update
+<span style="color:#008000">echo</span> <span style="color:#ba2121">&#34;source /opt/ros/kinetic/setup.bash&#34;</span> &gt;&gt; ~/.bashrc
+<span style="color:#008000">source</span> ~/.bashrc</code></pre></div>
+<p>由于Gazebo第一次打开时，需要联网下载模型，若网络太慢，Gazebo可能卡在启动页面一直不动。
+建议手工下载<a href="https://bitbucket.org/osrf/gazebo_models/src/default/">Gazebo Models</a>，并解压到<code>/usr/share/gazebo-7/models</code>路径下。</p>
+
+<p>In virtual machine, Gazebo 7.0.0 doesn’t publish topic. We need to upgrade to Gazebo 7.11</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo sh -c <span style="color:#ba2121">&#39;echo &#34;deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main&#34; &gt; /etc/apt/sources.list.d/gazebo-stable.list&#39;</span>
+wget http://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -
+sudo apt-get update
+sudo apt-get install gazebo7</code></pre></div>
+<h3 id="安装turtlebot导航包">安装turtlebot导航包</h3>
+
+<p>When running VM on Win10, turn off hardware acceleration for 3D graphics. Otherwise Gazebo may crash.</p>
+
+<p>安装turtlebot导航包：</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo apt-get install ros-kinetic-turtlebot-*</code></pre></div>
+<h2 id="导航包演示操作">导航包演示操作 <a aria-label="header link for 导航包演示操作" href="#导航包演示操作" class="header-link">#</a></h2>
+
+<h3 id="mapping">Mapping</h3>
+
+<p>使用如下命令，可以打开Gazebo的仿真环境，看到Rviz的消息显示界面，后台的GMapping建图功能也已启动，只需要在Terminal中操作键盘，可以控制机器人在仿真环境中运动。</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">roslaunch turtlebot_gazebo turtlebot_world.launch
+roslaunch turtlebot_gazebo gmapping_demo.launch
+roslaunch turtlebot_rviz_launchers view_navigation.launch
+roslaunch turtlebot_teleop keyboard_teleop.launch</code></pre></div>
+<p>建图完成后，通过如下命令保存建好的地图：</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mkdir ~/turtlebot_custom_maps
+rosrun map_server map_saver -f ~/turtlebot_custom_maps/tutorial</code></pre></div>
+<h3 id="navigation">Navigation</h3>
+
+<p>使用如下命令，将会启动AMCL定位功能。在Rviz中设定机器人的目标位置，结合上一步建成的地图，可以进行机器人导航。</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">roslaunch turtlebot_gazebo turtlebot_world.launch
+roslaunch turtlebot_gazebo amcl_demo.launch map_file:<span style="color:#666">=</span>/home/user/turtlebot_custom_maps/tutorial.yaml
+roslaunch turtlebot_rviz_launchers view_navigation.launch</code></pre></div>
+<h2 id="自定义机器人">自定义机器人 <a aria-label="header link for 自定义机器人" href="#自定义机器人" class="header-link">#</a></h2>
+
+<p>Gazebo用作机器人的仿真环境，有丰富的教学资源。<a href="http://gazebosim.org/tutorials?cat=sensors">Gazebo Tutorials</a></p>
+
+<h3 id="自定义两轮机器人">自定义两轮机器人</h3>
+
+<p><a href="http://gazebosim.org/tutorials?tut=build_robot&amp;cat=build_robot">Make a Mobile Robot</a></p>
+
+<h3 id="添加传感器">添加传感器</h3>
+
+<p><a href="http://gazebosim.org/tutorials?tut=camera_distortion&amp;cat=sensors">Creating a camera</a></p>
+
+
+
+  
+
+  
+    <br>
+    <strong>Previous:</strong> <a href="/gmapping/">GMapping</a>
+  
+  
+  
+    <div id="disqus-container">
+  
+</div>
+
+  
+
+
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="usa-footer usa-footer--slim" role="contentinfo">
+      
+      <div class="usa-footer__secondary-section" id="footer-main">
+        <div class="grid-container">
+          <div class="grid-row grid-gap">
+            <div class="grid-col-12 text-center">
+              
+              
+                Made with <a href="https://gohugo.io/">Hugo</a> • Content in <a href="https://github.com/nuhuo08/uswds-hugo-theme">GitHub</a>
+                <br>
+                Last deployed on 2020-01-27
+              
+
+              
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    
+    <script src="/js/uswds.min.fcd9b25a27c51de427f4c618dee88490c2ff0a792a573531e316730d07df3f3d.js"></script>
+
+  </body>
+</html>

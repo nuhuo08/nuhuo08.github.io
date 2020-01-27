@@ -6,10 +6,22 @@
     <description>Recent content in Blogs on XiaoWu</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 08 Jan 2020 08:00:00 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 09 Jan 2020 08:00:00 +0800</lastBuildDate>
     
 	<atom:link href="https://nuhuo08.github.io/blog/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>ROS Navigation Stack</title>
+      <link>https://nuhuo08.github.io/navigation-stack/</link>
+      <pubDate>Thu, 09 Jan 2020 08:00:00 +0800</pubDate>
+      
+      <guid>https://nuhuo08.github.io/navigation-stack/</guid>
+      <description>ROS系统结构 ROS Node ROS Node: 功能模块以Node的形式，处理某一特定的任务。      ROS Master: 记录所有现存的node，保证node之间的信息交流。parameter server运行在其中，实现参数与配置信息的共享。      ROS信息交互 单向通信：一个node发布topic，一个node订阅该topic      双向通信：一个node向另一个node发送信息并请求回复，使用service      查看ROS信息 rosnode list rostopic list rosservice list rostopic info /turtle1/cmd_vel rosmsg info geometry_msgs/Twist rqt_graph      ROS安装 ROS官网教程：ROS Tutorials
+安装ROS基本功能包 由于Ubuntu默认软件源在国内访问速度较慢，建议切换到阿里云。
+安装ROS：
+sudo sh -c &amp;#39;. /etc/lsb-release &amp;amp;&amp;amp; echo &amp;#34;deb http://mirrors.ustc.edu.cn/ros/ubuntu/ `lsb_release -cs` main&amp;#34; &amp;gt; /etc/apt/sources.</description>
+    </item>
     
     <item>
       <title>GMapping</title>
