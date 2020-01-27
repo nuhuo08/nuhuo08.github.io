@@ -51,7 +51,7 @@
 
     <link rel="canonical" href="https://nuhuo08.github.io/amcl/">
     <meta name="generator" content="Hugo 0.62.2" />
-    <title>AMCL Localization | XiaoWu</title>
+    <title>AMCL | XiaoWu</title>
 
     
     <link rel="stylesheet" href="/css/uswds.min.c480a9b2a1fc1e7e564e62752462b22cd5f508a047f0340cb3725722f627fb1d.css">
@@ -120,7 +120,7 @@
         <div class="grid-row grid-gap">
           <div class="tablet:grid-col usa-prose">
             
-  <h1>AMCL Localization</h1>
+  <h1>AMCL</h1>
   
   <p class="text-gray-50">
     
@@ -132,7 +132,7 @@
     
       
       
-        | <strong>Lastmod: </strong>2020-01-25
+        | <strong>Lastmod: </strong>2020-01-26
 
       
     
@@ -154,7 +154,7 @@
       
       
       
-      <a href="#ros-amcl">
+      <a href="#rosamcl">
         ROS-AMCL
       </a>
     </li>
@@ -217,7 +217,8 @@
   
   
 
-<h2 id="ros-amcl">ROS-AMCL <a aria-label="header link for ROS-AMCL" href="#ros-amcl" class="header-link">#</a></h2>
+<h2 id="rosamcl">ROS-AMCL <a aria-label="header link for ROS-AMCL" href="#rosamcl" class="header-link">#</a></h2>
+
 
 
 
@@ -242,12 +243,19 @@
   </div>
 </div>
 
+
 <h2 id="粒子聚类">粒子聚类 <a aria-label="header link for 粒子聚类" href="#粒子聚类" class="header-link">#</a></h2>
+
 <p>对外输出的机器人状态不应该是某一个最好的粒子，因为很有可能某些粒子的值都非常接近，可能会引起频繁的粒子切换，导致输出的结果来回跳变。</p>
+
 <p>基于此考虑， 应该对相似的粒子进行聚类。将最好的那一簇粒子的统计状态作为输出的机器人状态。</p>
-<h3 id="kd-tree">KD-Tree</h3>
+
+<h3 id="kdtree">KD-Tree</h3>
+
 <p>当涉及到距离查找时，作为算法工程师，我们应该首先想到KD-Tree。树的叶子节点是每一个粒子，而非叶子节点则保存的是该节点的分叉判断的标准，小于此分叉判断标准的在左边，大于此分叉标准的在右边。</p>
+
 <p>查询的基本思路：首先通过二叉树搜索（比较待查询节点和分裂节点的分裂维的值，小于等于就进入左子树分支，等于就进入右子树分支直到叶子结点），顺着“搜索路径”很快能找到最近邻的近似点，也就是与待查询点处于同一个子空间的叶子结点；然后再回溯搜索路径，并判断搜索路径上的结点的其他子结点空间中是否可能有距离查询点更近的数据点，如果有可能，则需要跳到其他子结点空间中去搜索（将其他子结点加入到搜索路径）。重复这个过程直到搜索路径为空。</p>
+
 
 
 
@@ -272,43 +280,64 @@
   </div>
 </div>
 
+
 <h3 id="聚类">聚类</h3>
+
 <p>循环遍历每一个叶子节点，在叶子节点周围的 +-1 范围内的粒子都归为一类。例如在AMCL中，每个粒子周围27个粒子若有相连的，就将它们全部连成一片，形成一簇粒子。</p>
+
 <h2 id="粒子滤波改进">粒子滤波改进 <a aria-label="header link for 粒子滤波改进" href="#粒子滤波改进" class="header-link">#</a></h2>
+
 <p>为了防止机器人被绑架，出现粒子收敛于某一错误的地方，需要进行粒子滤波的改良。</p>
+
 <h3 id="粒子注入">粒子注入</h3>
+
 <p>我们来考虑如下的式子：</p>
-<p>$$
-x_1 = x + 0.1(y-x)
-$$
-$$
+
+<p><span  class="math">\[
+x_1 = x + 0.1(y-x) \\[2mm]
 x_2 = x + 0.9(y-x)
-$$</p>
-<p>对于上面两个式子，展开以后我们可以发现：$x_1$ 主要受到 $x$ 的影响，而 $x_2$ 主要受到 $y$ 的影响。若粒子收敛于正确的状态，则 $y$ 是准确的，$x_2$ 将会比 $x_1$ 更大，此时不需要注入粒子。若粒子收敛于错误的地方，则 $y$ 不准确，此时 $x_1$ 受到 $y$ 的影响较小，$x_1$ 更准确，此时便需要注入粒子。</p>
+\]</span></p>
+
+<p>对于上面两个式子，展开以后我们可以发现：<span  class="math">\(x_1\)</span> 主要受到 <span  class="math">\(x\)</span> 的影响，而 <span  class="math">\(x_2\)</span> 主要受到 <span  class="math">\(y\)</span> 的影响。若粒子收敛于正确的状态，则 <span  class="math">\(y\)</span> 是准确的，<span  class="math">\(x_2\)</span> 将会比 <span  class="math">\(x_1\)</span> 更大，此时不需要注入粒子。若粒子收敛于错误的地方，则 <span  class="math">\(y\)</span> 不准确，此时 <span  class="math">\(x_1\)</span> 受到 <span  class="math">\(y\)</span> 的影响较小，<span  class="math">\(x_1\)</span> 更准确，此时便需要注入粒子。</p>
+
 <p>而这正是AMCL里面slow和fast参数产生的效果。</p>
+
 <h3 id="kld自适应">KLD自适应</h3>
+
 <p>KLD的计算属于数理统计的知识，可参考论文1。这里进行直观的解释。</p>
+
 <p>例如，某一粒子权值很大。当我们进行100次采样，可能都采样到的是同一个粒子，此时粒子的个数始终保持为1。而KLD计算出来的需要采样的次数，是粒子个数的函数。因此，当粒子数保持为1时，KLD计算出来的次数为某一定值，而采样次数持续在增加，到某一时间点，便超过了需要的采样次数。</p>
+
 <p>而当粒子权值都接近时，假设我们采样了100次，每次采样出来的粒子都不同，此时粒子的个数一直增长到100。此时的KLD也随着粒子的个数增长到一个比较大的值。采样的次数虽然持续增加，但是始终超过不了KDL计算出来的次数。此种情况下采样仍将继续。</p>
+
 <h2 id="距离计算">距离计算 <a aria-label="header link for 距离计算" href="#距离计算" class="header-link">#</a></h2>
+
 <p>计算每个粒子的权重时，我们需要计算观测到的障碍物与地图中的障碍物的距离差异。差异越大，权值越小。当某次观测的障碍物全部与地图上的障碍物匹配上了，则差异为0，权值极大。因此，在地图的初始阶段，我们需要计算地图上任一点位置到最近障碍物的距离。这就是似然场模型。</p>
+
 <h3 id="直接计算">直接计算</h3>
+
 <p>遍历每一个点，计算每一个点到每个障碍物的距离并取最小值。此方法进行了重复计算，效率较低。</p>
+
 <h3 id="高效算法">高效算法</h3>
+
 <p>从障碍物出发，向外膨胀一个单位。当所有障碍物膨胀完以后，从膨胀出来的地方出发，继续向外膨胀一个单位。此方法没有冗余计算，且实现的代码简洁。</p>
+
 <h2 id="amcl参数解读">AMCL参数解读 <a aria-label="header link for AMCL参数解读" href="#amcl参数解读" class="header-link">#</a></h2>
+
 <p>min_particles / max_particles / kld_err / kld_z : 用来限制粒子数量<br>
 update_min_d / update_min_a / resample_interval : 限制冲采样条件<br>
 recovery_alpha_slow / recovery_alpha_fast : 动态调整粒子数量<br>
 initial_pose_xya / initial_cov_xxyyaa : 初始位置及其协方差<br>
 odom_alpha1234 : 里程计运动模型误差系数</p>
+
 <h2 id="参考资料">参考资料 <a aria-label="header link for 参考资料" href="#参考资料" class="header-link">#</a></h2>
-<p>http://www.robots.ox.ac.uk/~cvrg/hilary2005/adaptive.pdf<br>
-https://blog.csdn.net/Mark_SLAM/article/details/81266527<br>
-https://zhuanlan.zhihu.com/p/28137335<br>
-https://zhuanlan.zhihu.com/p/59411695<br>
-https://zhuanlan.zhihu.com/p/59663340<br>
-https://zhuanlan.zhihu.com/p/61908381<br>
+
+<p><a href="http://www.robots.ox.ac.uk/~cvrg/hilary2005/adaptive.pdf">http://www.robots.ox.ac.uk/~cvrg/hilary2005/adaptive.pdf</a><br>
+<a href="https://blog.csdn.net/Mark_SLAM/article/details/81266527">https://blog.csdn.net/Mark_SLAM/article/details/81266527</a><br>
+<a href="https://zhuanlan.zhihu.com/p/28137335">https://zhuanlan.zhihu.com/p/28137335</a><br>
+<a href="https://zhuanlan.zhihu.com/p/59411695">https://zhuanlan.zhihu.com/p/59411695</a><br>
+<a href="https://zhuanlan.zhihu.com/p/59663340">https://zhuanlan.zhihu.com/p/59663340</a><br>
+<a href="https://zhuanlan.zhihu.com/p/61908381">https://zhuanlan.zhihu.com/p/61908381</a><br>
 udacity robot<br>
 github particle filter</p>
 
@@ -321,7 +350,7 @@ github particle filter</p>
 
   
     <br>
-    <strong>Previous:</strong> <a href="/hugo-website/">Hugo搭建个人网站</a>
+    <strong>Previous:</strong> <a href="/hugo-website/">Hugo Website</a>
   
   
   
@@ -347,7 +376,7 @@ github particle filter</p>
               
                 Made with <a href="https://gohugo.io/">Hugo</a> • Content in <a href="https://github.com/nuhuo08/uswds-hugo-theme">GitHub</a>
                 <br>
-                Last deployed on 2020-01-26
+                Last deployed on 2020-01-27
               
 
               

@@ -4,18 +4,23 @@
   
   <url>
     <loc>https://nuhuo08.github.io/</loc>
-    <lastmod>2020-01-26T11:47:06+08:00</lastmod>
+    <lastmod>2020-01-26T15:20:07+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://nuhuo08.github.io/blog/</loc>
-    <lastmod>2020-01-26T11:47:06+08:00</lastmod>
+    <lastmod>2020-01-26T15:20:07+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nuhuo08.github.io/gmapping/</loc>
+    <lastmod>2020-01-08T08:00:00+08:00</lastmod>
   </url>
   
   <url>
     <loc>https://nuhuo08.github.io/slam-for-dummies/</loc>
-    <lastmod>2020-01-07T08:00:00+08:00</lastmod>
+    <lastmod>2020-01-26T15:20:07+08:00</lastmod>
   </url>
   
   <url>
@@ -30,7 +35,7 @@
   
   <url>
     <loc>https://nuhuo08.github.io/orb-slam2/</loc>
-    <lastmod>2020-01-25T23:42:41+08:00</lastmod>
+    <lastmod>2020-01-26T15:20:07+08:00</lastmod>
   </url>
   
   <url>
@@ -40,7 +45,7 @@
   
   <url>
     <loc>https://nuhuo08.github.io/amcl/</loc>
-    <lastmod>2020-01-25T18:24:08+08:00</lastmod>
+    <lastmod>2020-01-26T15:20:07+08:00</lastmod>
   </url>
   
   <url>

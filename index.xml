@@ -6,10 +6,24 @@
     <description>Recent content on XiaoWu</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 07 Jan 2020 08:00:00 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 08 Jan 2020 08:00:00 +0800</lastBuildDate>
     
 	<atom:link href="https://nuhuo08.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>GMapping</title>
+      <link>https://nuhuo08.github.io/gmapping/</link>
+      <pubDate>Wed, 08 Jan 2020 08:00:00 +0800</pubDate>
+      
+      <guid>https://nuhuo08.github.io/gmapping/</guid>
+      <description>基本理论 SLAM问题的分解 \[ \begin{aligned} p(x_{1:t},m|u_{1:t},z_{1:t}) &amp;= p(x_{1:t}|u_{1:t},z_{1:t}) p(m|u_{1:t},z_{1:t})\\ &amp;= p(x_{1:t}|u_{1:t},z_{1:t}) p(m|z_{1:t}) \end{aligned} \]
+将SLAM问题分解为：机器人的定位；基于已知机器人位姿的构图。
+Fast-SLAM 根据贝叶斯公式，可以将机器人位姿的估计，转换成一个增量估计问题。
+\[ \begin{aligned} p(x_{1:t}|u_{1:t},z_{1:t}) &amp;= \eta p(z_t|x_{1:t},u_{1:t},z_{1:t-1}) p(x_{1:t}|z_{1:t-1},u_{1,t})\\ &amp;= \eta p(z_t|x_t) p(x_{1:t}|z_{1:t-1},u_{1:t})\\ &amp;= \eta p(z_t|x_t) p(x_t|x_{1:t-1},z_{1:t-1},u_{1:t}) p(x_{1:t-1}|z_{1:t-1},u_{1:t})\\ &amp;= \eta p(z_t|x_t) p(x_t|x_{t-1},u_{1:t}) p(x_{1:t-1}|z_{1:t-1},u_{1:t-1}) \end{aligned} \]
+其中，\(p(x_{1:t-1}|z_{1:t-1},u_{1:t-1})\)通过粒子群来表示； \(p(x_t|x_{t-1},u_{1:t})\)对每个粒子进行运动学模型的传播； \(p(z_t|x_t)\)根据观测模型计算权重。
+数据结构相关 Map template &amp;lt;class Cell, const bool debug=false&amp;gt; class Array2D{}; template &amp;lt;class Cell&amp;gt; class HierarchicalArray2D: public Array2D&amp;lt;autoptr&amp;lt; Array2D&amp;lt;Cell&amp;gt; &amp;gt; &amp;gt;{}; template &amp;lt;class Cell, class Storage, const bool isClass=true&amp;gt; class Map{}; typedef Map&amp;lt;PointAccumulator,HierarchicalArray2D&amp;lt;PointAccumulator&amp;gt; &amp;gt; ScanMatcherMap;  Array2D是一个二维数组，HierarchicalArray2D是一个Array2D的二维数组。 相当于将地图先分割成分辨率比较低的网格，只有当粒子运动到该网格时，才真正分配这个网格的内存。 网格的内存对应着分辨率高的真实的地图，用PointAccumulator来进行计数，记录激光是否通过该点，从而判断改点的状态：占据、空闲、未知。</description>
+    </item>
     
     <item>
       <title>SLAM for Dummies</title>
@@ -85,7 +99,7 @@ https://zhuanlan.zhihu.com/p/61614421
     </item>
     
     <item>
-      <title>AMCL Localization</title>
+      <title>AMCL</title>
       <link>https://nuhuo08.github.io/amcl/</link>
       <pubDate>Thu, 02 Jan 2020 08:00:00 +0800</pubDate>
       
@@ -97,8 +111,8 @@ KD-Tree 当涉及到距离查找时，作为算法工程师，我们应该首先
      聚类 循环遍历每一个叶子节点，在叶子节点周围的 +-1 范围内的粒子都归为一类。例如在AMCL中，每个粒子周围27个粒子若有相连的，就将它们全部连成一片，形成一簇粒子。
 粒子滤波改进 为了防止机器人被绑架，出现粒子收敛于某一错误的地方，需要进行粒子滤波的改良。
 粒子注入 我们来考虑如下的式子：
-$$ x_1 = x + 0.1(y-x) $$ $$ x_2 = x + 0.9(y-x) $$
-对于上面两个式子，展开以后我们可以发现：$x_1$ 主要受到 $x$ 的影响，而 $x_2$ 主要受到 $y$ 的影响。若粒子收敛于正确的状态，则 $y$ 是准确的，$x_2$ 将会比 $x_1$ 更大，此时不需要注入粒子。若粒子收敛于错误的地方，则 $y$ 不准确，此时 $x_1$ 受到 $y$ 的影响较小，$x_1$ 更准确，此时便需要注入粒子。
+\[ x_1 = x + 0.1(y-x) \\[2mm] x_2 = x + 0.9(y-x) \]
+对于上面两个式子，展开以后我们可以发现：\(x_1\) 主要受到 \(x\) 的影响，而 \(x_2\) 主要受到 \(y\) 的影响。若粒子收敛于正确的状态，则 \(y\) 是准确的，\(x_2\) 将会比 \(x_1\) 更大，此时不需要注入粒子。若粒子收敛于错误的地方，则 \(y\) 不准确，此时 \(x_1\) 受到 \(y\) 的影响较小，\(x_1\) 更准确，此时便需要注入粒子。
 而这正是AMCL里面slow和fast参数产生的效果。
 KLD自适应 KLD的计算属于数理统计的知识，可参考论文1。这里进行直观的解释。
 例如，某一粒子权值很大。当我们进行100次采样，可能都采样到的是同一个粒子，此时粒子的个数始终保持为1。而KLD计算出来的需要采样的次数，是粒子个数的函数。因此，当粒子数保持为1时，KLD计算出来的次数为某一定值，而采样次数持续在增加，到某一时间点，便超过了需要的采样次数。
@@ -121,7 +135,7 @@ KLD自适应 KLD的计算属于数理统计的知识，可参考论文1。这里
     </item>
     
     <item>
-      <title>Hugo搭建个人网站</title>
+      <title>Hugo Website</title>
       <link>https://nuhuo08.github.io/hugo-website/</link>
       <pubDate>Wed, 01 Jan 2020 08:00:00 +0800</pubDate>
       

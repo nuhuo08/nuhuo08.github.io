@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+	<script>
+		renderMathInElement(document.body,
+			{
+				delimiters: [
+					{left: "$$", right: "$$", display: true},
+					{left: "$", right: "$", display: false},
+				]
+			}
+		);
+
+		var inlineMathArray = document.querySelectorAll("script[type='math/tex']");
+		for (var i = 0; i < inlineMathArray.length; i++) {
+			var inlineMath = inlineMathArray[i];
+			var tex = inlineMath.innerText || inlineMath.textContent;
+			var replaced = document.createElement("span");
+			replaced.innerHTML = katex.renderToString(tex, {displayMode: false});
+			inlineMath.parentNode.replaceChild(replaced, inlineMath);
+		}
+
+		var displayMathArray = document.querySelectorAll("script[type='math/tex; mode=display']");
+		for (var i = 0; i < displayMathArray.length; i++) {
+			var displayMath = displayMathArray[i];
+			var tex = displayMath.innerHTML;
+			var replaced = document.createElement("span");
+			replaced.innerHTML = katex.renderToString(tex.replace(/%.*/g, ''), {displayMode: true});
+			displayMath.parentNode.replaceChild(replaced, displayMath);
+		}
+	</script>
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+
+    <link rel="canonical" href="https://nuhuo08.github.io/gmapping/">
+    <meta name="generator" content="Hugo 0.62.2" />
+    <title>GMapping | XiaoWu</title>
+
+    
+    <link rel="stylesheet" href="/css/uswds.min.c480a9b2a1fc1e7e564e62752462b22cd5f508a047f0340cb3725722f627fb1d.css">
+    
+    
+    <link rel="stylesheet" href="/css/custom.364c63f6f777ce9ed0218c1a24c574f775cafbb414bfb129dcbcd91fa8a16f5c.min.css">
+  </head>
+  <body>
+    <a class="usa-skipnav" href="#main-content">Skip to main content</a>
+
+    <header class="usa-header usa-header--basic" role="banner">
+      <div class="usa-nav-container">
+        <div class="usa-navbar">
+          <div class="usa-logo" id="basic-mega-logo">
+            <em class="usa-logo__text">
+              <a href="/" title="Home" aria-label="Home">XiaoWu</a>
+            </em>
+          </div>
+          <button class="usa-menu-btn">Menu</button>
+        </div>
+
+        <nav role="navigation" class="usa-nav">
+          <button class="usa-nav__close">
+            <img src="/img/close.svg" alt="close" />
+          </button>
+          <ul class="usa-nav__primary usa-accordion">
+            
+            
+              
+              
+              
+              
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link " href="/">
+                  <span>Home</span>
+                </a>
+              </li>
+            
+              
+              
+              
+              
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link usa-current" href="/blog/">
+                  <span>Blog</span>
+                </a>
+              </li>
+            
+              
+              
+              
+              
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link " href="/about/index.html">
+                  <span>About</span>
+                </a>
+              </li>
+            
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="usa-section" id="main-content">
+      <div class="grid-container">
+        <div class="grid-row grid-gap">
+          <div class="tablet:grid-col usa-prose">
+            
+  <h1>GMapping</h1>
+  
+  <p class="text-gray-50">
+    
+    
+    
+    <strong>Published: </strong>2020-01-08
+
+    
+    
+      
+      
+    
+    
+    
+    
+    </span>
+  </p>
+  
+  
+    
+
+<div class="toc">
+  <strong>Table of contents</strong>
+  <ol>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e5%9f%ba%e6%9c%ac%e7%90%86%e8%ae%ba">
+        基本理论
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e6%95%b0%e6%8d%ae%e7%bb%93%e6%9e%84%e7%9b%b8%e5%85%b3">
+        数据结构相关
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e8%bf%90%e5%8a%a8%e6%9b%b4%e6%96%b0">
+        运动更新
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e6%9d%83%e9%87%8d%e8%ae%a1%e7%ae%97">
+        权重计算
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e9%87%8d%e9%87%87%e6%a0%b7%e4%bc%98%e5%8c%96">
+        重采样优化
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e5%bb%ba%e5%9b%be%e7%ae%97%e6%b3%95">
+        建图算法
+      </a>
+    </li>
+    
+  </ol>
+</div>
+
+
+  
+  
+  
+
+<h2 id="基本理论">基本理论 <a aria-label="header link for 基本理论" href="#基本理论" class="header-link">#</a></h2>
+
+<h3 id="slam问题的分解">SLAM问题的分解</h3>
+
+<p><span  class="math">\[
+\begin{aligned}
+p(x_{1:t},m|u_{1:t},z_{1:t}) &= p(x_{1:t}|u_{1:t},z_{1:t}) p(m|u_{1:t},z_{1:t})\\
+&= p(x_{1:t}|u_{1:t},z_{1:t}) p(m|z_{1:t})
+\end{aligned}
+\]</span></p>
+
+<p>将SLAM问题分解为：机器人的定位；基于已知机器人位姿的构图。</p>
+
+<h3 id="fastslam">Fast-SLAM</h3>
+
+<p>根据贝叶斯公式，可以将机器人位姿的估计，转换成一个增量估计问题。</p>
+
+<p><span  class="math">\[
+\begin{aligned}
+p(x_{1:t}|u_{1:t},z_{1:t}) &= \eta p(z_t|x_{1:t},u_{1:t},z_{1:t-1}) p(x_{1:t}|z_{1:t-1},u_{1,t})\\
+&= \eta p(z_t|x_t) p(x_{1:t}|z_{1:t-1},u_{1:t})\\
+&= \eta p(z_t|x_t) p(x_t|x_{1:t-1},z_{1:t-1},u_{1:t}) p(x_{1:t-1}|z_{1:t-1},u_{1:t})\\
+&= \eta p(z_t|x_t) p(x_t|x_{t-1},u_{1:t}) p(x_{1:t-1}|z_{1:t-1},u_{1:t-1})
+\end{aligned}
+\]</span></p>
+
+<p>其中，<span  class="math">\(p(x_{1:t-1}|z_{1:t-1},u_{1:t-1})\)</span>通过粒子群来表示；
+<span  class="math">\(p(x_t|x_{t-1},u_{1:t})\)</span>对每个粒子进行运动学模型的传播；
+<span  class="math">\(p(z_t|x_t)\)</span>根据观测模型计算权重。</p>
+
+<h2 id="数据结构相关">数据结构相关 <a aria-label="header link for 数据结构相关" href="#数据结构相关" class="header-link">#</a></h2>
+
+<h3 id="map">Map</h3>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#008000;font-weight:bold">template</span> <span style="color:#666">&lt;</span><span style="color:#008000;font-weight:bold">class</span> <span style="color:#00f;font-weight:bold">Cell</span>, <span style="color:#008000;font-weight:bold">const</span> <span style="color:#b00040">bool</span> debug<span style="color:#666">=</span><span style="color:#008000">false</span><span style="color:#666">&gt;</span> <span style="color:#008000;font-weight:bold">class</span> <span style="color:#00f;font-weight:bold">Array2D</span>{};
+<span style="color:#008000;font-weight:bold">template</span> <span style="color:#666">&lt;</span><span style="color:#008000;font-weight:bold">class</span> <span style="color:#00f;font-weight:bold">Cell</span><span style="color:#666">&gt;</span> <span style="color:#008000;font-weight:bold">class</span> <span style="color:#00f;font-weight:bold">HierarchicalArray2D</span><span style="color:#666">:</span> <span style="color:#008000;font-weight:bold">public</span> Array2D<span style="color:#666">&lt;</span>autoptr<span style="color:#666">&lt;</span> Array2D<span style="color:#666">&lt;</span>Cell<span style="color:#666">&gt;</span> <span style="color:#666">&gt;</span> <span style="color:#666">&gt;</span>{};
+<span style="color:#008000;font-weight:bold">template</span> <span style="color:#666">&lt;</span><span style="color:#008000;font-weight:bold">class</span> <span style="color:#00f;font-weight:bold">Cell</span>, <span style="color:#008000;font-weight:bold">class</span> <span style="color:#00f;font-weight:bold">Storage</span>, <span style="color:#008000;font-weight:bold">const</span> <span style="color:#b00040">bool</span> isClass<span style="color:#666">=</span><span style="color:#008000">true</span><span style="color:#666">&gt;</span> <span style="color:#008000;font-weight:bold">class</span> <span style="color:#00f;font-weight:bold">Map</span>{};
+<span style="color:#008000;font-weight:bold">typedef</span> Map<span style="color:#666">&lt;</span>PointAccumulator,HierarchicalArray2D<span style="color:#666">&lt;</span>PointAccumulator<span style="color:#666">&gt;</span> <span style="color:#666">&gt;</span> ScanMatcherMap;
+</code></pre></div>
+<p>Array2D是一个二维数组，HierarchicalArray2D是一个Array2D的二维数组。
+相当于将地图先分割成分辨率比较低的网格，只有当粒子运动到该网格时，才真正分配这个网格的内存。
+网格的内存对应着分辨率高的真实的地图，用PointAccumulator来进行计数，记录激光是否通过该点，从而判断改点的状态：占据、空闲、未知。</p>
+
+<h3 id="autoptr">autoptr</h3>
+
+<p>GMapping中自己实现了autoptr类，实现了智能指针的功能。</p>
+
+<h2 id="运动更新">运动更新 <a aria-label="header link for 运动更新" href="#运动更新" class="header-link">#</a></h2>
+
+<p>根据上一时刻的状态，结合里程计的输入量，可以得到当前时刻预估的状态。</p>
+
+<p><span  class="math">\[
+x_t = g_t(u_t, x_{t-1}) + \varepsilon_t
+\]</span></p>
+
+<h2 id="权重计算">权重计算 <a aria-label="header link for 权重计算" href="#权重计算" class="header-link">#</a></h2>
+
+<h3 id="光束模型">光束模型</h3>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/gmapping/beam-model.png">
+    <img src="/gmapping/beam-model_hu850a24a479f46d0888a8b94f1d138f94_48356_600x0_resize_box_2.png" alt="Beam Model">
+  </a>
+  <div class="usa-image-text-block">
+    <small>
+      <p class="usa-image-text text-gray-50"></p>
+    </small>
+  </div>
+</div>
+
+
+<p>使用Bresenham画线算法，进行高效的计算。
+由于计算量过大、在非结构化环境中得分会突变，因此实际工程项目中很少采用此方法。</p>
+
+<p><span  class="math">\[
+p(z_t^k|x_t,m)=\begin{pmatrix} z_{hit} \\ z_{short} \\ z_{max} \\ z_{rand} \end{pmatrix}^T
+\begin{pmatrix} p_{hit}(z_t^k|x_t,m) \\ p_{short}(z_t^k|x_t,m) \\ p_{max}(z_t^k|x_t,m) \\ p_{rand}(z_t^k|x_t,m) \end{pmatrix}
+\]</span></p>
+
+<h3 id="似然场模型">似然场模型</h3>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/gmapping/likelihood.png">
+    <img src="/gmapping/likelihood_hue878c89cf0c0dc7cbe34d4d1513d0db6_24591_600x0_resize_box_2.png" alt="Likelihood Model">
+  </a>
+  <div class="usa-image-text-block">
+    <small>
+      <p class="usa-image-text text-gray-50"></p>
+    </small>
+  </div>
+</div>
+
+
+<p>对图像进行高斯平滑，不会出现得分突变的情况，且运算效率高，查表即可得到。是工程项目中常用的方法。</p>
+
+<h2 id="重采样优化">重采样优化 <a aria-label="header link for 重采样优化" href="#重采样优化" class="header-link">#</a></h2>
+
+<h3 id="里程计扩散出来的最好的粒子">里程计扩散出来的最好的粒子</h3>
+
+<p>若里程计信号质量误差较大，则需要大量粒子对验后分布进行模拟。由于每个粒子都携带一个地图，这将会造成巨大的内存消耗。
+根据里程计的运动模型，每个粒子会扩散出很多粒子。从其中找出最好的那个粒子，其他的全去除，可以大量减少粒子数量。</p>
+
+<p><span  class="math">\[
+x_t^i \sim p(x_t|u_t,x_{t-1}^i) \\[2mm]
+\to x_t^i = \arg \max_{x_t}(p(z_t|x_t,m)p(x_t|u_t,x_{t-1}^i))
+\]</span></p>
+
+<h3 id="抑制重采样次数">抑制重采样次数</h3>
+
+<p>当采样次数过多时，会出现粒子耗散问题，即所有的粒子来自于少数几个粒子。</p>
+
+<p><span  class="math">\[
+N_{eff} = \frac{1}{\sum_{i = 1}^N \left(\tilde{w}^{(i)} \right)^2}
+\]</span></p>
+
+<p>当<span  class="math">\(N_{eff}\)</span>较大时，说明各粒子的差异性较小，此时不要进行重采样。反之，则应进行重采样。</p>
+
+<h3 id="根据激光匹配估计出分布">根据激光匹配估计出分布</h3>
+
+<p>由于激光的精度较高，可以通过激光的匹配，估计出一个高斯分布。并在此分布中进行采样，得到一系列粒子。</p>
+
+<h2 id="建图算法">建图算法 <a aria-label="header link for 建图算法" href="#建图算法" class="header-link">#</a></h2>
+
+<h3 id="覆盖栅格建图">覆盖栅格建图</h3>
+
+<p><span  class="math">\[
+l(m_i|x_{1:t},z_{1:t})=l(m_i|x_t,z_t)+l(m_i|x_{1:t-1},z_{1:t-1})-l(m_i)
+\]</span></p>
+
+<p>其中，<span  class="math">\(l(m_i|x_t,z_t)\)</span>表示会激光雷达的逆观测模型；<span  class="math">\(l(m_i|x_{1:t-1},z_{1:t-1})\)</span>表示栅格<span  class="math">\(m_i\)</span>在<span  class="math">\(t-1\)</span>时刻的状态，
+<span  class="math">\(l(m_i)\)</span>表示栅格<span  class="math">\(m_i\)</span>的先验值，对所有栅格都相同。</p>
+
+<h3 id="计数建图法">计数建图法</h3>
+
+<p><span  class="math">\[
+m_j = \frac{a_j}{a_j+b_j}
+\]</span></p>
+
+<p>其中，<span  class="math">\(a_j\)</span>表示击中的次数，<span  class="math">\(b_j\)</span>表示未击中的次数。</p>
+
+
+
+  
+
+  
+    <br>
+    <strong>Previous:</strong> <a href="/slam-for-dummies/">SLAM for Dummies</a>
+  
+  
+  
+    <div id="disqus-container">
+  
+</div>
+
+  
+
+
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="usa-footer usa-footer--slim" role="contentinfo">
+      
+      <div class="usa-footer__secondary-section" id="footer-main">
+        <div class="grid-container">
+          <div class="grid-row grid-gap">
+            <div class="grid-col-12 text-center">
+              
+              
+                Made with <a href="https://gohugo.io/">Hugo</a> • Content in <a href="https://github.com/nuhuo08/uswds-hugo-theme">GitHub</a>
+                <br>
+                Last deployed on 2020-01-27
+              
+
+              
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    
+    <script src="/js/uswds.min.fcd9b25a27c51de427f4c618dee88490c2ff0a792a573531e316730d07df3f3d.js"></script>
+
+  </body>
+</html>
