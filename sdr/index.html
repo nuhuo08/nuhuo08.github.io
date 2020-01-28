@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+	<script>
+		renderMathInElement(document.body,
+			{
+				delimiters: [
+					{left: "$$", right: "$$", display: true},
+					{left: "$", right: "$", display: false},
+				]
+			}
+		);
+
+		var inlineMathArray = document.querySelectorAll("script[type='math/tex']");
+		for (var i = 0; i < inlineMathArray.length; i++) {
+			var inlineMath = inlineMathArray[i];
+			var tex = inlineMath.innerText || inlineMath.textContent;
+			var replaced = document.createElement("span");
+			replaced.innerHTML = katex.renderToString(tex, {displayMode: false});
+			inlineMath.parentNode.replaceChild(replaced, inlineMath);
+		}
+
+		var displayMathArray = document.querySelectorAll("script[type='math/tex; mode=display']");
+		for (var i = 0; i < displayMathArray.length; i++) {
+			var displayMath = displayMathArray[i];
+			var tex = displayMath.innerHTML;
+			var replaced = document.createElement("span");
+			replaced.innerHTML = katex.renderToString(tex.replace(/%.*/g, ''), {displayMode: true});
+			displayMath.parentNode.replaceChild(replaced, displayMath);
+		}
+	</script>
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+
+    <link rel="canonical" href="https://nuhuo08.github.io/sdr/">
+    <meta name="generator" content="Hugo 0.62.2" />
+    <title>Software Defined Receiver | XiaoWu</title>
+
+    
+    <link rel="stylesheet" href="/css/uswds.min.c480a9b2a1fc1e7e564e62752462b22cd5f508a047f0340cb3725722f627fb1d.css">
+    
+    
+    <link rel="stylesheet" href="/css/custom.0a518097f5500782b25662ab2af4088600eefcc3d2d8828ce721e5e5fee436b5.min.css">
+  </head>
+  <body>
+    <a class="usa-skipnav" href="#main-content">Skip to main content</a>
+
+    <header class="usa-header usa-header--basic" role="banner">
+      <div class="usa-nav-container">
+        <div class="usa-navbar">
+          <div class="usa-logo" id="basic-mega-logo">
+            <em class="usa-logo__text">
+              <a href="/" title="Home" aria-label="Home">XiaoWu</a>
+            </em>
+          </div>
+          <button class="usa-menu-btn">Menu</button>
+        </div>
+
+        <nav role="navigation" class="usa-nav">
+          <button class="usa-nav__close">
+            <img src="/img/close.svg" alt="close" />
+          </button>
+          <ul class="usa-nav__primary usa-accordion">
+            
+            
+              
+              
+              
+              
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link " href="/">
+                  <span>Home</span>
+                </a>
+              </li>
+            
+              
+              
+              
+              
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link usa-current" href="/blog/">
+                  <span>Blog</span>
+                </a>
+              </li>
+            
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="usa-section" id="main-content">
+      <div class="grid-container">
+        <div class="grid-row grid-gap">
+          <div class="tablet:grid-col usa-prose">
+            
+  <h1>Software Defined Receiver</h1>
+  
+  <p class="text-gray-50">
+    
+    
+    
+    <strong>Published: </strong>2020-01-12
+
+    
+    
+      
+      
+    
+    
+    
+    
+    </span>
+  </p>
+  
+  
+    
+
+<div class="toc">
+  <strong>Table of contents</strong>
+  <ol>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#gps%e4%bf%a1%e5%8f%b7%e7%bb%84%e6%88%90">
+        GPS信号组成
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e4%bf%a1%e5%8f%b7%e6%8d%95%e8%8e%b7">
+        信号捕获
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e8%b7%9f%e8%b8%aa%e7%8e%af%e8%b7%af">
+        跟踪环路
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e5%9f%ba%e5%b8%a6%e6%95%b0%e5%ad%97%e4%bf%a1%e5%8f%b7%e5%a4%84%e7%90%86">
+        基带数字信号处理
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e5%ad%a6%e4%b9%a0%e8%b5%84%e6%96%99">
+        学习资料
+      </a>
+    </li>
+    
+  </ol>
+</div>
+
+
+  
+  
+  
+
+<h2 id="gps信号组成">GPS信号组成 <a aria-label="header link for GPS信号组成" href="#gps信号组成" class="header-link">#</a></h2>
+
+<h3 id="载波">载波</h3>
+
+<p>载波即为一个个正弦波，没有任何标记，作为信号的载体发射出去。</p>
+
+<table>
+<thead>
+<tr>
+<th><div style="width:80px">信号</div></th>
+<th>特点</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><span  class="math">\(L_1\)</span></td>
+<td><span  class="math">\(f_1=1575.42MHz=154f_0\)</span>，<span  class="math">\(\lambda_1 \approx 19.0cm\)</span></td>
+</tr>
+
+<tr>
+<td><span  class="math">\(L_2\)</span></td>
+<td><span  class="math">\(f_1=1227.60MHz=120f_0\)</span>，<span  class="math">\(\lambda_2 \approx 24.4cm\)</span></td>
+</tr>
+</tbody>
+</table>
+
+<p>其中，<span  class="math">\(f_0=10.23MHz\)</span>为原子钟所提供的基准频率。</p>
+
+<h3 id="伪码">伪码</h3>
+
+<p>伪码：伪随机噪声码。对于某一颗卫星的伪码，与其他卫星的伪码互相关值为0；与自身伪码相位完全对齐时相关值为1，相位不对齐时为0。
+与随机噪声的特点相似，故称为伪码。</p>
+
+<table>
+<thead>
+<tr>
+<th><div style="width:80px">信号</div></th>
+<th>特点</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><span  class="math">\(C/A\)</span>码</td>
+<td>仅调制在<span  class="math">\(L_1\)</span>上，长度为1023个码片，每毫秒重复一周，码宽约293m，一个码片的时间内载波<span  class="math">\(L_1\)</span>重复1540周</td>
+</tr>
+
+<tr>
+<td><span  class="math">\(P码\)</span></td>
+<td>同时调制在<span  class="math">\(L_1\)</span>和<span  class="math">\(L_2\)</span>上，每7天重复一周，码宽约30m</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="数据码">数据码</h3>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/sdr/data.png">
+    <img src="/sdr/data.png" alt="Data">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50">载波L1、C/A码、数据码三者之间的长度关系</p>
+  </div>
+</div>
+
+
+<p>数据码解译出来，即为导航星历，用于计算某一时刻卫星的位置。</p>
+
+<table>
+<thead>
+<tr>
+<th><div style="width:80px">信号</div></th>
+<th>特点</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>1帧</td>
+<td>1500比特组成，每帧30s，分成5子帧</td>
+</tr>
+
+<tr>
+<td>1子帧</td>
+<td>300比特组成，每子帧6s，分成10字</td>
+</tr>
+
+<tr>
+<td>1字</td>
+<td>30比特组成，每字0.6s，最高位比特先被发送，6比特的奇偶校验码结束。</td>
+</tr>
+
+<tr>
+<td>1比特</td>
+<td>每比特20ms，期间<span  class="math">\(C/A\)</span>码重复20个周期</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/sdr/nav-msg.png">
+    <img src="/sdr/nav-msg.png" alt="Navigation Message">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50">导航电文的结构</p>
+  </div>
+</div>
+
+
+<h2 id="信号捕获">信号捕获 <a aria-label="header link for 信号捕获" href="#信号捕获" class="header-link">#</a></h2>
+
+<p>二维搜索范围包括41个搜索频带和2046个搜索码带，搜索范围太大。
+通过并行频率搜索、并行码相位搜索，可以大幅度提高搜索效率。利用傅里叶变换实现并行搜索。</p>
+
+<h3 id="并行频率搜索">并行频率搜索</h3>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/sdr/parallel-frequency.png">
+    <img src="/sdr/parallel-frequency.png" alt="Parallel Frequency">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50">并行频率搜索捕获算法流程</p>
+  </div>
+</div>
+
+
+<h3 id="并行码相位搜索">并行码相位搜索</h3>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/sdr/parallel-code.png">
+    <img src="/sdr/parallel-code.png" alt="Parallel Code">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50">并行码相位搜索捕获算法流程</p>
+  </div>
+</div>
+
+
+<p>两个序列<span  class="math">\(x(n)\)</span>与<span  class="math">\(y(n)\)</span>在时域内做相关运算，相当于他们的离散傅里叶变换<span  class="math">\(X(k)\)</span>与<span  class="math">\(Y(k)\)</span>的共轭<span  class="math">\(\overline{Y(k)}\)</span>在频域内做乘积运算。
+反过来，成绩<span  class="math">\(X(k)\overline{Y(k)}\)</span>的离散傅里叶反变换正好是接收机需要进行检测的在各个码相位处的相关值<span  class="math">\(\mathcal{z}(n)\)</span>。</p>
+
+<h2 id="跟踪环路">跟踪环路 <a aria-label="header link for 跟踪环路" href="#跟踪环路" class="header-link">#</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/sdr/tracking-loop.png">
+    <img src="/sdr/tracking-loop_huaad4ad94c86ec98b527c96be4ed9f4c8_42549_800x0_resize_box_2.png" alt="Tracking Loop">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50">一种典型的接收机跟踪环路</p>
+  </div>
+</div>
+
+
+<h3 id="载波相位观测值">载波相位观测值</h3>
+
+<ol>
+<li>数字中频信号<span  class="math">\(s_{IF}(n)\)</span>与载波环所复制的载波混频相乘，其中<span  class="math">\(I\)</span>支路为正弦波，<span  class="math">\(Q\)</span>支路为余弦波：得到<span  class="math">\(i\)</span>和<span  class="math">\(q\)</span>；</li>
+<li>与码环所复制的即时<span  class="math">\(C/A\)</span>码做相关运算：剥离<span  class="math">\(C/A\)</span>码信号，得到<span  class="math">\(i_P\)</span>和<span  class="math">\(q_P\)</span>；</li>
+<li>进行相干积分：滤除高频信号，得到<span  class="math">\(I_P\)</span>和<span  class="math">\(Q_P\)</span>信号；</li>
+<li>输入到载波环鉴别器，得到<span  class="math">\(\phi_e\)</span>或<span  class="math">\(f_e\)</span>，用于调整载波数控振荡器；</li>
+<li>输出观测量：多普勒频移、积分多普勒、载波相位测量值、导航电文数据比特。</li>
+</ol>
+
+<h3 id="码观测值">码观测值</h3>
+
+<ol>
+<li>数字中频信号<span  class="math">\(s_{IF}(n)\)</span>与载波环所复制的载波混频相乘，其中<span  class="math">\(I\)</span>支路为正弦波，<span  class="math">\(Q\)</span>支路为余弦波：得到<span  class="math">\(i\)</span>和<span  class="math">\(q\)</span>；</li>
+<li>与码环所复制的超前、滞后<span  class="math">\(C/A\)</span>码做相关运算：剥离<span  class="math">\(C/A\)</span>码信号，得到<span  class="math">\(i_E\)</span>、<span  class="math">\(q_E\)</span>、<span  class="math">\(i_L\)</span>、<span  class="math">\(q_L\)</span>；</li>
+<li>进行相干积分：滤除高频信号，得到<span  class="math">\(I_E\)</span>、<span  class="math">\(Q_E\)</span>、<span  class="math">\(I_L\)</span>、<span  class="math">\(Q_L\)</span>信号；</li>
+<li>输入到码环鉴别器，得到<span  class="math">\(IQ\)</span>支路的幅值<span  class="math">\(E\)</span>和<span  class="math">\(L\)</span>，并进行非相干积分，并得到<span  class="math">\(\delta_cp\)</span>，用于调整<span  class="math">\(C/A\)</span>码数控振荡器；</li>
+<li>输出观测量：码相位、伪距测量值。</li>
+</ol>
+
+<h2 id="基带数字信号处理">基带数字信号处理 <a aria-label="header link for 基带数字信号处理" href="#基带数字信号处理" class="header-link">#</a></h2>
+
+<h3 id="位同步">位同步</h3>
+
+<h3 id="帧同步">帧同步</h3>
+
+<h3 id="奇偶校验与电文译码">奇偶校验与电文译码</h3>
+
+<h3 id="测量值的生成">测量值的生成</h3>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/sdr/pseudo-range.png">
+    <img src="/sdr/pseudo-range.png" alt="Pseudo-Range">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50">卫星发射信号时间的组成部分</p>
+  </div>
+</div>
+
+
+<p><span  class="math">\[
+t^{(s)}=TOW+(30w+b)\times 0.020+\left(c+\frac{CP}{1023}\right)\times 0.001\ (s) \\[2mm]
+\rho (t)=c\left(t_u(t)-t^{(s)}(t-\tau)\right)
+\]</span></p>
+
+<h2 id="学习资料">学习资料 <a aria-label="header link for 学习资料" href="#学习资料" class="header-link">#</a></h2>
+
+<p><a href="https://item.jd.com/12109458.html">GPS原理与接收机设计</a></p>
+
+<p><a href="https://github.com/perrysou/GNSS_SDR">A Software-Defined GPS and Galileo Receiver: A Single-Frequency Approach</a></p>
+
+<p><a href="http://www.gnssbook.cn/book1/index.html">GPS全球定位接收机——原理与软件实现</a></p>
+
+
+
+  
+
+  
+    <br>
+    <strong>Previous:</strong> <a href="/factor-graph/">因子图的一些思考</a>
+  
+  
+  
+    <div id="disqus-container">
+  
+</div>
+
+  
+
+
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="usa-footer usa-footer--slim" role="contentinfo">
+      
+      <div class="usa-footer__secondary-section" id="footer-main">
+        <div class="grid-container">
+          <div class="grid-row grid-gap">
+            <div class="grid-col-12 text-center">
+              
+              
+                Made with <a href="https://gohugo.io/">Hugo</a> • Content in <a href="https://github.com/nuhuo08/uswds-hugo-theme">GitHub</a>
+                <br>
+                Last deployed on 2020-01-28
+              
+
+              
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    
+    <script src="/js/uswds.min.fcd9b25a27c51de427f4c618dee88490c2ff0a792a573531e316730d07df3f3d.js"></script>
+
+  </body>
+</html>

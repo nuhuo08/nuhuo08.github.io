@@ -6,10 +6,24 @@
     <description>Recent content on XiaoWu</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 11 Jan 2020 08:00:00 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 12 Jan 2020 08:00:00 +0800</lastBuildDate>
     
 	<atom:link href="https://nuhuo08.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Software Defined Receiver</title>
+      <link>https://nuhuo08.github.io/sdr/</link>
+      <pubDate>Sun, 12 Jan 2020 08:00:00 +0800</pubDate>
+      
+      <guid>https://nuhuo08.github.io/sdr/</guid>
+      <description>GPS信号组成 载波 载波即为一个个正弦波，没有任何标记，作为信号的载体发射出去。
+   信号 特点     \(L_1\) \(f_1=1575.42MHz=154f_0\)，\(\lambda_1 \approx 19.0cm\)   \(L_2\) \(f_1=1227.60MHz=120f_0\)，\(\lambda_2 \approx 24.4cm\)    其中，\(f_0=10.23MHz\)为原子钟所提供的基准频率。
+伪码 伪码：伪随机噪声码。对于某一颗卫星的伪码，与其他卫星的伪码互相关值为0；与自身伪码相位完全对齐时相关值为1，相位不对齐时为0。 与随机噪声的特点相似，故称为伪码。
+   信号 特点     \(C/A\)码 仅调制在\(L_1\)上，长度为1023个码片，每毫秒重复一周，码宽约293m，一个码片的时间内载波\(L_1\)重复1540周   \(P码\) 同时调制在\(L_1\)和\(L_2\)上，每7天重复一周，码宽约30m    数据码  载波L1、C/A码、数据码三者之间的长度关系
+  数据码解译出来，即为导航星历，用于计算某一时刻卫星的位置。
+   信号 特点     1帧 1500比特组成，每帧30s，分成5子帧   1子帧 300比特组成，每子帧6s，分成10字   1字 30比特组成，每字0.</description>
+    </item>
     
     <item>
       <title>因子图的一些思考</title>
@@ -29,9 +43,9 @@
       <pubDate>Fri, 10 Jan 2020 08:00:00 +0800</pubDate>
       
       <guid>https://nuhuo08.github.io/matrix/</guid>
-      <description>LU &amp;amp; LDU      LDL &amp;amp; LL 只适用于对称矩阵           QR分解      Householder Method 镜像变换，For each i-th column of A, “zero out” rows i+1 and lower
-     Givens Don’t reflect; rotate instead, Introduces zeroes into A one at a time
-     Gram-Schmidt Iteratively express each new column vector as a linear combination of previous columns, plus some (normalized) orthogonal component</description>
+      <description>LU &amp;amp; LDU    LDL &amp;amp; LL 只适用于对称矩阵       QR分解    Householder Method 镜像变换，For each i-th column of A, “zero out” rows i+1 and lower
+   Givens Don’t reflect; rotate instead, Introduces zeroes into A one at a time
+   Gram-Schmidt Iteratively express each new column vector as a linear combination of previous columns, plus some (normalized) orthogonal component</description>
     </item>
     
     <item>
@@ -40,10 +54,10 @@
       <pubDate>Thu, 09 Jan 2020 08:00:00 +0800</pubDate>
       
       <guid>https://nuhuo08.github.io/navigation-stack/</guid>
-      <description>ROS系统结构 ROS Node ROS Node: 功能模块以Node的形式，处理某一特定的任务。      ROS Master: 记录所有现存的node，保证node之间的信息交流。parameter server运行在其中，实现参数与配置信息的共享。      ROS信息交互 单向通信：一个node发布topic，一个node订阅该topic      双向通信：一个node向另一个node发送信息并请求回复，使用service      查看ROS信息 rosnode list rostopic list rosservice list rostopic info /turtle1/cmd_vel rosmsg info geometry_msgs/Twist rqt_graph      ROS安装 ROS官网教程：ROS Tutorials
+      <description>ROS系统结构 ROS Node ROS Node: 功能模块以Node的形式，处理某一特定的任务。    ROS Master: 记录所有现存的node，保证node之间的信息交流。parameter server运行在其中，实现参数与配置信息的共享。    ROS信息交互 单向通信：一个node发布topic，一个node订阅该topic    双向通信：一个node向另一个node发送信息并请求回复，使用service    查看ROS信息 rosnode list rostopic list rosservice list rostopic info /turtle1/cmd_vel rosmsg info geometry_msgs/Twist rqt_graph    ROS安装 ROS官网教程：ROS Tutorials
 安装ROS基本功能包 由于Ubuntu默认软件源在国内访问速度较慢，建议切换到阿里云。
 安装ROS：
-sudo sh -c &amp;#39;. /etc/lsb-release &amp;amp;&amp;amp; echo &amp;#34;deb http://mirrors.ustc.edu.cn/ros/ubuntu/ `lsb_release -cs` main&amp;#34; &amp;gt; /etc/apt/sources.</description>
+sudo sh -c &amp;#39;. /etc/lsb-release &amp;amp;&amp;amp; echo &amp;#34;deb http://mirrors.ustc.edu.cn/ros/ubuntu/ `lsb_release -cs` main&amp;#34; &amp;gt; /etc/apt/sources.list.d/ros-latest.list&amp;#39; sudo apt-key adv --keyserver &amp;#39;hkp://keyserver.ubuntu.com:80&amp;#39; --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654 sudo apt-get update sudo apt-get install ros-kinetic-desktop-full sudo rosdep init rosdep update echo &amp;#34;source /opt/ros/kinetic/setup.</description>
     </item>
     
     <item>
@@ -91,10 +105,11 @@ AddResidualBlock problem.AddResidualBlock(costfunction, lossfunction, x1, x2 ...
       <pubDate>Sun, 05 Jan 2020 08:00:00 +0800</pubDate>
       
       <guid>https://nuhuo08.github.io/vins-mono/</guid>
-      <description>代码流程图      动态方程 预积分公式推导 \(b_k^a\)和\(b_k^g\)作为随机游走噪声，在推导\(k \sim k+1\)时认为是常数！不像\(w\)和\(a\)，要添加\(n_k^g\)和\(n_k^a\)噪声进去
+      <description>代码流程图    动态方程 预积分公式推导 \(b_k^a\)和\(b_k^g\)作为随机游走噪声，在推导\(k \sim k+1\)时认为是常数！不像\(w\)和\(a\)，要添加\(n_k^g\)和\(n_k^a\)噪声进去
 \[ \omega=\frac{1}{2}( (\omega^{b_k}+n_k^g-b_k^g) + (\omega^{b_{k+1}}+n_{k+1}^g-b_k^g) ) \\[2mm] q_{b_ib_{k+1}}=q_{b_ib_k}\otimes\begin{bmatrix}1 \\ \frac{1}{2}\omega\delta{t}\end{bmatrix} \\[2mm] a=\frac{1}{2}( q_{b_ib_k}(a^{b_k}+n_k^a-b_k^a) + q_{b_ib_{k+1}}(a^{b_{k+1}}+n_{k+1}^a-b_k^a) ) \\[2mm] \beta_{b_ib_{k+1}}=\beta_{b_ib_k}+a\delta{t} \\[2mm] \alpha_{b_ib_{k+1}}=\alpha_{b_ib_k}+\beta_{b_ib_k}\delta{t}+\frac{1}{2}a\delta{t}^2 \\[2mm] b_{k+1}^a=b_k^a+n_{b_k^a}\delta{t} \\[2mm] b_{k+1}^g=b_k^g+n_{b_k^g}\delta{t} \\[2mm] \]
 写成矩阵形式：
-\[ \begin{bmatrix}\alpha_{b_ib_{k+1}} \\ \theta_{b_ib_{k+1}} \\ \beta_{b_ib_{k+1}} \\ b_{k+1}^a \\ b_{k+1}^g\end{bmatrix} =F*\begin{bmatrix}\alpha_{b_ib_{k}} \\ \theta_{b_ib_{k}} \\ \beta_{b_ib_{k}} \\ b_{k}^a \\ b_{k}^g\end{bmatrix} +G*\begin{bmatrix}n_k^a \\ n_k^g \\ n_{k+1}^a \\ n_{k+1}^g \\ n_{k}^a \\ n_{k}^g \end{bmatrix} \]</description>
+\[ \begin{bmatrix}\alpha_{b_ib_{k+1}} \\ \theta_{b_ib_{k+1}} \\ \beta_{b_ib_{k+1}} \\ b_{k+1}^a \\ b_{k+1}^g\end{bmatrix} =F*\begin{bmatrix}\alpha_{b_ib_{k}} \\ \theta_{b_ib_{k}} \\ \beta_{b_ib_{k}} \\ b_{k}^a \\ b_{k}^g\end{bmatrix} +G*\begin{bmatrix}n_k^a \\ n_k^g \\ n_{k+1}^a \\ n_{k+1}^g \\ n_{k}^a \\ n_{k}^g \end{bmatrix} \]
+\[ F=\begin{bmatrix}I &amp;f_{12} &amp;I\delta{t} &amp;-\frac{1}{4}(q_{b_ib_k}+q_{b_ib_{k+1}})\delta{t}^2 &amp;f_{15}\\ 0 &amp;I-[\omega]_{\times} &amp;0 &amp;0 &amp;-I\delta{t}\\ 0 &amp;f_{32} &amp;I &amp;-\frac{1}{2}(q_{b_ib_k}+q_{b_ib_{k+1}})\delta{t} &amp;f_{35}\\ 0 &amp;0 &amp;0 &amp;I &amp;0\\ 0 &amp;0 &amp;0 &amp;0 &amp;I \end{bmatrix} \\[2mm] G=\begin{bmatrix}\frac{1}{4}q_{b_ib_k}\delta{t}^2 &amp;g_{12} &amp;\frac{1}{4}q_{b_ib_{k+1}}\delta{t}^2 &amp;g_{14} &amp;0 &amp;0 \\ 0 &amp;\frac{1}{2}I\delta{t} &amp;0 &amp;\frac{1}{2}I\delta{t} &amp;0 &amp;0\\ \frac{1}{2}q_{b_ib_k}\delta{t} &amp;g_{32} &amp;\frac{1}{2}q_{b_ib_{k+1}}\delta{t} &amp;g_{34} &amp;0 &amp;0\\ 0 &amp;0 &amp;0 &amp;0 &amp;I\delta{t} &amp;0\\ 0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;I\delta{t}\end{bmatrix} \\[2mm] f_{12}=-\frac{1}{4}( R_{b_ib_k}[a^{b_k}-b_k^a]_\times\delta{t}^2 + R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times(I-[\omega]_\times\delta{t})\delta{t}^2) \\[2mm] f_{32}=-\frac{1}{2}( R_{b_ib_k}[a^{b_k}-b_k^a]_\times\delta{t} + R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times(I-[\omega]_\times\delta{t})\delta{t}) \\[2mm] f_{15}=-\frac{1}{4}(R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times\delta{t}^2)(-\delta{t}) \\[2mm] f_{35}=-\frac{1}{2}(R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times\delta{t})(-\delta{t}) \\[2mm] g_{12}=g_{14}=-\frac{1}{4}(R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times\delta{t}^2)(\frac{1}{2}\delta{t}) \\[2mm] g_{32}=g_{34}=-\frac{1}{2}(R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times\delta{t})(\frac{1}{2}\delta{t}) \]</description>
     </item>
     
     <item>
@@ -136,11 +151,11 @@ https://zhuanlan.zhihu.com/p/61614421
       <pubDate>Thu, 02 Jan 2020 08:00:00 +0800</pubDate>
       
       <guid>https://nuhuo08.github.io/amcl/</guid>
-      <description>ROS-AMCL      粒子聚类 对外输出的机器人状态不应该是某一个最好的粒子，因为很有可能某些粒子的值都非常接近，可能会引起频繁的粒子切换，导致输出的结果来回跳变。
+      <description>ROS-AMCL    粒子聚类 对外输出的机器人状态不应该是某一个最好的粒子，因为很有可能某些粒子的值都非常接近，可能会引起频繁的粒子切换，导致输出的结果来回跳变。
 基于此考虑， 应该对相似的粒子进行聚类。将最好的那一簇粒子的统计状态作为输出的机器人状态。
 KD-Tree 当涉及到距离查找时，作为算法工程师，我们应该首先想到KD-Tree。树的叶子节点是每一个粒子，而非叶子节点则保存的是该节点的分叉判断的标准，小于此分叉判断标准的在左边，大于此分叉标准的在右边。
 查询的基本思路：首先通过二叉树搜索（比较待查询节点和分裂节点的分裂维的值，小于等于就进入左子树分支，等于就进入右子树分支直到叶子结点），顺着“搜索路径”很快能找到最近邻的近似点，也就是与待查询点处于同一个子空间的叶子结点；然后再回溯搜索路径，并判断搜索路径上的结点的其他子结点空间中是否可能有距离查询点更近的数据点，如果有可能，则需要跳到其他子结点空间中去搜索（将其他子结点加入到搜索路径）。重复这个过程直到搜索路径为空。
-     聚类 循环遍历每一个叶子节点，在叶子节点周围的 +-1 范围内的粒子都归为一类。例如在AMCL中，每个粒子周围27个粒子若有相连的，就将它们全部连成一片，形成一簇粒子。
+   聚类 循环遍历每一个叶子节点，在叶子节点周围的 +-1 范围内的粒子都归为一类。例如在AMCL中，每个粒子周围27个粒子若有相连的，就将它们全部连成一片，形成一簇粒子。
 粒子滤波改进 为了防止机器人被绑架，出现粒子收敛于某一错误的地方，需要进行粒子滤波的改良。
 粒子注入 我们来考虑如下的式子：
 \[ x_1 = x + 0.1(y-x) \\[2mm] x_2 = x + 0.9(y-x) \]
@@ -151,7 +166,8 @@ KLD自适应 KLD的计算属于数理统计的知识，可参考论文1。这里
 而当粒子权值都接近时，假设我们采样了100次，每次采样出来的粒子都不同，此时粒子的个数一直增长到100。此时的KLD也随着粒子的个数增长到一个比较大的值。采样的次数虽然持续增加，但是始终超过不了KDL计算出来的次数。此种情况下采样仍将继续。
 距离计算 计算每个粒子的权重时，我们需要计算观测到的障碍物与地图中的障碍物的距离差异。差异越大，权值越小。当某次观测的障碍物全部与地图上的障碍物匹配上了，则差异为0，权值极大。因此，在地图的初始阶段，我们需要计算地图上任一点位置到最近障碍物的距离。这就是似然场模型。
 直接计算 遍历每一个点，计算每一个点到每个障碍物的距离并取最小值。此方法进行了重复计算，效率较低。
-高效算法 从障碍物出发，向外膨胀一个单位。当所有障碍物膨胀完以后，从膨胀出来的地方出发，继续向外膨胀一个单位。此方法没有冗余计算，且实现的代码简洁。</description>
+高效算法 从障碍物出发，向外膨胀一个单位。当所有障碍物膨胀完以后，从膨胀出来的地方出发，继续向外膨胀一个单位。此方法没有冗余计算，且实现的代码简洁。
+AMCL参数解读 min_particles / max_particles / kld_err / kld_z : 用来限制粒子数量</description>
     </item>
     
     <item>
