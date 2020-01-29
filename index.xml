@@ -6,10 +6,21 @@
     <description>Recent content on XiaoWu</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 12 Jan 2020 08:00:00 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 13 Jan 2020 08:00:00 +0800</lastBuildDate>
     
 	<atom:link href="https://nuhuo08.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>GNSS定位原理</title>
+      <link>https://nuhuo08.github.io/rtk/</link>
+      <pubDate>Mon, 13 Jan 2020 08:00:00 +0800</pubDate>
+      
+      <guid>https://nuhuo08.github.io/rtk/</guid>
+      <description>数据文件介绍 观测文件 观测文件记录了该观测站能够观测到的卫星及其对应的伪距、载波观测值。
+ 01 9 4 9 40 0.0000000 0 7G 1G 4G 7G13G20G24G25 20532012.14648 20532011.55846 20532016.22546 107896448.4014 84075170.1284 -702.033 -547.047 21255524.69947 21255524.94445 21255529.02045 111698540.8774 87037834.1244 799.589 623.056 24648794.02245 24648792.88941 24648801.63741 129530300.6484 100932694.9344 -3425.352 -2669.144 21267718.45748 21267718.52445 21267722.00945 111762613.2534 87087766.9504 1911.882 1489.773 21900010.88847 21900009.74444 21900015.95344 115085325.1934 89676892.5064 -3011.439 -2346.579 23828505.41246 23828504.07842 23828511.81542 125219643.5474 97573763.5014 2743.177 2137.544 24104647.59546 24104646.97742 24104654.81342 126670763.8784 98704504.1444 -2800.638 -2182.275  导航文件 导航文件用来计算卫星在某一时刻的位置。
+ 7 01 9 4 9 59 44.</description>
+    </item>
     
     <item>
       <title>Software Defined Receiver</title>
@@ -26,7 +37,7 @@
     </item>
     
     <item>
-      <title>因子图的一些思考</title>
+      <title>Factor Graph</title>
       <link>https://nuhuo08.github.io/factor-graph/</link>
       <pubDate>Sat, 11 Jan 2020 08:00:00 +0800</pubDate>
       
@@ -86,7 +97,7 @@ https://zhuanlan.zhihu.com/p/32937247
     </item>
     
     <item>
-      <title>Non-Linear</title>
+      <title>非线性优化</title>
       <link>https://nuhuo08.github.io/non-linear/</link>
       <pubDate>Mon, 06 Jan 2020 08:00:00 +0800</pubDate>
       
@@ -183,7 +194,7 @@ AMCL参数解读 min_particles / max_particles / kld_err / kld_z : 用来限制�
     </item>
     
     <item>
-      <title>Hugo Website</title>
+      <title>Hugo搭建网站</title>
       <link>https://nuhuo08.github.io/hugo-website/</link>
       <pubDate>Wed, 01 Jan 2020 08:00:00 +0800</pubDate>
       

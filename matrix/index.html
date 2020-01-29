@@ -438,7 +438,8 @@
 <h2 id="方程求解">方程求解 <a aria-label="header link for 方程求解" href="#方程求解" class="header-link">#</a></h2>
 
 <p>LU中，LU为三角阵，递归带入求解方程<br>
-QR中Q为正交阵，逆矩阵即转置，容易求解</p>
+QR中Q为正交阵，逆矩阵即转置，容易求解<br>
+SVD可以用于求解<span  class="math">\(Ax=0\)</span>形式的方程，最小特征值对应的特征向量即为解。若方程形式为<span  class="math">\(Ax=b\)</span>，将<span  class="math">\(b\)</span>移至左侧即可。可参考<a href="../orb-slam2/#tracking">ORB-SLAM2 Initialization</a></p>
 
 <h2 id="nullspace">NullSpace <a aria-label="header link for NullSpace" href="#nullspace" class="header-link">#</a></h2>
 
@@ -570,7 +571,7 @@ QR中Q为正交阵，逆矩阵即转置，容易求解</p>
 
   
     <br>
-    <strong>Next:</strong> <a href="/factor-graph/">因子图的一些思考</a>
+    <strong>Next:</strong> <a href="/factor-graph/">Factor Graph</a>
   
 
   
@@ -601,7 +602,7 @@ QR中Q为正交阵，逆矩阵即转置，容易求解</p>
               
                 Made with <a href="https://gohugo.io/">Hugo</a> • Content in <a href="https://github.com/nuhuo08/uswds-hugo-theme">GitHub</a>
                 <br>
-                Last deployed on 2020-01-28
+                Last deployed on 2020-01-29
               
 
               
