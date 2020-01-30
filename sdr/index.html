@@ -122,7 +122,7 @@
     
       
       
-        | <strong>Lastmod: </strong>2020-01-28
+        | <strong>Lastmod: </strong>2020-01-29
 
       
     
@@ -154,16 +154,6 @@
       
       
       
-      <a href="#%e4%bf%a1%e5%8f%b7%e6%8d%95%e8%8e%b7">
-        信号捕获
-      </a>
-    </li>
-    
-    <li>
-      
-      
-      
-      
       <a href="#%e8%b7%9f%e8%b8%aa%e7%8e%af%e8%b7%af">
         跟踪环路
       </a>
@@ -176,6 +166,16 @@
       
       <a href="#%e5%9f%ba%e5%b8%a6%e6%95%b0%e5%ad%97%e4%bf%a1%e5%8f%b7%e5%a4%84%e7%90%86">
         基带数字信号处理
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e4%bf%a1%e5%8f%b7%e6%8d%95%e8%8e%b7">
+        信号捕获
       </a>
     </li>
     
@@ -333,64 +333,6 @@
 </div>
 
 
-<h2 id="信号捕获">信号捕获 <a aria-label="header link for 信号捕获" href="#信号捕获" class="header-link">#</a></h2>
-
-<p>二维搜索范围包括41个搜索频带和2046个搜索码带，搜索范围太大。
-通过并行频率搜索、并行码相位搜索，可以大幅度提高搜索效率。利用傅里叶变换实现并行搜索。</p>
-
-<h3 id="并行频率搜索">并行频率搜索</h3>
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-<div class="usa-image-block">
-  <a href="/sdr/parallel-frequency.png">
-    <img src="/sdr/parallel-frequency.png" alt="Parallel Frequency">
-  </a>
-  <div class="usa-image-text-block">
-    <p class="usa-image-text text-gray-50">并行频率搜索捕获算法流程</p>
-  </div>
-</div>
-
-
-<h3 id="并行码相位搜索">并行码相位搜索</h3>
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-<div class="usa-image-block">
-  <a href="/sdr/parallel-code.png">
-    <img src="/sdr/parallel-code.png" alt="Parallel Code">
-  </a>
-  <div class="usa-image-text-block">
-    <p class="usa-image-text text-gray-50">并行码相位搜索捕获算法流程</p>
-  </div>
-</div>
-
-
-<p>两个序列<span  class="math">\(x(n)\)</span>与<span  class="math">\(y(n)\)</span>在时域内做相关运算，相当于他们的离散傅里叶变换<span  class="math">\(X(k)\)</span>与<span  class="math">\(Y(k)\)</span>的共轭<span  class="math">\(\overline{Y(k)}\)</span>在频域内做乘积运算。
-反过来，成绩<span  class="math">\(X(k)\overline{Y(k)}\)</span>的离散傅里叶反变换正好是接收机需要进行检测的在各个码相位处的相关值<span  class="math">\(\mathcal{z}(n)\)</span>。</p>
-
 <h2 id="跟踪环路">跟踪环路 <a aria-label="header link for 跟踪环路" href="#跟踪环路" class="header-link">#</a></h2>
 
 
@@ -473,6 +415,64 @@
 t^{(s)}=TOW+(30w+b)\times 0.020+\left(c+\frac{CP}{1023}\right)\times 0.001\ (s) \\[2mm]
 \rho (t)=c\left(t_u(t)-t^{(s)}(t-\tau)\right)
 \]</span></p>
+
+<h2 id="信号捕获">信号捕获 <a aria-label="header link for 信号捕获" href="#信号捕获" class="header-link">#</a></h2>
+
+<p>二维搜索范围包括41个搜索频带和2046个搜索码带，搜索范围太大。
+通过并行频率搜索、并行码相位搜索，可以大幅度提高搜索效率。利用傅里叶变换实现并行搜索。</p>
+
+<h3 id="并行频率搜索">并行频率搜索</h3>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/sdr/parallel-frequency.png">
+    <img src="/sdr/parallel-frequency.png" alt="Parallel Frequency">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50">并行频率搜索捕获算法流程</p>
+  </div>
+</div>
+
+
+<h3 id="并行码相位搜索">并行码相位搜索</h3>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/sdr/parallel-code.png">
+    <img src="/sdr/parallel-code.png" alt="Parallel Code">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50">并行码相位搜索捕获算法流程</p>
+  </div>
+</div>
+
+
+<p>两个序列<span  class="math">\(x(n)\)</span>与<span  class="math">\(y(n)\)</span>在时域内做相关运算，相当于他们的离散傅里叶变换<span  class="math">\(X(k)\)</span>与<span  class="math">\(Y(k)\)</span>的共轭<span  class="math">\(\overline{Y(k)}\)</span>在频域内做乘积运算。
+反过来，成绩<span  class="math">\(X(k)\overline{Y(k)}\)</span>的离散傅里叶反变换正好是接收机需要进行检测的在各个码相位处的相关值<span  class="math">\(\mathcal{z}(n)\)</span>。</p>
 
 <h2 id="学习资料">学习资料 <a aria-label="header link for 学习资料" href="#学习资料" class="header-link">#</a></h2>
 
@@ -582,7 +582,7 @@ t^{(s)}=TOW+(30w+b)\times 0.020+\left(c+\frac{CP}{1023}\right)\times 0.001\ (s) 
               
                 Made with <a href="https://gohugo.io/">Hugo</a> • Content in <a href="https://github.com/nuhuo08/uswds-hugo-theme">GitHub</a>
                 <br>
-                Last deployed on 2020-01-29
+                Last deployed on 2020-01-30
               
 
               

@@ -122,6 +122,9 @@
     
       
       
+        | <strong>Lastmod: </strong>2020-01-29
+
+      
     
     
     
@@ -250,15 +253,17 @@ Authorization: Basic VXNlcjpQd2Q=</code></pre>
 \begin{aligned}
 P_r^i &= \rho_r^i + I_r^i + T_r^i + ct_r + \epsilon_r^i \\
 &=\sqrt{(x_r-x^s)^2+(y_r-y^s)^2+(z_r-z^s)^2} + I_r^i + T_r^i + ct_r + \epsilon_r^i \\
-&=\rho_{r,0}^i + \frac{\partial \rho_r^i}{\partial x_r}\Delta x_r + I_r^i + T_r^i + ct_r + \epsilon_r^i
+&=( \rho_{r,0}^i + \frac{\partial \rho_r^i}{\partial x_r}\Delta x_r ) + I_r^i + T_r^i + ( ct_{r,0} + c\Delta t_r ) + \epsilon_r^i
 \end{aligned}
 \]</span></p>
 
 <p>经典单点定位精度在10m左右。
-其中<span  class="math">\(\rho_{r,0}^i\)</span>为测站到第<span  class="math">\(i\)</span>颗卫星的距离。由于测站坐标位置，带有一个角标<code>0</code>，且存在测站待估计的小量改正数<span  class="math">\(\Delta x_r\)</span>。</p>
+其中<span  class="math">\(\rho_{r,0}^i\)</span>为测站到第<span  class="math">\(i\)</span>颗卫星的近似距离，<span  class="math">\(ct_{r,0}\)</span>表示接收机钟差的近似值。<br>
+由于测站坐标位置、接收机钟差需要一个初值，用带有一个角标<code>0</code>的符号表示，且存在待估计的小量改正数<span  class="math">\(\Delta x_r\)</span>与<span  class="math">\(\Delta t_r\)</span>。<br>
+<span  class="math">\(I\)</span>与<span  class="math">\(T\)</span>分别表示电离层、对流层的影响。<span  class="math">\(\epsilon\)</span>表示其它随机噪声。</p>
 
 <p><span  class="math">\[
-\begin{bmatrix} P_r^i -\rho_{r,0}^i -ct_r -I_r^i -T_r^i \end{bmatrix} = \begin{bmatrix} E_r^i & 1 \end{bmatrix}
+\begin{bmatrix} P_r^i -\rho_{r,0}^i -ct_{r,0} -I_r^i -T_r^i \end{bmatrix} = \begin{bmatrix} E_r^i & 1 \end{bmatrix}
 \begin{bmatrix} \Delta x_r \\ c\Delta t_r \end{bmatrix}
 \]</span></p>
 
@@ -271,7 +276,7 @@ P_r^i &= \rho_r^i + I_r^i + T_r^i + ct_r + \epsilon_r^i \\
 <p>参考站的坐标已知，<span  class="math">\(\rho_b^i\)</span>为精确量，也不存在<span  class="math">\(\Delta x_b\)</span>，其观测方程可以写成如下形式：</p>
 
 <p><span  class="math">\[
-\begin{bmatrix} P_b^i -\rho_b^i -ct_b -I_b^i -T_b^i \end{bmatrix} = \begin{bmatrix} E_b^i & 1 \end{bmatrix}
+\begin{bmatrix} P_b^i -\rho_b^i -ct_{b,0} -I_b^i -T_b^i \end{bmatrix} = \begin{bmatrix} E_b^i & 1 \end{bmatrix}
 \begin{bmatrix} 0 \\ c\Delta t_b \end{bmatrix}
 \]</span></p>
 
@@ -279,7 +284,7 @@ P_r^i &= \rho_r^i + I_r^i + T_r^i + ct_r + \epsilon_r^i \\
 从而得到单差观测方程：</p>
 
 <p><span  class="math">\[
-\begin{bmatrix} P_{rb}^i -\rho_{r,0}^i -\rho_b^i -ct_{rb} \end{bmatrix} = \begin{bmatrix} E_r^i & 1 \end{bmatrix}
+\begin{bmatrix} P_{rb}^i -\rho_{r,0}^i -\rho_b^i -ct_{rb,0} \end{bmatrix} = \begin{bmatrix} E_r^i & 1 \end{bmatrix}
 \begin{bmatrix} \Delta x_r \\ c\Delta t_{rb} \end{bmatrix}
 \]</span></p>
 
@@ -320,7 +325,7 @@ P_r^i &= \rho_r^i + I_r^i + T_r^i + ct_r + \epsilon_r^i \\
 
 <p>TODO</p>
 
-<h3 id="参考星选择与处理的小技巧">参考星选择与处理的小技巧</h3>
+<h4 id="参考星选择与处理的小技巧">参考星选择与处理的小技巧</h4>
 
 <p>双差观测方程需要选择合适的参考星。在特殊情况下，参考星可能会突然消失，或者出现周跳等不稳定情况，所估计的双差模糊度也需要做特殊处理。</p>
 
@@ -376,7 +381,7 @@ T. Takasu教授写的两个开源软件，是很好的入门学习软件：<br>
               
                 Made with <a href="https://gohugo.io/">Hugo</a> • Content in <a href="https://github.com/nuhuo08/uswds-hugo-theme">GitHub</a>
                 <br>
-                Last deployed on 2020-01-29
+                Last deployed on 2020-01-30
               
 
               
