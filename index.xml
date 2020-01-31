@@ -6,10 +6,23 @@
     <description>Recent content on XiaoWu</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 13 Jan 2020 08:00:00 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 14 Jan 2020 08:00:00 +0800</lastBuildDate>
     
 	<atom:link href="https://nuhuo08.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>LOAM</title>
+      <link>https://nuhuo08.github.io/loam/</link>
+      <pubDate>Tue, 14 Jan 2020 08:00:00 +0800</pubDate>
+      
+      <guid>https://nuhuo08.github.io/loam/</guid>
+      <description>点云注册 坐标系统 IMU与Lidar的坐标系：x轴向前，y轴向左，z轴向上，形成右手坐标系；
+LOAM内部坐标系：z轴向前，x轴向左，y轴向上，形成右手坐标系。
+关于坐标系统与旋转，请参考Rotation。
+重力的处理 imuHandler 需要减去重力在IMU坐标系下的分量，并将坐标系统转换成LOAM内部坐标系。
+\[ \begin{aligned} \begin{pmatrix} a_x \\ a_y \\ a_z \end{pmatrix} &amp;=R_{bw} *\begin{pmatrix} 0 \\ 0 \\ g \\ \end{pmatrix} \\[2mm] &amp;=R_x(-roll)*R_y(-pitch)*R_z(-yaw) *\begin{pmatrix} 0 \\ 0 \\ g \\ \end{pmatrix} \\[2mm] &amp;=\begin{pmatrix} 1 &amp; 0 &amp; 0 \\ 0 &amp; cos(roll) &amp; sin(roll) \\ 0 &amp; -sin(roll) &amp; cos(roll) \end{pmatrix} *\begin{pmatrix} cos(pitch) &amp; 0 &amp; -sin(pitch) \\ 0 &amp; 1 &amp; 0 \\ sin(pitch) &amp; 0 &amp; cos(pitch) \end{pmatrix} *\begin{pmatrix} cos(yaw) &amp; sin(yaw) &amp; 0 \\ -sin(yaw) &amp; cos(yaw) &amp; 0 \\ 0 &amp; 0 &amp; 1 \end{pmatrix} *\begin{pmatrix} 0 \\ 0 \\ g \\ \end{pmatrix} \\[2mm] &amp;=\begin{pmatrix} -g\cdot sin(pitch) \\ g\cdot cos(pitch)sin(roll) \\ g\cdot cos(pitch)cos(roll) \end{pmatrix} \end{aligned} \]</description>
+    </item>
     
     <item>
       <title>GNSS定位原理</title>

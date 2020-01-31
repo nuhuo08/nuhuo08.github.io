@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+	<script>
+		renderMathInElement(document.body,
+			{
+				delimiters: [
+					{left: "$$", right: "$$", display: true},
+					{left: "$", right: "$", display: false},
+				]
+			}
+		);
+
+		var inlineMathArray = document.querySelectorAll("script[type='math/tex']");
+		for (var i = 0; i < inlineMathArray.length; i++) {
+			var inlineMath = inlineMathArray[i];
+			var tex = inlineMath.innerText || inlineMath.textContent;
+			var replaced = document.createElement("span");
+			replaced.innerHTML = katex.renderToString(tex, {displayMode: false});
+			inlineMath.parentNode.replaceChild(replaced, inlineMath);
+		}
+
+		var displayMathArray = document.querySelectorAll("script[type='math/tex; mode=display']");
+		for (var i = 0; i < displayMathArray.length; i++) {
+			var displayMath = displayMathArray[i];
+			var tex = displayMath.innerHTML;
+			var replaced = document.createElement("span");
+			replaced.innerHTML = katex.renderToString(tex.replace(/%.*/g, ''), {displayMode: true});
+			displayMath.parentNode.replaceChild(replaced, displayMath);
+		}
+	</script>
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+
+    <link rel="canonical" href="https://nuhuo08.github.io/loam/">
+    <meta name="generator" content="Hugo 0.62.2" />
+    <title>LOAM | XiaoWu</title>
+
+    
+    <link rel="stylesheet" href="/css/uswds.min.c480a9b2a1fc1e7e564e62752462b22cd5f508a047f0340cb3725722f627fb1d.css">
+    
+    
+    <link rel="stylesheet" href="/css/custom.0a518097f5500782b25662ab2af4088600eefcc3d2d8828ce721e5e5fee436b5.min.css">
+  </head>
+  <body>
+    <a class="usa-skipnav" href="#main-content">Skip to main content</a>
+
+    <header class="usa-header usa-header--basic" role="banner">
+      <div class="usa-nav-container">
+        <div class="usa-navbar">
+          <div class="usa-logo" id="basic-mega-logo">
+            <em class="usa-logo__text">
+              <a href="/" title="Home" aria-label="Home">XiaoWu</a>
+            </em>
+          </div>
+          <button class="usa-menu-btn">Menu</button>
+        </div>
+
+        <nav role="navigation" class="usa-nav">
+          <button class="usa-nav__close">
+            <img src="/img/close.svg" alt="close" />
+          </button>
+          <ul class="usa-nav__primary usa-accordion">
+            
+            
+              
+              
+              
+              
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link " href="/">
+                  <span>Home</span>
+                </a>
+              </li>
+            
+              
+              
+              
+              
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link usa-current" href="/blog/">
+                  <span>Blog</span>
+                </a>
+              </li>
+            
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="usa-section" id="main-content">
+      <div class="grid-container">
+        <div class="grid-row grid-gap">
+          <div class="tablet:grid-col usa-prose">
+            
+  <h1>LOAM</h1>
+  
+  <p class="text-gray-50">
+    
+    
+    
+    <strong>Published: </strong>2020-01-14
+
+    
+    
+      
+      
+    
+    
+    
+    
+    </span>
+  </p>
+  
+  
+    
+
+<div class="toc">
+  <strong>Table of contents</strong>
+  <ol>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e7%82%b9%e4%ba%91%e6%b3%a8%e5%86%8c">
+        点云注册
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e6%bf%80%e5%85%89%e9%87%8c%e7%a8%8b%e8%ae%a1">
+        激光里程计
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e5%bb%ba%e5%9b%be">
+        建图
+      </a>
+    </li>
+    
+  </ol>
+</div>
+
+
+  
+  
+  
+
+<h2 id="点云注册">点云注册 <a aria-label="header link for 点云注册" href="#点云注册" class="header-link">#</a></h2>
+
+<h3 id="坐标系统">坐标系统</h3>
+
+<p>IMU与Lidar的坐标系：x轴向前，y轴向左，z轴向上，形成右手坐标系；<br>
+LOAM内部坐标系：z轴向前，x轴向左，y轴向上，形成右手坐标系。</p>
+
+<p>关于坐标系统与旋转，请参考<a href="../rotation">Rotation</a>。</p>
+
+<h3 id="重力的处理">重力的处理</h3>
+
+<h4 id="imuhandler">imuHandler</h4>
+
+<p>需要减去重力在IMU坐标系下的分量，并将坐标系统转换成LOAM内部坐标系。</p>
+
+<p><span  class="math">\[
+\begin{aligned}
+\begin{pmatrix} a_x \\ a_y \\ a_z \end{pmatrix} &=R_{bw} *\begin{pmatrix} 0 \\ 0 \\ g \\ \end{pmatrix} \\[2mm]
+&=R_x(-roll)*R_y(-pitch)*R_z(-yaw) *\begin{pmatrix} 0 \\ 0 \\ g \\ \end{pmatrix} \\[2mm]
+&=\begin{pmatrix} 1 & 0 & 0 \\ 0 & cos(roll) & sin(roll) \\ 0 & -sin(roll) & cos(roll) \end{pmatrix}
+*\begin{pmatrix} cos(pitch) & 0 & -sin(pitch) \\ 0 & 1 & 0 \\ sin(pitch) & 0 & cos(pitch) \end{pmatrix}
+*\begin{pmatrix} cos(yaw) & sin(yaw) & 0 \\ -sin(yaw) & cos(yaw) & 0 \\ 0 & 0 & 1 \end{pmatrix}
+*\begin{pmatrix} 0 \\ 0 \\ g \\ \end{pmatrix} \\[2mm]
+&=\begin{pmatrix} -g\cdot sin(pitch) \\ g\cdot cos(pitch)sin(roll) \\ g\cdot cos(pitch)cos(roll) \end{pmatrix}
+\end{aligned}
+\]</span></p>
+
+<p>对应于下面的代码：</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#b00040">void</span> <span style="color:#00f">imuHandler</span>(<span style="color:#008000;font-weight:bold">const</span> sensor_msgs<span style="color:#666">:</span><span style="color:#666">:</span>Imu<span style="color:#666">:</span><span style="color:#666">:</span>ConstPtr<span style="color:#666">&amp;</span> imuIn)
+{
+  <span style="color:#b00040">float</span> accX <span style="color:#666">=</span> imuIn<span style="color:#666">-</span><span style="color:#666">&gt;</span>linear_acceleration.y <span style="color:#666">-</span> sin(roll) <span style="color:#666">*</span> cos(pitch) <span style="color:#666">*</span> <span style="color:#666">9.81</span>;
+  <span style="color:#b00040">float</span> accY <span style="color:#666">=</span> imuIn<span style="color:#666">-</span><span style="color:#666">&gt;</span>linear_acceleration.z <span style="color:#666">-</span> cos(roll) <span style="color:#666">*</span> cos(pitch) <span style="color:#666">*</span> <span style="color:#666">9.81</span>;
+  <span style="color:#b00040">float</span> accZ <span style="color:#666">=</span> imuIn<span style="color:#666">-</span><span style="color:#666">&gt;</span>linear_acceleration.x <span style="color:#666">+</span> sin(pitch) <span style="color:#666">*</span> <span style="color:#666">9.81</span>;
+}
+</code></pre></div>
+<h4 id="accumulateimushift">AccumulateIMUShift</h4>
+
+<p>将IMU坐标系下的加速度转换到World坐标系下，并按照匀加速模型，估算两时间间隔内，IMU在Word坐标系下的位置和速度。</p>
+
+<p><span  class="math">\[
+\begin{aligned}
+\begin{pmatrix} a_x' \\ a_y' \\ a_z' \end{pmatrix} &=R_{wb} *\begin{pmatrix} a_x \\ a_y \\ a_z \\ \end{pmatrix} \\[2mm]
+&=R_y(yaw)*R_x(pitch)*R_z(roll) *\begin{pmatrix} a_x \\ a_y \\ a_z \\ \end{pmatrix} \\[2mm]
+&=\begin{pmatrix} cos(yaw) & 0 & sin(yaw) \\ 0 & 1 & 0 \\ -sin(yaw) & 0 & cos(yaw) \end{pmatrix}
+*\begin{pmatrix} 1 & 0 & 0 \\ 0 & cos(pitch) & -sin(pitch) \\ 0 & sin(pitch) & cos(pitch) \end{pmatrix}
+*\begin{pmatrix} cos(roll) & -sin(roll) & 0 \\ sin(roll) & cos(roll) & 0 \\ 0 & 0 & 1 \end{pmatrix}
+*\begin{pmatrix} a_x \\ a_y \\ a_z \\ \end{pmatrix} \\[2mm]
+\end{aligned}
+\]</span></p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#b00040">void</span> <span style="color:#00f">AccumulateIMUShift</span>()
+{
+  <span style="color:#b00040">float</span> x1 <span style="color:#666">=</span> cos(roll) <span style="color:#666">*</span> accX <span style="color:#666">-</span> sin(roll) <span style="color:#666">*</span> accY;
+  <span style="color:#b00040">float</span> y1 <span style="color:#666">=</span> sin(roll) <span style="color:#666">*</span> accX <span style="color:#666">+</span> cos(roll) <span style="color:#666">*</span> accY;
+  <span style="color:#b00040">float</span> z1 <span style="color:#666">=</span> accZ;
+
+  <span style="color:#b00040">float</span> x2 <span style="color:#666">=</span> x1;
+  <span style="color:#b00040">float</span> y2 <span style="color:#666">=</span> cos(pitch) <span style="color:#666">*</span> y1 <span style="color:#666">-</span> sin(pitch) <span style="color:#666">*</span> z1;
+  <span style="color:#b00040">float</span> z2 <span style="color:#666">=</span> sin(pitch) <span style="color:#666">*</span> y1 <span style="color:#666">+</span> cos(pitch) <span style="color:#666">*</span> z1;
+
+  accX <span style="color:#666">=</span> cos(yaw) <span style="color:#666">*</span> x2 <span style="color:#666">+</span> sin(yaw) <span style="color:#666">*</span> z2;
+  accY <span style="color:#666">=</span> y2;
+  accZ <span style="color:#666">=</span> <span style="color:#666">-</span>sin(yaw) <span style="color:#666">*</span> x2 <span style="color:#666">+</span> cos(yaw) <span style="color:#666">*</span> z2;
+}
+</code></pre></div>
+<h3 id="点云的处理">点云的处理</h3>
+
+<h4 id="校准运动畸变">校准运动畸变</h4>
+
+<p>为了保持一次扫描过程中，点的几何关系变化不要太剧烈，我们应该保留匀速运动变化的部分，而将多余的变化量剔除掉。<br>
+例如，当扫描仪匀速朝一面墙运动时，形成的点云仍然共面。如果存在加速运动，形成的点云有畸变，将导致不共面。</p>
+
+<p><span  class="math">\[
+\begin{aligned}
+\begin{pmatrix} p_x \\ p_y \\ p_z \end{pmatrix} &=R_{bw} *\begin{pmatrix} \Delta p_x \\ \Delta p_y \\ \Delta p_z \end{pmatrix} \\[2mm]
+&=R_z(-roll)*R_x(-pitch)*R_y(-yaw) *\begin{pmatrix} \Delta p_x \\ \Delta p_y \\ \Delta p_z \end{pmatrix} \\[2mm]
+&=\begin{pmatrix} cos(roll) & sin(roll) & 0 \\ -sin(roll) & cos(roll) & 0 \\ 0 & 0 & 1 \end{pmatrix}
+*\begin{pmatrix} 1 & 0 & 0 \\ 0 & cos(pitch) & sin(pitch) \\ 0 & -sin(pitch) & cos(pitch) \end{pmatrix}
+*\begin{pmatrix} cos(yaw) & 0 & -sin(yaw) \\ 0 & 1 & 0 \\ sin(yaw) & 0 & cos(yaw) \end{pmatrix}
+*\begin{pmatrix} \Delta p_x \\ \Delta p_y \\ \Delta p_z \end{pmatrix} \\[2mm]
+\end{aligned}
+\]</span></p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#b00040">void</span> <span style="color:#00f">ShiftToStartIMU</span>(<span style="color:#b00040">float</span> pointTime)
+{
+  imuShiftFromStartXCur <span style="color:#666">=</span> imuShiftXCur <span style="color:#666">-</span> imuShiftXStart <span style="color:#666">-</span> imuVeloXStart <span style="color:#666">*</span> pointTime;
+  imuShiftFromStartYCur <span style="color:#666">=</span> imuShiftYCur <span style="color:#666">-</span> imuShiftYStart <span style="color:#666">-</span> imuVeloYStart <span style="color:#666">*</span> pointTime;
+  imuShiftFromStartZCur <span style="color:#666">=</span> imuShiftZCur <span style="color:#666">-</span> imuShiftZStart <span style="color:#666">-</span> imuVeloZStart <span style="color:#666">*</span> pointTime;
+
+  <span style="color:#b00040">float</span> x1 <span style="color:#666">=</span> cos(imuYawStart) <span style="color:#666">*</span> imuShiftFromStartXCur <span style="color:#666">-</span> sin(imuYawStart) <span style="color:#666">*</span> imuShiftFromStartZCur;
+  <span style="color:#b00040">float</span> y1 <span style="color:#666">=</span> imuShiftFromStartYCur;
+  <span style="color:#b00040">float</span> z1 <span style="color:#666">=</span> sin(imuYawStart) <span style="color:#666">*</span> imuShiftFromStartXCur <span style="color:#666">+</span> cos(imuYawStart) <span style="color:#666">*</span> imuShiftFromStartZCur;
+
+  <span style="color:#b00040">float</span> x2 <span style="color:#666">=</span> x1;
+  <span style="color:#b00040">float</span> y2 <span style="color:#666">=</span> cos(imuPitchStart) <span style="color:#666">*</span> y1 <span style="color:#666">+</span> sin(imuPitchStart) <span style="color:#666">*</span> z1;
+  <span style="color:#b00040">float</span> z2 <span style="color:#666">=</span> <span style="color:#666">-</span>sin(imuPitchStart) <span style="color:#666">*</span> y1 <span style="color:#666">+</span> cos(imuPitchStart) <span style="color:#666">*</span> z1;
+
+  imuShiftFromStartXCur <span style="color:#666">=</span> cos(imuRollStart) <span style="color:#666">*</span> x2 <span style="color:#666">+</span> sin(imuRollStart) <span style="color:#666">*</span> y2;
+  imuShiftFromStartYCur <span style="color:#666">=</span> <span style="color:#666">-</span>sin(imuRollStart) <span style="color:#666">*</span> x2 <span style="color:#666">+</span> cos(imuRollStart) <span style="color:#666">*</span> y2;
+  imuShiftFromStartZCur <span style="color:#666">=</span> z2;
+}
+</code></pre></div>
+<h4 id="处理每个激光点">处理每个激光点</h4>
+
+<ol>
+<li>每个激光点是在当前IMU坐标系下</li>
+<li>需要先转换到World坐标系下</li>
+<li>再转到当前帧起始IMU的坐标系下</li>
+<li>最后去除掉上一步获得的运动畸变</li>
+</ol>
+
+<p><span  class="math">\[
+\begin{aligned}
+\begin{pmatrix} p_x' \\ p_y' \\ p_z' \end{pmatrix} &= R_{b'w} * R_{wb} *\begin{pmatrix} p_x \\ p_y \\ p_z \\ \end{pmatrix} \\[2mm]
+&=R_z(-roll')*R_x(-pitch')*R_y(-yaw') * R_y(yaw)*R_x(pitch)*R_z(roll) *\begin{pmatrix} p_x \\ p_y \\ p_z \\ \end{pmatrix} \\[2mm]
+\end{aligned}
+\]</span></p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#b00040">void</span> <span style="color:#00f">TransformToStartIMU</span>(PointType <span style="color:#666">*</span>p)
+{
+  <span style="color:#b00040">float</span> x1 <span style="color:#666">=</span> cos(imuRollCur) <span style="color:#666">*</span> p<span style="color:#666">-</span><span style="color:#666">&gt;</span>x <span style="color:#666">-</span> sin(imuRollCur) <span style="color:#666">*</span> p<span style="color:#666">-</span><span style="color:#666">&gt;</span>y;
+  <span style="color:#b00040">float</span> y1 <span style="color:#666">=</span> sin(imuRollCur) <span style="color:#666">*</span> p<span style="color:#666">-</span><span style="color:#666">&gt;</span>x <span style="color:#666">+</span> cos(imuRollCur) <span style="color:#666">*</span> p<span style="color:#666">-</span><span style="color:#666">&gt;</span>y;
+  <span style="color:#b00040">float</span> z1 <span style="color:#666">=</span> p<span style="color:#666">-</span><span style="color:#666">&gt;</span>z;
+
+  <span style="color:#b00040">float</span> x2 <span style="color:#666">=</span> x1;
+  <span style="color:#b00040">float</span> y2 <span style="color:#666">=</span> cos(imuPitchCur) <span style="color:#666">*</span> y1 <span style="color:#666">-</span> sin(imuPitchCur) <span style="color:#666">*</span> z1;
+  <span style="color:#b00040">float</span> z2 <span style="color:#666">=</span> sin(imuPitchCur) <span style="color:#666">*</span> y1 <span style="color:#666">+</span> cos(imuPitchCur) <span style="color:#666">*</span> z1;
+
+  <span style="color:#b00040">float</span> x3 <span style="color:#666">=</span> cos(imuYawCur) <span style="color:#666">*</span> x2 <span style="color:#666">+</span> sin(imuYawCur) <span style="color:#666">*</span> z2;
+  <span style="color:#b00040">float</span> y3 <span style="color:#666">=</span> y2;
+  <span style="color:#b00040">float</span> z3 <span style="color:#666">=</span> <span style="color:#666">-</span>sin(imuYawCur) <span style="color:#666">*</span> x2 <span style="color:#666">+</span> cos(imuYawCur) <span style="color:#666">*</span> z2;
+
+  <span style="color:#b00040">float</span> x4 <span style="color:#666">=</span> cos(imuYawStart) <span style="color:#666">*</span> x3 <span style="color:#666">-</span> sin(imuYawStart) <span style="color:#666">*</span> z3;
+  <span style="color:#b00040">float</span> y4 <span style="color:#666">=</span> y3;
+  <span style="color:#b00040">float</span> z4 <span style="color:#666">=</span> sin(imuYawStart) <span style="color:#666">*</span> x3 <span style="color:#666">+</span> cos(imuYawStart) <span style="color:#666">*</span> z3;
+
+  <span style="color:#b00040">float</span> x5 <span style="color:#666">=</span> x4;
+  <span style="color:#b00040">float</span> y5 <span style="color:#666">=</span> cos(imuPitchStart) <span style="color:#666">*</span> y4 <span style="color:#666">+</span> sin(imuPitchStart) <span style="color:#666">*</span> z4;
+  <span style="color:#b00040">float</span> z5 <span style="color:#666">=</span> <span style="color:#666">-</span>sin(imuPitchStart) <span style="color:#666">*</span> y4 <span style="color:#666">+</span> cos(imuPitchStart) <span style="color:#666">*</span> z4;
+
+  p<span style="color:#666">-</span><span style="color:#666">&gt;</span>x <span style="color:#666">=</span> cos(imuRollStart) <span style="color:#666">*</span> x5 <span style="color:#666">+</span> sin(imuRollStart) <span style="color:#666">*</span> y5 <span style="color:#666">+</span> imuShiftFromStartXCur;
+  p<span style="color:#666">-</span><span style="color:#666">&gt;</span>y <span style="color:#666">=</span> <span style="color:#666">-</span>sin(imuRollStart) <span style="color:#666">*</span> x5 <span style="color:#666">+</span> cos(imuRollStart) <span style="color:#666">*</span> y5 <span style="color:#666">+</span> imuShiftFromStartYCur;
+  p<span style="color:#666">-</span><span style="color:#666">&gt;</span>z <span style="color:#666">=</span> z5 <span style="color:#666">+</span> imuShiftFromStartZCur;
+}
+</code></pre></div>
+<h3 id="特征提取">特征提取</h3>
+
+<h4 id="曲率计算">曲率计算</h4>
+
+<p>以某点为中心，其前后各5个点，计算10个向量的和。向量的模长表示其在该点处曲率半径。<br>
+根据曲率的大小，将点云分为<code>/laser_cloud_sharp</code>， <code>/laser_cloud_less_sharp</code>， <code>/laser_cloud_flat</code>， <code>/laser_cloud_less_flat</code>。</p>
+
+<h4 id="剔除异常点">剔除异常点</h4>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/loam/abnormal.png">
+    <img src="/loam/abnormal.png" alt="Abnormal">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<h2 id="激光里程计">激光里程计 <a aria-label="header link for 激光里程计" href="#激光里程计" class="header-link">#</a></h2>
+
+<h3 id="imu坐标系统转换">IMU坐标系统转换</h3>
+
+<h4 id="转到起始imu坐标系">转到起始IMU坐标系</h4>
+
+<p>点云去除了匀速运动之外的误差，现在就可以合理的假设，上一时刻的点，与当前时刻的点，只有一个匀速运动的点位畸变。
+则初始的transform为：</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp">      transform[<span style="color:#666">3</span>] <span style="color:#666">-</span><span style="color:#666">=</span> imuVeloFromStartX <span style="color:#666">*</span> scanPeriod;
+      transform[<span style="color:#666">4</span>] <span style="color:#666">-</span><span style="color:#666">=</span> imuVeloFromStartY <span style="color:#666">*</span> scanPeriod;
+      transform[<span style="color:#666">5</span>] <span style="color:#666">-</span><span style="color:#666">=</span> imuVeloFromStartZ <span style="color:#666">*</span> scanPeriod;
+</code></pre></div>
+<p>这里定义的transform比较特殊，在理解时需要特别注意。与下文2.3节的优化相对应。</p>
+
+<p>将每个激光点坐标，按照匀速运动假设，将旋转、平移的畸变量去掉，转换到IMU起始坐标系下。</p>
+
+<p><span  class="math">\[
+\begin{aligned}
+\begin{pmatrix} p_x' \\ p_y' \\ p_z' \end{pmatrix} &= R_{b'b} *\begin{pmatrix} p_x - t_x \\ p_y - t_y \\ p_z - t_z \end{pmatrix} \\[2mm]
+&=R_y(-yaw)*R_x(-pitch)*R_z(-roll) *\begin{pmatrix} p_x - t_x \\ p_y - t_y \\ p_z - t_z \end{pmatrix} \\[2mm]
+\end{aligned}
+\]</span></p>
+<pre><code>void TransformToStart(PointType const * const pi, PointType * const po)
+{
+  float s = 10 * (pi->intensity - int(pi->intensity));
+
+  float rx = s * transform[0];
+  float ry = s * transform[1];
+  float rz = s * transform[2];
+  float tx = s * transform[3];
+  float ty = s * transform[4];
+  float tz = s * transform[5];
+
+  float x1 = cos(rz) * (pi->x - tx) + sin(rz) * (pi->y - ty);
+  float y1 = -sin(rz) * (pi->x - tx) + cos(rz) * (pi->y - ty);
+  float z1 = (pi->z - tz);
+
+  float x2 = x1;
+  float y2 = cos(rx) * y1 + sin(rx) * z1;
+  float z2 = -sin(rx) * y1 + cos(rx) * z1;
+
+  po->x = cos(ry) * x2 - sin(ry) * z2;
+  po->y = y2;
+  po->z = sin(ry) * x2 + cos(ry) * z2;
+  po->intensity = pi->intensity;
+}</code></pre>
+<h4 id="转到结束imu坐标系">转到结束IMU坐标系</h4>
+
+<p>在处理结束后，要将这一帧的点坐标转到IMU结束时刻下，以便下一次的帧间匹配。需要进行如下步骤：</p>
+
+<ol>
+<li>转到该帧IMU起始坐标系</li>
+<li>转到该帧IMU结束坐标系</li>
+<li>加上最后一个点对应的匀速运动之外的畸变，并转到起始World坐标系下</li>
+<li>最后转到结束IMU坐标系下。</li>
+</ol>
+
+<p><span  class="math">\[
+TODO
+\]</span></p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#b00040">void</span> <span style="color:#00f">TransformToEnd</span>(PointType <span style="color:#008000;font-weight:bold">const</span> <span style="color:#666">*</span> <span style="color:#008000;font-weight:bold">const</span> pi, PointType <span style="color:#666">*</span> <span style="color:#008000;font-weight:bold">const</span> po)
+{
+  <span style="color:#b00040">float</span> s <span style="color:#666">=</span> <span style="color:#666">10</span> <span style="color:#666">*</span> (pi<span style="color:#666">-</span><span style="color:#666">&gt;</span>intensity <span style="color:#666">-</span> <span style="color:#b00040">int</span>(pi<span style="color:#666">-</span><span style="color:#666">&gt;</span>intensity));
+
+  <span style="color:#408080;font-style:italic">//rotation 1
+</span><span style="color:#408080;font-style:italic"></span>  <span style="color:#b00040">float</span> rx <span style="color:#666">=</span> s <span style="color:#666">*</span> transform[<span style="color:#666">0</span>];
+  <span style="color:#b00040">float</span> ry <span style="color:#666">=</span> s <span style="color:#666">*</span> transform[<span style="color:#666">1</span>];
+  <span style="color:#b00040">float</span> rz <span style="color:#666">=</span> s <span style="color:#666">*</span> transform[<span style="color:#666">2</span>];
+  <span style="color:#b00040">float</span> tx <span style="color:#666">=</span> s <span style="color:#666">*</span> transform[<span style="color:#666">3</span>];
+  <span style="color:#b00040">float</span> ty <span style="color:#666">=</span> s <span style="color:#666">*</span> transform[<span style="color:#666">4</span>];
+  <span style="color:#b00040">float</span> tz <span style="color:#666">=</span> s <span style="color:#666">*</span> transform[<span style="color:#666">5</span>];
+
+  <span style="color:#b00040">float</span> x1 <span style="color:#666">=</span> cos(rz) <span style="color:#666">*</span> (pi<span style="color:#666">-</span><span style="color:#666">&gt;</span>x <span style="color:#666">-</span> tx) <span style="color:#666">+</span> sin(rz) <span style="color:#666">*</span> (pi<span style="color:#666">-</span><span style="color:#666">&gt;</span>y <span style="color:#666">-</span> ty);
+  <span style="color:#b00040">float</span> y1 <span style="color:#666">=</span> <span style="color:#666">-</span>sin(rz) <span style="color:#666">*</span> (pi<span style="color:#666">-</span><span style="color:#666">&gt;</span>x <span style="color:#666">-</span> tx) <span style="color:#666">+</span> cos(rz) <span style="color:#666">*</span> (pi<span style="color:#666">-</span><span style="color:#666">&gt;</span>y <span style="color:#666">-</span> ty);
+  <span style="color:#b00040">float</span> z1 <span style="color:#666">=</span> (pi<span style="color:#666">-</span><span style="color:#666">&gt;</span>z <span style="color:#666">-</span> tz);
+
+  <span style="color:#b00040">float</span> x2 <span style="color:#666">=</span> x1;
+  <span style="color:#b00040">float</span> y2 <span style="color:#666">=</span> cos(rx) <span style="color:#666">*</span> y1 <span style="color:#666">+</span> sin(rx) <span style="color:#666">*</span> z1;
+  <span style="color:#b00040">float</span> z2 <span style="color:#666">=</span> <span style="color:#666">-</span>sin(rx) <span style="color:#666">*</span> y1 <span style="color:#666">+</span> cos(rx) <span style="color:#666">*</span> z1;
+
+  <span style="color:#b00040">float</span> x3 <span style="color:#666">=</span> cos(ry) <span style="color:#666">*</span> x2 <span style="color:#666">-</span> sin(ry) <span style="color:#666">*</span> z2;
+  <span style="color:#b00040">float</span> y3 <span style="color:#666">=</span> y2;
+  <span style="color:#b00040">float</span> z3 <span style="color:#666">=</span> sin(ry) <span style="color:#666">*</span> x2 <span style="color:#666">+</span> cos(ry) <span style="color:#666">*</span> z2;
+
+  <span style="color:#408080;font-style:italic">//rotation 2
+</span><span style="color:#408080;font-style:italic"></span>  rx <span style="color:#666">=</span> transform[<span style="color:#666">0</span>];
+  ry <span style="color:#666">=</span> transform[<span style="color:#666">1</span>];
+  rz <span style="color:#666">=</span> transform[<span style="color:#666">2</span>];
+  tx <span style="color:#666">=</span> transform[<span style="color:#666">3</span>];
+  ty <span style="color:#666">=</span> transform[<span style="color:#666">4</span>];
+  tz <span style="color:#666">=</span> transform[<span style="color:#666">5</span>];
+
+  <span style="color:#b00040">float</span> x4 <span style="color:#666">=</span> cos(ry) <span style="color:#666">*</span> x3 <span style="color:#666">+</span> sin(ry) <span style="color:#666">*</span> z3;
+  <span style="color:#b00040">float</span> y4 <span style="color:#666">=</span> y3;
+  <span style="color:#b00040">float</span> z4 <span style="color:#666">=</span> <span style="color:#666">-</span>sin(ry) <span style="color:#666">*</span> x3 <span style="color:#666">+</span> cos(ry) <span style="color:#666">*</span> z3;
+
+  <span style="color:#b00040">float</span> x5 <span style="color:#666">=</span> x4;
+  <span style="color:#b00040">float</span> y5 <span style="color:#666">=</span> cos(rx) <span style="color:#666">*</span> y4 <span style="color:#666">-</span> sin(rx) <span style="color:#666">*</span> z4;
+  <span style="color:#b00040">float</span> z5 <span style="color:#666">=</span> sin(rx) <span style="color:#666">*</span> y4 <span style="color:#666">+</span> cos(rx) <span style="color:#666">*</span> z4;
+
+  <span style="color:#b00040">float</span> x6 <span style="color:#666">=</span> cos(rz) <span style="color:#666">*</span> x5 <span style="color:#666">-</span> sin(rz) <span style="color:#666">*</span> y5 <span style="color:#666">+</span> tx;
+  <span style="color:#b00040">float</span> y6 <span style="color:#666">=</span> sin(rz) <span style="color:#666">*</span> x5 <span style="color:#666">+</span> cos(rz) <span style="color:#666">*</span> y5 <span style="color:#666">+</span> ty;
+  <span style="color:#b00040">float</span> z6 <span style="color:#666">=</span> z5 <span style="color:#666">+</span> tz;
+
+  <span style="color:#408080;font-style:italic">//rotation 3
+</span><span style="color:#408080;font-style:italic"></span>  <span style="color:#b00040">float</span> x7 <span style="color:#666">=</span> cos(imuRollStart) <span style="color:#666">*</span> (x6 <span style="color:#666">-</span> imuShiftFromStartX) 
+           <span style="color:#666">-</span> sin(imuRollStart) <span style="color:#666">*</span> (y6 <span style="color:#666">-</span> imuShiftFromStartY);
+  <span style="color:#b00040">float</span> y7 <span style="color:#666">=</span> sin(imuRollStart) <span style="color:#666">*</span> (x6 <span style="color:#666">-</span> imuShiftFromStartX) 
+           <span style="color:#666">+</span> cos(imuRollStart) <span style="color:#666">*</span> (y6 <span style="color:#666">-</span> imuShiftFromStartY);
+  <span style="color:#b00040">float</span> z7 <span style="color:#666">=</span> z6 <span style="color:#666">-</span> imuShiftFromStartZ;
+
+  <span style="color:#b00040">float</span> x8 <span style="color:#666">=</span> x7;
+  <span style="color:#b00040">float</span> y8 <span style="color:#666">=</span> cos(imuPitchStart) <span style="color:#666">*</span> y7 <span style="color:#666">-</span> sin(imuPitchStart) <span style="color:#666">*</span> z7;
+  <span style="color:#b00040">float</span> z8 <span style="color:#666">=</span> sin(imuPitchStart) <span style="color:#666">*</span> y7 <span style="color:#666">+</span> cos(imuPitchStart) <span style="color:#666">*</span> z7;
+
+  <span style="color:#b00040">float</span> x9 <span style="color:#666">=</span> cos(imuYawStart) <span style="color:#666">*</span> x8 <span style="color:#666">+</span> sin(imuYawStart) <span style="color:#666">*</span> z8;
+  <span style="color:#b00040">float</span> y9 <span style="color:#666">=</span> y8;
+  <span style="color:#b00040">float</span> z9 <span style="color:#666">=</span> <span style="color:#666">-</span>sin(imuYawStart) <span style="color:#666">*</span> x8 <span style="color:#666">+</span> cos(imuYawStart) <span style="color:#666">*</span> z8;
+
+  <span style="color:#408080;font-style:italic">//rotation 4
+</span><span style="color:#408080;font-style:italic"></span>  <span style="color:#b00040">float</span> x10 <span style="color:#666">=</span> cos(imuYawLast) <span style="color:#666">*</span> x9 <span style="color:#666">-</span> sin(imuYawLast) <span style="color:#666">*</span> z9;
+  <span style="color:#b00040">float</span> y10 <span style="color:#666">=</span> y9;
+  <span style="color:#b00040">float</span> z10 <span style="color:#666">=</span> sin(imuYawLast) <span style="color:#666">*</span> x9 <span style="color:#666">+</span> cos(imuYawLast) <span style="color:#666">*</span> z9;
+
+  <span style="color:#b00040">float</span> x11 <span style="color:#666">=</span> x10;
+  <span style="color:#b00040">float</span> y11 <span style="color:#666">=</span> cos(imuPitchLast) <span style="color:#666">*</span> y10 <span style="color:#666">+</span> sin(imuPitchLast) <span style="color:#666">*</span> z10;
+  <span style="color:#b00040">float</span> z11 <span style="color:#666">=</span> <span style="color:#666">-</span>sin(imuPitchLast) <span style="color:#666">*</span> y10 <span style="color:#666">+</span> cos(imuPitchLast) <span style="color:#666">*</span> z10;
+
+  po<span style="color:#666">-</span><span style="color:#666">&gt;</span>x <span style="color:#666">=</span> cos(imuRollLast) <span style="color:#666">*</span> x11 <span style="color:#666">+</span> sin(imuRollLast) <span style="color:#666">*</span> y11;
+  po<span style="color:#666">-</span><span style="color:#666">&gt;</span>y <span style="color:#666">=</span> <span style="color:#666">-</span>sin(imuRollLast) <span style="color:#666">*</span> x11 <span style="color:#666">+</span> cos(imuRollLast) <span style="color:#666">*</span> y11;
+  po<span style="color:#666">-</span><span style="color:#666">&gt;</span>z <span style="color:#666">=</span> z11;
+  po<span style="color:#666">-</span><span style="color:#666">&gt;</span>intensity <span style="color:#666">=</span> <span style="color:#b00040">int</span>(pi<span style="color:#666">-</span><span style="color:#666">&gt;</span>intensity);
+}
+</code></pre></div>
+<h3 id="imu累计">IMU累计</h3>
+
+<h4 id="accumulaterotation">AccumulateRotation</h4>
+
+<p>代码直接实现了将两个旋转量累加起来，得到累加后的欧拉角。代码实现效率高，但是不易读。
+将旋转矩阵展开以后可以看到其相应关系。</p>
+<pre><code>Rwb1 = Ry(y1) * Rx(x1) *  Rz(z1);
+Rbw2 = Ry(y2) * Rx(x2) *  Rz(z2);
+Rwb3 = Rwb1 * Rbw2 =
+[ cos(y)*cos(z) + sin(x)*sin(y)*sin(z), cos(z)*sin(x)*sin(y) - cos(y)*sin(z), cos(x)*sin(y)]
+[                        cos(x)*sin(z),                        cos(x)*cos(z),       -sin(x)]
+[ cos(y)*sin(x)*sin(z) - cos(z)*sin(y), sin(y)*sin(z) + cos(y)*cos(z)*sin(x), cos(x)*cos(y)]
+= 
+[ (cos(y1)*cos(z1) + sin(x1)*sin(y1)*sin(z1))*(cos(y2)*cos(z2) + sin(x2)*sin(y2)*sin(z2)) - cos(x1)*sin(y1)*(cos(z2)*sin(y2) - cos(y2)*sin(x2)*sin(z2)) - cos(x2)*sin(z2)*(cos(y1)*sin(z1) - cos(z1)*sin(x1)*sin(y1)), cos(x1)*sin(y1)*(sin(y2)*sin(z2) + cos(y2)*cos(z2)*sin(x2)) - cos(x2)*cos(z2)*(cos(y1)*sin(z1) - cos(z1)*sin(x1)*sin(y1)) - (cos(y1)*cos(z1) + sin(x1)*sin(y1)*sin(z1))*(cos(y2)*sin(z2) - cos(z2)*sin(x2)*sin(y2)), sin(x2)*(cos(y1)*sin(z1) - cos(z1)*sin(x1)*sin(y1)) + cos(x2)*sin(y2)*(cos(y1)*cos(z1) + sin(x1)*sin(y1)*sin(z1)) + cos(x1)*cos(x2)*cos(y2)*sin(y1)]
+[                                                                 sin(x1)*(cos(z2)*sin(y2) - cos(y2)*sin(x2)*sin(z2)) + cos(x1)*sin(z1)*(cos(y2)*cos(z2) + sin(x2)*sin(y2)*sin(z2)) + cos(x1)*cos(x2)*cos(z1)*sin(z2),                                                                 cos(x1)*cos(x2)*cos(z1)*cos(z2) - cos(x1)*sin(z1)*(cos(y2)*sin(z2) - cos(z2)*sin(x2)*sin(y2)) - sin(x1)*(sin(y2)*sin(z2) + cos(y2)*cos(z2)*sin(x2)),                                                                 cos(x1)*cos(x2)*sin(y2)*sin(z1) - cos(x1)*cos(z1)*sin(x2) - cos(x2)*cos(y2)*sin(x1)]
+[ cos(x2)*sin(z2)*(sin(y1)*sin(z1) + cos(y1)*cos(z1)*sin(x1)) - cos(x1)*cos(y1)*(cos(z2)*sin(y2) - cos(y2)*sin(x2)*sin(z2)) - (cos(z1)*sin(y1) - cos(y1)*sin(x1)*sin(z1))*(cos(y2)*cos(z2) + sin(x2)*sin(y2)*sin(z2)), (cos(z1)*sin(y1) - cos(y1)*sin(x1)*sin(z1))*(cos(y2)*sin(z2) - cos(z2)*sin(x2)*sin(y2)) + cos(x1)*cos(y1)*(sin(y2)*sin(z2) + cos(y2)*cos(z2)*sin(x2)) + cos(x2)*cos(z2)*(sin(y1)*sin(z1) + cos(y1)*cos(z1)*sin(x1)), cos(x1)*cos(x2)*cos(y1)*cos(y2) - cos(x2)*sin(y2)*(cos(z1)*sin(y1) - cos(y1)*sin(x1)*sin(z1)) - sin(x2)*(sin(y1)*sin(z1) + cos(y1)*cos(z1)*sin(x1))]</code></pre>
+<p>可以看到，代码与上面的公式是一一对应的。</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#b00040">void</span> <span style="color:#00f">AccumulateRotation</span>(<span style="color:#b00040">float</span> cx, <span style="color:#b00040">float</span> cy, <span style="color:#b00040">float</span> cz, <span style="color:#b00040">float</span> lx, <span style="color:#b00040">float</span> ly, <span style="color:#b00040">float</span> lz, 
+                        <span style="color:#b00040">float</span> <span style="color:#666">&amp;</span>ox, <span style="color:#b00040">float</span> <span style="color:#666">&amp;</span>oy, <span style="color:#b00040">float</span> <span style="color:#666">&amp;</span>oz)
+{
+  <span style="color:#b00040">float</span> srx <span style="color:#666">=</span> cos(lx)<span style="color:#666">*</span>cos(cx)<span style="color:#666">*</span>sin(ly)<span style="color:#666">*</span>sin(cz) <span style="color:#666">-</span> cos(cx)<span style="color:#666">*</span>cos(cz)<span style="color:#666">*</span>sin(lx) <span style="color:#666">-</span> cos(lx)<span style="color:#666">*</span>cos(ly)<span style="color:#666">*</span>sin(cx);
+  ox <span style="color:#666">=</span> <span style="color:#666">-</span>asin(srx);
+
+  <span style="color:#b00040">float</span> srycrx <span style="color:#666">=</span> sin(lx)<span style="color:#666">*</span>(cos(cy)<span style="color:#666">*</span>sin(cz) <span style="color:#666">-</span> cos(cz)<span style="color:#666">*</span>sin(cx)<span style="color:#666">*</span>sin(cy)) <span style="color:#666">+</span> cos(lx)<span style="color:#666">*</span>sin(ly)<span style="color:#666">*</span>(cos(cy)<span style="color:#666">*</span>cos(cz) 
+               <span style="color:#666">+</span> sin(cx)<span style="color:#666">*</span>sin(cy)<span style="color:#666">*</span>sin(cz)) <span style="color:#666">+</span> cos(lx)<span style="color:#666">*</span>cos(ly)<span style="color:#666">*</span>cos(cx)<span style="color:#666">*</span>sin(cy);
+  <span style="color:#b00040">float</span> crycrx <span style="color:#666">=</span> cos(lx)<span style="color:#666">*</span>cos(ly)<span style="color:#666">*</span>cos(cx)<span style="color:#666">*</span>cos(cy) <span style="color:#666">-</span> cos(lx)<span style="color:#666">*</span>sin(ly)<span style="color:#666">*</span>(cos(cz)<span style="color:#666">*</span>sin(cy) 
+               <span style="color:#666">-</span> cos(cy)<span style="color:#666">*</span>sin(cx)<span style="color:#666">*</span>sin(cz)) <span style="color:#666">-</span> sin(lx)<span style="color:#666">*</span>(sin(cy)<span style="color:#666">*</span>sin(cz) <span style="color:#666">+</span> cos(cy)<span style="color:#666">*</span>cos(cz)<span style="color:#666">*</span>sin(cx));
+  oy <span style="color:#666">=</span> atan2(srycrx <span style="color:#666">/</span> cos(ox), crycrx <span style="color:#666">/</span> cos(ox));
+
+  <span style="color:#b00040">float</span> srzcrx <span style="color:#666">=</span> sin(cx)<span style="color:#666">*</span>(cos(lz)<span style="color:#666">*</span>sin(ly) <span style="color:#666">-</span> cos(ly)<span style="color:#666">*</span>sin(lx)<span style="color:#666">*</span>sin(lz)) <span style="color:#666">+</span> cos(cx)<span style="color:#666">*</span>sin(cz)<span style="color:#666">*</span>(cos(ly)<span style="color:#666">*</span>cos(lz) 
+               <span style="color:#666">+</span> sin(lx)<span style="color:#666">*</span>sin(ly)<span style="color:#666">*</span>sin(lz)) <span style="color:#666">+</span> cos(lx)<span style="color:#666">*</span>cos(cx)<span style="color:#666">*</span>cos(cz)<span style="color:#666">*</span>sin(lz);
+  <span style="color:#b00040">float</span> crzcrx <span style="color:#666">=</span> cos(lx)<span style="color:#666">*</span>cos(lz)<span style="color:#666">*</span>cos(cx)<span style="color:#666">*</span>cos(cz) <span style="color:#666">-</span> cos(cx)<span style="color:#666">*</span>sin(cz)<span style="color:#666">*</span>(cos(ly)<span style="color:#666">*</span>sin(lz) 
+               <span style="color:#666">-</span> cos(lz)<span style="color:#666">*</span>sin(lx)<span style="color:#666">*</span>sin(ly)) <span style="color:#666">-</span> sin(cx)<span style="color:#666">*</span>(sin(ly)<span style="color:#666">*</span>sin(lz) <span style="color:#666">+</span> cos(ly)<span style="color:#666">*</span>cos(lz)<span style="color:#666">*</span>sin(lx));
+  oz <span style="color:#666">=</span> atan2(srzcrx <span style="color:#666">/</span> cos(ox), crzcrx <span style="color:#666">/</span> cos(ox));
+}
+</code></pre></div>
+<h4 id="pluginimurotation">PluginIMURotation</h4>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#b00040">void</span> <span style="color:#00f">PluginIMURotation</span>(<span style="color:#b00040">float</span> bcx, <span style="color:#b00040">float</span> bcy, <span style="color:#b00040">float</span> bcz, <span style="color:#b00040">float</span> blx, <span style="color:#b00040">float</span> bly, <span style="color:#b00040">float</span> blz, 
+                       <span style="color:#b00040">float</span> alx, <span style="color:#b00040">float</span> aly, <span style="color:#b00040">float</span> alz, <span style="color:#b00040">float</span> <span style="color:#666">&amp;</span>acx, <span style="color:#b00040">float</span> <span style="color:#666">&amp;</span>acy, <span style="color:#b00040">float</span> <span style="color:#666">&amp;</span>acz)
+{
+  <span style="color:#b00040">float</span> srx <span style="color:#666">=</span> <span style="color:#666">-</span>sbcx<span style="color:#666">*</span>(salx<span style="color:#666">*</span>sblx <span style="color:#666">+</span> calx<span style="color:#666">*</span>caly<span style="color:#666">*</span>cblx<span style="color:#666">*</span>cbly <span style="color:#666">+</span> calx<span style="color:#666">*</span>cblx<span style="color:#666">*</span>saly<span style="color:#666">*</span>sbly) 
+            <span style="color:#666">-</span> cbcx<span style="color:#666">*</span>cbcz<span style="color:#666">*</span>(calx<span style="color:#666">*</span>saly<span style="color:#666">*</span>(cbly<span style="color:#666">*</span>sblz <span style="color:#666">-</span> cblz<span style="color:#666">*</span>sblx<span style="color:#666">*</span>sbly) 
+            <span style="color:#666">-</span> calx<span style="color:#666">*</span>caly<span style="color:#666">*</span>(sbly<span style="color:#666">*</span>sblz <span style="color:#666">+</span> cbly<span style="color:#666">*</span>cblz<span style="color:#666">*</span>sblx) <span style="color:#666">+</span> cblx<span style="color:#666">*</span>cblz<span style="color:#666">*</span>salx) 
+            <span style="color:#666">-</span> cbcx<span style="color:#666">*</span>sbcz<span style="color:#666">*</span>(calx<span style="color:#666">*</span>caly<span style="color:#666">*</span>(cblz<span style="color:#666">*</span>sbly <span style="color:#666">-</span> cbly<span style="color:#666">*</span>sblx<span style="color:#666">*</span>sblz) 
+            <span style="color:#666">-</span> calx<span style="color:#666">*</span>saly<span style="color:#666">*</span>(cbly<span style="color:#666">*</span>cblz <span style="color:#666">+</span> sblx<span style="color:#666">*</span>sbly<span style="color:#666">*</span>sblz) <span style="color:#666">+</span> cblx<span style="color:#666">*</span>salx<span style="color:#666">*</span>sblz);
+  acx <span style="color:#666">=</span> <span style="color:#666">-</span>asin(srx);
+
+  <span style="color:#b00040">float</span> srycrx <span style="color:#666">=</span> (cbcy<span style="color:#666">*</span>sbcz <span style="color:#666">-</span> cbcz<span style="color:#666">*</span>sbcx<span style="color:#666">*</span>sbcy)<span style="color:#666">*</span>(calx<span style="color:#666">*</span>saly<span style="color:#666">*</span>(cbly<span style="color:#666">*</span>sblz <span style="color:#666">-</span> cblz<span style="color:#666">*</span>sblx<span style="color:#666">*</span>sbly) 
+               <span style="color:#666">-</span> calx<span style="color:#666">*</span>caly<span style="color:#666">*</span>(sbly<span style="color:#666">*</span>sblz <span style="color:#666">+</span> cbly<span style="color:#666">*</span>cblz<span style="color:#666">*</span>sblx) <span style="color:#666">+</span> cblx<span style="color:#666">*</span>cblz<span style="color:#666">*</span>salx) 
+               <span style="color:#666">-</span> (cbcy<span style="color:#666">*</span>cbcz <span style="color:#666">+</span> sbcx<span style="color:#666">*</span>sbcy<span style="color:#666">*</span>sbcz)<span style="color:#666">*</span>(calx<span style="color:#666">*</span>caly<span style="color:#666">*</span>(cblz<span style="color:#666">*</span>sbly <span style="color:#666">-</span> cbly<span style="color:#666">*</span>sblx<span style="color:#666">*</span>sblz) 
+               <span style="color:#666">-</span> calx<span style="color:#666">*</span>saly<span style="color:#666">*</span>(cbly<span style="color:#666">*</span>cblz <span style="color:#666">+</span> sblx<span style="color:#666">*</span>sbly<span style="color:#666">*</span>sblz) <span style="color:#666">+</span> cblx<span style="color:#666">*</span>salx<span style="color:#666">*</span>sblz) 
+               <span style="color:#666">+</span> cbcx<span style="color:#666">*</span>sbcy<span style="color:#666">*</span>(salx<span style="color:#666">*</span>sblx <span style="color:#666">+</span> calx<span style="color:#666">*</span>caly<span style="color:#666">*</span>cblx<span style="color:#666">*</span>cbly <span style="color:#666">+</span> calx<span style="color:#666">*</span>cblx<span style="color:#666">*</span>saly<span style="color:#666">*</span>sbly);
+  <span style="color:#b00040">float</span> crycrx <span style="color:#666">=</span> (cbcz<span style="color:#666">*</span>sbcy <span style="color:#666">-</span> cbcy<span style="color:#666">*</span>sbcx<span style="color:#666">*</span>sbcz)<span style="color:#666">*</span>(calx<span style="color:#666">*</span>caly<span style="color:#666">*</span>(cblz<span style="color:#666">*</span>sbly <span style="color:#666">-</span> cbly<span style="color:#666">*</span>sblx<span style="color:#666">*</span>sblz) 
+               <span style="color:#666">-</span> calx<span style="color:#666">*</span>saly<span style="color:#666">*</span>(cbly<span style="color:#666">*</span>cblz <span style="color:#666">+</span> sblx<span style="color:#666">*</span>sbly<span style="color:#666">*</span>sblz) <span style="color:#666">+</span> cblx<span style="color:#666">*</span>salx<span style="color:#666">*</span>sblz) 
+               <span style="color:#666">-</span> (sbcy<span style="color:#666">*</span>sbcz <span style="color:#666">+</span> cbcy<span style="color:#666">*</span>cbcz<span style="color:#666">*</span>sbcx)<span style="color:#666">*</span>(calx<span style="color:#666">*</span>saly<span style="color:#666">*</span>(cbly<span style="color:#666">*</span>sblz <span style="color:#666">-</span> cblz<span style="color:#666">*</span>sblx<span style="color:#666">*</span>sbly) 
+               <span style="color:#666">-</span> calx<span style="color:#666">*</span>caly<span style="color:#666">*</span>(sbly<span style="color:#666">*</span>sblz <span style="color:#666">+</span> cbly<span style="color:#666">*</span>cblz<span style="color:#666">*</span>sblx) <span style="color:#666">+</span> cblx<span style="color:#666">*</span>cblz<span style="color:#666">*</span>salx) 
+               <span style="color:#666">+</span> cbcx<span style="color:#666">*</span>cbcy<span style="color:#666">*</span>(salx<span style="color:#666">*</span>sblx <span style="color:#666">+</span> calx<span style="color:#666">*</span>caly<span style="color:#666">*</span>cblx<span style="color:#666">*</span>cbly <span style="color:#666">+</span> calx<span style="color:#666">*</span>cblx<span style="color:#666">*</span>saly<span style="color:#666">*</span>sbly);
+  acy <span style="color:#666">=</span> atan2(srycrx <span style="color:#666">/</span> cos(acx), crycrx <span style="color:#666">/</span> cos(acx));
+  
+  <span style="color:#b00040">float</span> srzcrx <span style="color:#666">=</span> sbcx<span style="color:#666">*</span>(cblx<span style="color:#666">*</span>cbly<span style="color:#666">*</span>(calz<span style="color:#666">*</span>saly <span style="color:#666">-</span> caly<span style="color:#666">*</span>salx<span style="color:#666">*</span>salz) 
+               <span style="color:#666">-</span> cblx<span style="color:#666">*</span>sbly<span style="color:#666">*</span>(caly<span style="color:#666">*</span>calz <span style="color:#666">+</span> salx<span style="color:#666">*</span>saly<span style="color:#666">*</span>salz) <span style="color:#666">+</span> calx<span style="color:#666">*</span>salz<span style="color:#666">*</span>sblx) 
+               <span style="color:#666">-</span> cbcx<span style="color:#666">*</span>cbcz<span style="color:#666">*</span>((caly<span style="color:#666">*</span>calz <span style="color:#666">+</span> salx<span style="color:#666">*</span>saly<span style="color:#666">*</span>salz)<span style="color:#666">*</span>(cbly<span style="color:#666">*</span>sblz <span style="color:#666">-</span> cblz<span style="color:#666">*</span>sblx<span style="color:#666">*</span>sbly) 
+               <span style="color:#666">+</span> (calz<span style="color:#666">*</span>saly <span style="color:#666">-</span> caly<span style="color:#666">*</span>salx<span style="color:#666">*</span>salz)<span style="color:#666">*</span>(sbly<span style="color:#666">*</span>sblz <span style="color:#666">+</span> cbly<span style="color:#666">*</span>cblz<span style="color:#666">*</span>sblx) 
+               <span style="color:#666">-</span> calx<span style="color:#666">*</span>cblx<span style="color:#666">*</span>cblz<span style="color:#666">*</span>salz) <span style="color:#666">+</span> cbcx<span style="color:#666">*</span>sbcz<span style="color:#666">*</span>((caly<span style="color:#666">*</span>calz <span style="color:#666">+</span> salx<span style="color:#666">*</span>saly<span style="color:#666">*</span>salz)<span style="color:#666">*</span>(cbly<span style="color:#666">*</span>cblz 
+               <span style="color:#666">+</span> sblx<span style="color:#666">*</span>sbly<span style="color:#666">*</span>sblz) <span style="color:#666">+</span> (calz<span style="color:#666">*</span>saly <span style="color:#666">-</span> caly<span style="color:#666">*</span>salx<span style="color:#666">*</span>salz)<span style="color:#666">*</span>(cblz<span style="color:#666">*</span>sbly <span style="color:#666">-</span> cbly<span style="color:#666">*</span>sblx<span style="color:#666">*</span>sblz) 
+               <span style="color:#666">+</span> calx<span style="color:#666">*</span>cblx<span style="color:#666">*</span>salz<span style="color:#666">*</span>sblz);
+  <span style="color:#b00040">float</span> crzcrx <span style="color:#666">=</span> sbcx<span style="color:#666">*</span>(cblx<span style="color:#666">*</span>sbly<span style="color:#666">*</span>(caly<span style="color:#666">*</span>salz <span style="color:#666">-</span> calz<span style="color:#666">*</span>salx<span style="color:#666">*</span>saly) 
+               <span style="color:#666">-</span> cblx<span style="color:#666">*</span>cbly<span style="color:#666">*</span>(saly<span style="color:#666">*</span>salz <span style="color:#666">+</span> caly<span style="color:#666">*</span>calz<span style="color:#666">*</span>salx) <span style="color:#666">+</span> calx<span style="color:#666">*</span>calz<span style="color:#666">*</span>sblx) 
+               <span style="color:#666">+</span> cbcx<span style="color:#666">*</span>cbcz<span style="color:#666">*</span>((saly<span style="color:#666">*</span>salz <span style="color:#666">+</span> caly<span style="color:#666">*</span>calz<span style="color:#666">*</span>salx)<span style="color:#666">*</span>(sbly<span style="color:#666">*</span>sblz <span style="color:#666">+</span> cbly<span style="color:#666">*</span>cblz<span style="color:#666">*</span>sblx) 
+               <span style="color:#666">+</span> (caly<span style="color:#666">*</span>salz <span style="color:#666">-</span> calz<span style="color:#666">*</span>salx<span style="color:#666">*</span>saly)<span style="color:#666">*</span>(cbly<span style="color:#666">*</span>sblz <span style="color:#666">-</span> cblz<span style="color:#666">*</span>sblx<span style="color:#666">*</span>sbly) 
+               <span style="color:#666">+</span> calx<span style="color:#666">*</span>calz<span style="color:#666">*</span>cblx<span style="color:#666">*</span>cblz) <span style="color:#666">-</span> cbcx<span style="color:#666">*</span>sbcz<span style="color:#666">*</span>((saly<span style="color:#666">*</span>salz <span style="color:#666">+</span> caly<span style="color:#666">*</span>calz<span style="color:#666">*</span>salx)<span style="color:#666">*</span>(cblz<span style="color:#666">*</span>sbly 
+               <span style="color:#666">-</span> cbly<span style="color:#666">*</span>sblx<span style="color:#666">*</span>sblz) <span style="color:#666">+</span> (caly<span style="color:#666">*</span>salz <span style="color:#666">-</span> calz<span style="color:#666">*</span>salx<span style="color:#666">*</span>saly)<span style="color:#666">*</span>(cbly<span style="color:#666">*</span>cblz <span style="color:#666">+</span> sblx<span style="color:#666">*</span>sbly<span style="color:#666">*</span>sblz) 
+               <span style="color:#666">-</span> calx<span style="color:#666">*</span>calz<span style="color:#666">*</span>cblx<span style="color:#666">*</span>sblz);
+  acz <span style="color:#666">=</span> atan2(srzcrx <span style="color:#666">/</span> cos(acx), crzcrx <span style="color:#666">/</span> cos(acx));
+}
+</code></pre></div>
+<h3 id="观测方程">观测方程</h3>
+
+<p><span  class="math">\[
+d=D(p_1) \\[2mm]
+p_1 = s R (p_2 - s t)
+\]</span></p>
+
+<p>其中<span  class="math">\(D(\cdot)\)</span>对应于下面介绍的点线方程和点面方程；<span  class="math">\(R\)</span>旋转矩阵中包括待估的3个欧拉角<span  class="math">\(\alpha,\beta,\gamma\)</span>，<span  class="math">\(t\)</span>包括3个平移量<span  class="math">\(x,y,z\)</span>。
+残差<span  class="math">\(d\)</span>与待估参数<span  class="math">\(X\)</span>的关系：</p>
+
+<p><span  class="math">\[
+\frac{\partial d}{\partial X} = \frac{\partial d}{\partial p_1} \cdot \frac{\partial p_1}{\partial X} 
+\]</span></p>
+
+<p>其中待估变量<span  class="math">\( X = \begin{bmatrix} \alpha &\beta &\gamma &x &y &z \end{bmatrix}^T \)</span></p>
+
+<p>以<span  class="math">\(\alpha\)</span>为例，推导Jacobian：</p>
+
+<p><span  class="math">\[
+\begin{aligned}
+\frac{\partial p_1}{\partial \alpha} &= \frac{\partial R}{\partial \alpha} \cdot s(p_2-st) \\[2mm]
+&=\frac{\partial \left(R_y(-\beta)*R_x(-\alpha)*R_z(-\gamma)\right)}{\partial \alpha} \cdot s(p_2-st) \\[2mm]
+&= \begin{pmatrix} -s\cos(\alpha s)*\sin(\beta s)*\sin(\gamma s) &  s\cos(\alpha s)*\cos(\gamma s)*\sin(\beta s) &  s\sin(\alpha s)*\sin(\beta s) \\
+s\sin(\alpha s)*\sin(\gamma s) &           -s\cos(\gamma s)*\sin(\alpha s) &            s\cos(\alpha s) \\
+ s\cos(\alpha s)*\cos(\beta s)*\sin(\gamma s) & -s\cos(\alpha s)*\cos(\beta s)*\cos(\gamma s) & -s\cos(\beta s)*\sin(\alpha s)
+\end{pmatrix} \cdot (p_2-t)
+\end{aligned}
+\]</span></p>
+
+<p>可以看到，上面的公式跟Lidar Odometry文件里面的<span  class="math">\(arx\)</span>是完全吻合的。对<span  class="math">\(\beta\)</span>和<span  class="math">\(\gamma\)</span>的求导思路完全一样，这里略去。</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#b00040">float</span> srx <span style="color:#666">=</span> sin(s <span style="color:#666">*</span> transform[<span style="color:#666">0</span>]);
+<span style="color:#b00040">float</span> crx <span style="color:#666">=</span> cos(s <span style="color:#666">*</span> transform[<span style="color:#666">0</span>]);
+<span style="color:#b00040">float</span> sry <span style="color:#666">=</span> sin(s <span style="color:#666">*</span> transform[<span style="color:#666">1</span>]);
+<span style="color:#b00040">float</span> cry <span style="color:#666">=</span> cos(s <span style="color:#666">*</span> transform[<span style="color:#666">1</span>]);
+<span style="color:#b00040">float</span> srz <span style="color:#666">=</span> sin(s <span style="color:#666">*</span> transform[<span style="color:#666">2</span>]);
+<span style="color:#b00040">float</span> crz <span style="color:#666">=</span> cos(s <span style="color:#666">*</span> transform[<span style="color:#666">2</span>]);
+<span style="color:#b00040">float</span> tx <span style="color:#666">=</span> s <span style="color:#666">*</span> transform[<span style="color:#666">3</span>];
+<span style="color:#b00040">float</span> ty <span style="color:#666">=</span> s <span style="color:#666">*</span> transform[<span style="color:#666">4</span>];
+<span style="color:#b00040">float</span> tz <span style="color:#666">=</span> s <span style="color:#666">*</span> transform[<span style="color:#666">5</span>];
+<span style="color:#b00040">float</span> arx <span style="color:#666">=</span> (<span style="color:#666">-</span>s<span style="color:#666">*</span>crx<span style="color:#666">*</span>sry<span style="color:#666">*</span>srz<span style="color:#666">*</span>pointOri.x <span style="color:#666">+</span> s<span style="color:#666">*</span>crx<span style="color:#666">*</span>crz<span style="color:#666">*</span>sry<span style="color:#666">*</span>pointOri.y <span style="color:#666">+</span> s<span style="color:#666">*</span>srx<span style="color:#666">*</span>sry<span style="color:#666">*</span>pointOri.z 
+          <span style="color:#666">+</span> s<span style="color:#666">*</span>tx<span style="color:#666">*</span>crx<span style="color:#666">*</span>sry<span style="color:#666">*</span>srz <span style="color:#666">-</span> s<span style="color:#666">*</span>ty<span style="color:#666">*</span>crx<span style="color:#666">*</span>crz<span style="color:#666">*</span>sry <span style="color:#666">-</span> s<span style="color:#666">*</span>tz<span style="color:#666">*</span>srx<span style="color:#666">*</span>sry) <span style="color:#666">*</span> coeff.x
+          <span style="color:#666">+</span> (s<span style="color:#666">*</span>srx<span style="color:#666">*</span>srz<span style="color:#666">*</span>pointOri.x <span style="color:#666">-</span> s<span style="color:#666">*</span>crz<span style="color:#666">*</span>srx<span style="color:#666">*</span>pointOri.y <span style="color:#666">+</span> s<span style="color:#666">*</span>crx<span style="color:#666">*</span>pointOri.z
+          <span style="color:#666">+</span> s<span style="color:#666">*</span>ty<span style="color:#666">*</span>crz<span style="color:#666">*</span>srx <span style="color:#666">-</span> s<span style="color:#666">*</span>tz<span style="color:#666">*</span>crx <span style="color:#666">-</span> s<span style="color:#666">*</span>tx<span style="color:#666">*</span>srx<span style="color:#666">*</span>srz) <span style="color:#666">*</span> coeff.y
+          <span style="color:#666">+</span> (s<span style="color:#666">*</span>crx<span style="color:#666">*</span>cry<span style="color:#666">*</span>srz<span style="color:#666">*</span>pointOri.x <span style="color:#666">-</span> s<span style="color:#666">*</span>crx<span style="color:#666">*</span>cry<span style="color:#666">*</span>crz<span style="color:#666">*</span>pointOri.y <span style="color:#666">-</span> s<span style="color:#666">*</span>cry<span style="color:#666">*</span>srx<span style="color:#666">*</span>pointOri.z
+          <span style="color:#666">+</span> s<span style="color:#666">*</span>tz<span style="color:#666">*</span>cry<span style="color:#666">*</span>srx <span style="color:#666">+</span> s<span style="color:#666">*</span>ty<span style="color:#666">*</span>crx<span style="color:#666">*</span>cry<span style="color:#666">*</span>crz <span style="color:#666">-</span> s<span style="color:#666">*</span>tx<span style="color:#666">*</span>crx<span style="color:#666">*</span>cry<span style="color:#666">*</span>srz) <span style="color:#666">*</span> coeff.z;
+</code></pre></div>
+<p>论文中是优化轴角，而代码中是直接优化欧拉角。
+按道理来说，每个点应该按照其所在的位置不同，将s设置为不同的比率，按照论文的思路也应该设置为不同的值。</p>
+
+<p>而代码中将s始终设置为1，可能是因为对Lidar Odometry的精度要求不高？后面的Lidar Mapping会进一步优化坐标。</p>
+
+<p>接下来分析<span  class="math">\(\partial d/\partial p_1\)</span>的计算过程。</p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/loam/edge-planar.png">
+    <img src="/loam/edge-planar.png" alt="Edge and Planar Point">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<h4 id="点线方程">点线方程</h4>
+
+<p>假设点<span  class="math">\(A(x_1,y_1)\)</span>与点<span  class="math">\(B(x_2,y_2)\)</span>构成一条直线，求点<span  class="math">\(O(x_0,y_0)\)</span>到直线<span  class="math">\(AB\)</span>的距离，则：</p>
+
+<p><span  class="math">\[
+d=D(O,AB) \\[2mm]
+=\frac{\|OA\times OB\|}{\|AB\|} \\[2mm]
+\]</span></p>
+
+<p>直接将上式进行代数展开，并以<span  class="math">\(x\)</span>为例，求其Jacobian矩阵如下：</p>
+<pre><code>              (y1 - y2) #1 + (z1 - z2) #2
+------------------------------------------------------------------
+       2     2     2                2            2            2
+sqrt(#1  + #2  + #3 ) sqrt((x1 - x2)  + (y1 - y2)  + (z1 - z2) )
+
+where:
+   #1 == (x0 - x1) (y0 - y2) - (x0 - x2) (y0 - y1)
+   #2 == (x0 - x1) (z0 - z2) - (x0 - x2) (z0 - z1)
+   #3 == (y0 - y1) (z0 - z2) - (y0 - y2) (z0 - z1)</code></pre>
+<p>与代码也完全对应：</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#b00040">float</span> a012 <span style="color:#666">=</span> sqrt(((x0 <span style="color:#666">-</span> x1)<span style="color:#666">*</span>(y0 <span style="color:#666">-</span> y2) <span style="color:#666">-</span> (x0 <span style="color:#666">-</span> x2)<span style="color:#666">*</span>(y0 <span style="color:#666">-</span> y1))
+         <span style="color:#666">*</span> ((x0 <span style="color:#666">-</span> x1)<span style="color:#666">*</span>(y0 <span style="color:#666">-</span> y2) <span style="color:#666">-</span> (x0 <span style="color:#666">-</span> x2)<span style="color:#666">*</span>(y0 <span style="color:#666">-</span> y1)) 
+         <span style="color:#666">+</span> ((x0 <span style="color:#666">-</span> x1)<span style="color:#666">*</span>(z0 <span style="color:#666">-</span> z2) <span style="color:#666">-</span> (x0 <span style="color:#666">-</span> x2)<span style="color:#666">*</span>(z0 <span style="color:#666">-</span> z1))
+         <span style="color:#666">*</span> ((x0 <span style="color:#666">-</span> x1)<span style="color:#666">*</span>(z0 <span style="color:#666">-</span> z2) <span style="color:#666">-</span> (x0 <span style="color:#666">-</span> x2)<span style="color:#666">*</span>(z0 <span style="color:#666">-</span> z1)) 
+         <span style="color:#666">+</span> ((y0 <span style="color:#666">-</span> y1)<span style="color:#666">*</span>(z0 <span style="color:#666">-</span> z2) <span style="color:#666">-</span> (y0 <span style="color:#666">-</span> y2)<span style="color:#666">*</span>(z0 <span style="color:#666">-</span> z1))
+         <span style="color:#666">*</span> ((y0 <span style="color:#666">-</span> y1)<span style="color:#666">*</span>(z0 <span style="color:#666">-</span> z2) <span style="color:#666">-</span> (y0 <span style="color:#666">-</span> y2)<span style="color:#666">*</span>(z0 <span style="color:#666">-</span> z1)));
+
+<span style="color:#b00040">float</span> l12 <span style="color:#666">=</span> sqrt((x1 <span style="color:#666">-</span> x2)<span style="color:#666">*</span>(x1 <span style="color:#666">-</span> x2) <span style="color:#666">+</span> (y1 <span style="color:#666">-</span> y2)<span style="color:#666">*</span>(y1 <span style="color:#666">-</span> y2) <span style="color:#666">+</span> (z1 <span style="color:#666">-</span> z2)<span style="color:#666">*</span>(z1 <span style="color:#666">-</span> z2));
+
+<span style="color:#b00040">float</span> la <span style="color:#666">=</span> ((y1 <span style="color:#666">-</span> y2)<span style="color:#666">*</span>((x0 <span style="color:#666">-</span> x1)<span style="color:#666">*</span>(y0 <span style="color:#666">-</span> y2) <span style="color:#666">-</span> (x0 <span style="color:#666">-</span> x2)<span style="color:#666">*</span>(y0 <span style="color:#666">-</span> y1)) 
+       <span style="color:#666">+</span> (z1 <span style="color:#666">-</span> z2)<span style="color:#666">*</span>((x0 <span style="color:#666">-</span> x1)<span style="color:#666">*</span>(z0 <span style="color:#666">-</span> z2) <span style="color:#666">-</span> (x0 <span style="color:#666">-</span> x2)<span style="color:#666">*</span>(z0 <span style="color:#666">-</span> z1))) <span style="color:#666">/</span> a012 <span style="color:#666">/</span> l12;
+</code></pre></div>
+<h4 id="点面方程">点面方程</h4>
+
+<p><span  class="math">\[
+d=D(O,ABC) \\[2mm]
+=\frac{(AB\times AC)\cdot OA}{\|AB \times AC\|} \\[2mm]
+\]</span></p>
+
+<p>将数据进行代数展开，对点坐标求Jacobian，与代码也完全对应。</p>
+
+<h2 id="建图">建图 <a aria-label="header link for 建图" href="#建图" class="header-link">#</a></h2>
+
+<p>将地图中与当前帧有重叠的部分取出来，用KD-Tree保存。并进行滤波处理，减少计算量。
+再寻找最邻近的5个点，对点云协方差矩阵进行主成分分析：</p>
+
+<ol>
+<li>若这五个点分布在直线上，协方差矩阵的特征值包含一个元素显著大于其余两个，与该特征值相关的特征向量表示所处直线的方向；</li>
+<li>若这五个点分布在平面上，协方差矩阵的特征值存在一个显著小的元素，与该特征值相关的特征向量表示所处平面的法线方向。</li>
+</ol>
+
+<p>优化过程与Lidar Odometry基本类似，不再赘述。</p>
+
+
+
+  
+
+  
+    <br>
+    <strong>Previous:</strong> <a href="/rtk/">GNSS定位原理</a>
+  
+  
+  
+    <div id="disqus-container">
+  
+</div>
+
+  
+
+
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="usa-footer usa-footer--slim" role="contentinfo">
+      
+      <div class="usa-footer__secondary-section" id="footer-main">
+        <div class="grid-container">
+          <div class="grid-row grid-gap">
+            <div class="grid-col-12 text-center">
+              
+              
+                Made with <a href="https://gohugo.io/">Hugo</a> • Content in <a href="https://github.com/nuhuo08/uswds-hugo-theme">GitHub</a>
+                <br>
+                Last deployed on 2020-01-31
+              
+
+              
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    
+    <script src="/js/uswds.min.fcd9b25a27c51de427f4c618dee88490c2ff0a792a573531e316730d07df3f3d.js"></script>
+
+  </body>
+</html>
