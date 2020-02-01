@@ -49,9 +49,9 @@
     
     
 
-    <link rel="canonical" href="https://nuhuo08.github.io/slam-for-dummies/">
+    <link rel="canonical" href="https://nuhuo08.github.io/ros-integration/">
     <meta name="generator" content="Hugo 0.62.2" />
-    <title>SLAM for Dummies | XiaoWu</title>
+    <title>Ros Integration | XiaoWu</title>
 
     
     <link rel="stylesheet" href="/css/uswds.min.c480a9b2a1fc1e7e564e62752462b22cd5f508a047f0340cb3725722f627fb1d.css">
@@ -110,20 +110,17 @@
         <div class="grid-row grid-gap">
           <div class="tablet:grid-col usa-prose">
             
-  <h1>SLAM for Dummies</h1>
+  <h1>Ros Integration</h1>
   
   <p class="text-gray-50">
     
     
     
-    <strong>Published: </strong>2020-01-07
+    <strong>Published: </strong>2020-01-15
 
     
     
       
-      
-        | <strong>Lastmod: </strong>2020-01-27
-
       
     
     
@@ -144,8 +141,8 @@
       
       
       
-      <a href="#%e8%a7%82%e6%b5%8b%e6%96%b9%e7%a8%8b">
-        观测方程
+      <a href="#%e8%87%aa%e5%8a%a8%e9%a9%be%e9%a9%b6%e7%b3%bb%e7%bb%9f%e7%bb%93%e6%9e%84">
+        自动驾驶系统结构
       </a>
     </li>
     
@@ -154,8 +151,8 @@
       
       
       
-      <a href="#%e5%8a%a8%e6%80%81%e6%96%b9%e7%a8%8b">
-        动态方程
+      <a href="#%e6%af%95%e4%b8%9a%e8%af%be%e7%a8%8b%e9%a1%b9%e7%9b%ae">
+        毕业课程项目
       </a>
     </li>
     
@@ -164,8 +161,8 @@
       
       
       
-      <a href="#%e6%96%b0%e5%a2%9e%e8%b7%af%e6%a0%87%e7%82%b9%e7%9a%84%e5%8d%8f%e6%96%b9%e5%b7%ae%e7%9f%a9%e9%98%b5%e5%a2%9e%e5%b9%bf">
-        新增路标点的协方差矩阵增广
+      <a href="#%e5%85%b6%e4%bb%96">
+        其他
       </a>
     </li>
     
@@ -177,68 +174,199 @@
   
   
 
-<p>TO BE CONTINUED</p>
-
-<p><a href="https://zhuanlan.zhihu.com/p/32937247">https://zhuanlan.zhihu.com/p/32937247</a></p>
-
-<h2 id="观测方程">观测方程 <a aria-label="header link for 观测方程" href="#观测方程" class="header-link">#</a></h2>
-
-<p><span  class="math">\[
-\underbrace{\begin{pmatrix} r_1 \\ \theta_1 \\ r_2 \\ \theta_2 \\ \vdots \\ r_n \\ \theta_n \end{pmatrix}}_Z
-= \underbrace{\begin{bmatrix} A_1 &B_1 &C_1 &-A_1 &-B_1 \\
-D_1 &E_1 &F_1 &-D_1 &-E_1 \\
-A_2 &B_2 &C_2 & & &-A_2 &-B_2 \\
-D_2 &E_2 &F_2 & & &-D_2 &-E_2 \\
- &\vdots & & & & & & \ddots \\
-A_n &B_n &C_n & & & & & &-A_n &-B_n \\
-D_n &E_n &F_n & & & & & &-D_n &-E_n \\
-\end{bmatrix}}_H
-\underbrace{\begin{pmatrix} x_r \\ y_r \\ \theta_r \\ x_1 \\ y_1 \\ x_2 \\ y_2 \\ \vdots \\ x_n \\ y_n \end{pmatrix}}_X \\[2mm]
-R = \begin{pmatrix} r_c & \\ &r_d \end{pmatrix}
-\]</span></p>
-
-<h2 id="动态方程">动态方程 <a aria-label="header link for 动态方程" href="#动态方程" class="header-link">#</a></h2>
-
-<p><span  class="math">\[
-\underbrace{\begin{pmatrix} x_r \\ y_r \\ \theta_r \end{pmatrix}}_{X_{k+1}}
-= \underbrace{\begin{bmatrix} 1 & &-\Delta y \\ &1 &\Delta x \\ & &1\end{bmatrix}}_A
-\underbrace{\begin{pmatrix} x_r \\ y_r \\ \theta_r \end{pmatrix}}_{X_k} \\[2mm]
-Q = \begin{pmatrix} c\Delta x^2 \\ & c\Delta y^2 \\ & &c\Delta t^2\end{pmatrix}
-\]</span></p>
-
-<h2 id="新增路标点的协方差矩阵增广">新增路标点的协方差矩阵增广 <a aria-label="header link for 新增路标点的协方差矩阵增广" href="#新增路标点的协方差矩阵增广" class="header-link">#</a></h2>
-
-<h3 id="landmark-wrt-robot-state">landmark wrt. robot state</h3>
-
-<p><span  class="math">\[
-J_{xr} = \begin{bmatrix} 1 & &-\Delta y \\ &1 &\Delta x\end{bmatrix}
-\]</span></p>
-
-<h3 id="landmark-wrt-range-bearing">landmark wrt. [range, bearing]</h3>
-
-<p><span  class="math">\[
-J_z = \begin{bmatrix} \cos(\theta + \Delta \theta) &-\Delta t \cdot \sin(\theta + \Delta \theta) \\
- \sin(\theta + \Delta \theta) &\Delta t \cdot \cos(\theta + \Delta \theta) \end{bmatrix}
-\]</span></p>
-
-<h3 id="covariance">covariance</h3>
-
-<p><span  class="math">\[
-P^{r \ {N+1}} = P^{rr}J_{xr}^T \\[2mm]
-P^{i \ {N+1}} = P^{ri}J_{xr}^T \\[2mm]
-P^{{N+1} \ {N+1}} = J_{xr}PJ_{xr}^T + J_zRJ_z^T
-\]</span></p>
+<h2 id="自动驾驶系统结构">自动驾驶系统结构 <a aria-label="header link for 自动驾驶系统结构" href="#自动驾驶系统结构" class="header-link">#</a></h2>
 
 
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/ros-integration/systems-integration.png">
+    <img src="/ros-integration/systems-integration.png" alt="Systems Integration">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<p>在繁忙的工作之余，学习完这门课
+<a href="https://www.udacity.com/course/self-driving-car-engineer-nanodegree--nd013">Udacity - Self-Driving Car Engineer</a>，
+虽然辛苦，但是收货很多。
+对无人车上配置的传感器、涉及到的功能模块、各模块之间的交互都有了大致的了解。
+更有幸的是参与了自动泊车系统的研发、重构、优化等一个几乎完整的工程项目开发周期。</p>
+
+<h2 id="毕业课程项目">毕业课程项目 <a aria-label="header link for 毕业课程项目" href="#毕业课程项目" class="header-link">#</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/ros-integration/final-project.png">
+    <img src="/ros-integration/final-project.png" alt="Final Project">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<p>Nanodegree毕业课程设计，该图包含了项目涉及到的几个ROS Node，以及系统中流动的ROS Message。</p>
+
+<h3 id="tldetector">tl_detector</h3>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/ros-integration/tl_detector.png">
+    <img src="/ros-integration/tl_detector.png" alt="Traffic Light Detector">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<p>根据图像信息：</p>
+
+<ol>
+<li>检测是否存在红绿灯标牌</li>
+<li>分类是红灯还是绿灯</li>
+</ol>
+
+<p>若检测到红灯，则将最靠近停止线的waypoint的序号发送出去。</p>
+
+<p>TODO: 增加OpenCV Image Processing &amp; Deep Learning跳转链接</p>
+
+<h3 id="waypointupdater">waypoint_updater</h3>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/ros-integration/waypoint_updater.png">
+    <img src="/ros-integration/waypoint_updater.png" alt="Waypoint Updater">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<p>生成前面一段需要跟踪的路径点，且增加了速度属性。当前方存在红灯时，会设置waypoints的速度慢慢减少到0停止。</p>
+
+<h3 id="waypointfollower">waypoint_follower</h3>
+
+<p>采用pure pursuit算法，计算出车辆需要输出的线速度和角速度，以geometry_msgs::TwistStamped消息发送出去。</p>
+
+<h3 id="twistcontroller">twist_controller</h3>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/ros-integration/twist_controller.png">
+    <img src="/ros-integration/twist_controller.png" alt="Twist Controller">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<p>使用PID控制器，通过brake/throttle控制车辆的加减速度，使之达到期望的线速度。<br>
+使用YawController控制器，计算打方向盘的角度。</p>
+
+<p>TODO: 增加Control跳转链接</p>
+
+<h2 id="其他">其他 <a aria-label="header link for 其他" href="#其他" class="header-link">#</a></h2>
+
+<p>该项目没有涉及路径规划、位置确定、障碍物跟踪模块。</p>
+
+<h3 id="planning">Planning</h3>
+
+<p>实际自动驾驶中，汽车跟踪的轨迹预先是不知道的，所以不会有Waypoint Loader模块。
+需要根据用户的需求，做出正确的路径规划。</p>
+
+<ol>
+<li>类似于导航软件，根据用户指定的目的地，输出一条全局路径规划。</li>
+<li>在跟踪全局路径时，需要有局部路径规划，控制车辆轨迹的平滑稳定。</li>
+</ol>
+
+<p>TODO: 增加Path Planning跳转链接</p>
+
+<h3 id="positioning">Positioning</h3>
+
+<p>实际车辆在运行过程中，不会精确知道自己的位姿。定位所涉及的方法有：</p>
+
+<ol>
+<li>GPS/INS</li>
+<li>Odometry</li>
+<li>Visual/Lidar SLAM</li>
+<li>HD Map Matching</li>
+</ol>
+
+<h3 id="障碍物跟踪">障碍物跟踪</h3>
+
+<p>融合多传感器的感知结果，预测与追踪障碍物的轨迹。</p>
+
+
+
+  
 
   
     <br>
-    <strong>Next:</strong> <a href="/gmapping/">GMapping</a>
-  
-
-  
-    <br>
-    <strong>Previous:</strong> <a href="/non-linear/">非线性优化</a>
+    <strong>Previous:</strong> <a href="/loam/">LOAM</a>
   
   
   

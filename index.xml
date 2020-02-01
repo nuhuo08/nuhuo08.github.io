@@ -6,10 +6,33 @@
     <description>Recent content on XiaoWu</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 14 Jan 2020 08:00:00 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 15 Jan 2020 08:00:00 +0800</lastBuildDate>
     
 	<atom:link href="https://nuhuo08.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Ros Integration</title>
+      <link>https://nuhuo08.github.io/ros-integration/</link>
+      <pubDate>Wed, 15 Jan 2020 08:00:00 +0800</pubDate>
+      
+      <guid>https://nuhuo08.github.io/ros-integration/</guid>
+      <description>自动驾驶系统结构    在繁忙的工作之余，学习完这门课 Udacity - Self-Driving Car Engineer， 虽然辛苦，但是收货很多。 对无人车上配置的传感器、涉及到的功能模块、各模块之间的交互都有了大致的了解。 更有幸的是参与了自动泊车系统的研发、重构、优化等一个几乎完整的工程项目开发周期。
+毕业课程项目    Nanodegree毕业课程设计，该图包含了项目涉及到的几个ROS Node，以及系统中流动的ROS Message。
+tl_detector    根据图像信息：
+ 检测是否存在红绿灯标牌 分类是红灯还是绿灯  若检测到红灯，则将最靠近停止线的waypoint的序号发送出去。
+TODO: 增加OpenCV Image Processing &amp;amp; Deep Learning跳转链接
+waypoint_updater    生成前面一段需要跟踪的路径点，且增加了速度属性。当前方存在红灯时，会设置waypoints的速度慢慢减少到0停止。
+waypoint_follower 采用pure pursuit算法，计算出车辆需要输出的线速度和角速度，以geometry_msgs::TwistStamped消息发送出去。
+twist_controller    使用PID控制器，通过brake/throttle控制车辆的加减速度，使之达到期望的线速度。
+使用YawController控制器，计算打方向盘的角度。
+TODO: 增加Control跳转链接
+其他 该项目没有涉及路径规划、位置确定、障碍物跟踪模块。
+Planning 实际自动驾驶中，汽车跟踪的轨迹预先是不知道的，所以不会有Waypoint Loader模块。 需要根据用户的需求，做出正确的路径规划。
+ 类似于导航软件，根据用户指定的目的地，输出一条全局路径规划。 在跟踪全局路径时，需要有局部路径规划，控制车辆轨迹的平滑稳定。  TODO: 增加Path Planning跳转链接
+Positioning 实际车辆在运行过程中，不会精确知道自己的位姿。定位所涉及的方法有：
+ GPS/INS Odometry Visual/Lidar SLAM HD Map Matching  障碍物跟踪 融合多传感器的感知结果，预测与追踪障碍物的轨迹。</description>
+    </item>
     
     <item>
       <title>LOAM</title>
