@@ -122,6 +122,9 @@
     
       
       
+        | <strong>Lastmod: </strong>2020-02-01
+
+      
     
     
     
@@ -490,7 +493,8 @@ TODO
 将旋转矩阵展开以后可以看到其相应关系。</p>
 <pre><code>Rwb1 = Ry(y1) * Rx(x1) *  Rz(z1);
 Rbw2 = Ry(y2) * Rx(x2) *  Rz(z2);
-Rwb3 = Rwb1 * Rbw2 =
+Rwb3 = Rwb1 * Rbw2
+=
 [ cos(y)*cos(z) + sin(x)*sin(y)*sin(z), cos(z)*sin(x)*sin(y) - cos(y)*sin(z), cos(x)*sin(y)]
 [                        cos(x)*sin(z),                        cos(x)*cos(z),       -sin(x)]
 [ cos(y)*sin(x)*sin(z) - cos(z)*sin(y), sin(y)*sin(z) + cos(y)*cos(z)*sin(x), cos(x)*cos(y)]
@@ -519,6 +523,27 @@ Rwb3 = Rwb1 * Rbw2 =
 }
 </code></pre></div>
 <h4 id="pluginimurotation">PluginIMURotation</h4>
+
+<p><span  class="math">\[
+R_x = R_{Last} * R_{Start}^{-1} * R_x
+\]</span></p>
+<pre><code>R1 = Ry(alz) * Rx(alx) *  Rz(aly);
+R2 = Rz(-bly) * Rx(-blx) * Ry(-blz);
+R3 = Ry(bcz) * Rx(bcx) *  Rz(bcy);
+
+R = R1 * R2 * R3
+=
+[ cos(y)*cos(z) + sin(x)*sin(y)*sin(z), cos(z)*sin(x)*sin(y) - cos(y)*sin(z), cos(x)*sin(y)]
+[                        cos(x)*sin(z),                        cos(x)*cos(z),       -sin(x)]
+[ cos(y)*sin(x)*sin(z) - cos(z)*sin(y), sin(y)*sin(z) + cos(y)*cos(z)*sin(x), cos(x)*cos(y)]
+=
+[   (cos(bcy)*sin(bcz) - cos(bcz)*sin(bcx)*sin(bcy))*((cos(aly)*cos(alz) + sin(alx)*sin(aly)*sin(alz))*(cos(bly)*sin(blz) - cos(blz)*sin(blx)*sin(bly)) + (cos(alz)*sin(aly) - cos(aly)*sin(alx)*sin(alz))*(sin(bly)*sin(blz) + cos(bly)*cos(blz)*sin(blx)) - cos(alx)*cos(blx)*cos(blz)*sin(alz)) + (cos(bcy)*cos(bcz) + sin(bcx)*sin(bcy)*sin(bcz))*((cos(aly)*cos(alz) + sin(alx)*sin(aly)*sin(alz))*(cos(bly)*cos(blz) + sin(blx)*sin(bly)*sin(blz)) + (cos(alz)*sin(aly) - cos(aly)*sin(alx)*sin(alz))*(cos(blz)*sin(bly) - cos(bly)*sin(blx)*sin(blz)) + cos(alx)*cos(blx)*sin(alz)*sin(blz)) - cos(bcx)*sin(bcy)*(cos(blx)*cos(bly)*(cos(alz)*sin(aly) - cos(aly)*sin(alx)*sin(alz)) - cos(blx)*sin(bly)*(cos(aly)*cos(alz) + sin(alx)*sin(aly)*sin(alz)) + cos(alx)*sin(alz)*sin(blx)), - (sin(bcy)*sin(bcz) + cos(bcy)*cos(bcz)*sin(bcx))*((cos(aly)*cos(alz) + sin(alx)*sin(aly)*sin(alz))*(cos(bly)*sin(blz) - cos(blz)*sin(blx)*sin(bly)) + (cos(alz)*sin(aly) - cos(aly)*sin(alx)*sin(alz))*(sin(bly)*sin(blz) + cos(bly)*cos(blz)*sin(blx)) - cos(alx)*cos(blx)*cos(blz)*sin(alz)) - (cos(bcz)*sin(bcy) - cos(bcy)*sin(bcx)*sin(bcz))*((cos(aly)*cos(alz) + sin(alx)*sin(aly)*sin(alz))*(cos(bly)*cos(blz) + sin(blx)*sin(bly)*sin(blz)) + (cos(alz)*sin(aly) - cos(aly)*sin(alx)*sin(alz))*(cos(blz)*sin(bly) - cos(bly)*sin(blx)*sin(blz)) + cos(alx)*cos(blx)*sin(alz)*sin(blz)) - cos(bcx)*cos(bcy)*(cos(blx)*cos(bly)*(cos(alz)*sin(aly) - cos(aly)*sin(alx)*sin(alz)) - cos(blx)*sin(bly)*(cos(aly)*cos(alz) + sin(alx)*sin(aly)*sin(alz)) + cos(alx)*sin(alz)*sin(blx)), sin(bcx)*(cos(blx)*cos(bly)*(cos(alz)*sin(aly) - cos(aly)*sin(alx)*sin(alz)) - cos(blx)*sin(bly)*(cos(aly)*cos(alz) + sin(alx)*sin(aly)*sin(alz)) + cos(alx)*sin(alz)*sin(blx)) - cos(bcx)*cos(bcz)*((cos(aly)*cos(alz) + sin(alx)*sin(aly)*sin(alz))*(cos(bly)*sin(blz) - cos(blz)*sin(blx)*sin(bly)) + (cos(alz)*sin(aly) - cos(aly)*sin(alx)*sin(alz))*(sin(bly)*sin(blz) + cos(bly)*cos(blz)*sin(blx)) - cos(alx)*cos(blx)*cos(blz)*sin(alz)) + cos(bcx)*sin(bcz)*((cos(aly)*cos(alz) + sin(alx)*sin(aly)*sin(alz))*(cos(bly)*cos(blz) + sin(blx)*sin(bly)*sin(blz)) + (cos(alz)*sin(aly) - cos(aly)*sin(alx)*sin(alz))*(cos(blz)*sin(bly) - cos(bly)*sin(blx)*sin(blz)) + cos(alx)*cos(blx)*sin(alz)*sin(blz))]
+[                                                                                                                                                                                                                        (cos(bcy)*sin(bcz) - cos(bcz)*sin(bcx)*sin(bcy))*(cos(alx)*sin(aly)*(cos(bly)*sin(blz) - cos(blz)*sin(blx)*sin(bly)) - cos(alx)*cos(aly)*(sin(bly)*sin(blz) + cos(bly)*cos(blz)*sin(blx)) + cos(blx)*cos(blz)*sin(alx)) - (cos(bcy)*cos(bcz) + sin(bcx)*sin(bcy)*sin(bcz))*(cos(alx)*cos(aly)*(cos(blz)*sin(bly) - cos(bly)*sin(blx)*sin(blz)) - cos(alx)*sin(aly)*(cos(bly)*cos(blz) + sin(blx)*sin(bly)*sin(blz)) + cos(blx)*sin(alx)*sin(blz)) + cos(bcx)*sin(bcy)*(sin(alx)*sin(blx) + cos(alx)*cos(aly)*cos(blx)*cos(bly) + cos(alx)*cos(blx)*sin(aly)*sin(bly)),                                                                                                                                                                                                                        (cos(bcz)*sin(bcy) - cos(bcy)*sin(bcx)*sin(bcz))*(cos(alx)*cos(aly)*(cos(blz)*sin(bly) - cos(bly)*sin(blx)*sin(blz)) - cos(alx)*sin(aly)*(cos(bly)*cos(blz) + sin(blx)*sin(bly)*sin(blz)) + cos(blx)*sin(alx)*sin(blz)) - (sin(bcy)*sin(bcz) + cos(bcy)*cos(bcz)*sin(bcx))*(cos(alx)*sin(aly)*(cos(bly)*sin(blz) - cos(blz)*sin(blx)*sin(bly)) - cos(alx)*cos(aly)*(sin(bly)*sin(blz) + cos(bly)*cos(blz)*sin(blx)) + cos(blx)*cos(blz)*sin(alx)) + cos(bcx)*cos(bcy)*(sin(alx)*sin(blx) + cos(alx)*cos(aly)*cos(blx)*cos(bly) + cos(alx)*cos(blx)*sin(aly)*sin(bly)),                                                                                                                                                                                                                    - sin(bcx)*(sin(alx)*sin(blx) + cos(alx)*cos(aly)*cos(blx)*cos(bly) + cos(alx)*cos(blx)*sin(aly)*sin(bly)) - cos(bcx)*cos(bcz)*(cos(alx)*sin(aly)*(cos(bly)*sin(blz) - cos(blz)*sin(blx)*sin(bly)) - cos(alx)*cos(aly)*(sin(bly)*sin(blz) + cos(bly)*cos(blz)*sin(blx)) + cos(blx)*cos(blz)*sin(alx)) - cos(bcx)*sin(bcz)*(cos(alx)*cos(aly)*(cos(blz)*sin(bly) - cos(bly)*sin(blx)*sin(blz)) - cos(alx)*sin(aly)*(cos(bly)*cos(blz) + sin(blx)*sin(bly)*sin(blz)) + cos(blx)*sin(alx)*sin(blz))]
+[ - (cos(bcy)*sin(bcz) - cos(bcz)*sin(bcx)*sin(bcy))*((sin(aly)*sin(alz) + cos(aly)*cos(alz)*sin(alx))*(sin(bly)*sin(blz) + cos(bly)*cos(blz)*sin(blx)) + (cos(aly)*sin(alz) - cos(alz)*sin(alx)*sin(aly))*(cos(bly)*sin(blz) - cos(blz)*sin(blx)*sin(bly)) + cos(alx)*cos(alz)*cos(blx)*cos(blz)) - (cos(bcy)*cos(bcz) + sin(bcx)*sin(bcy)*sin(bcz))*((sin(aly)*sin(alz) + cos(aly)*cos(alz)*sin(alx))*(cos(blz)*sin(bly) - cos(bly)*sin(blx)*sin(blz)) + (cos(aly)*sin(alz) - cos(alz)*sin(alx)*sin(aly))*(cos(bly)*cos(blz) + sin(blx)*sin(bly)*sin(blz)) - cos(alx)*cos(alz)*cos(blx)*sin(blz)) - cos(bcx)*sin(bcy)*(cos(blx)*sin(bly)*(cos(aly)*sin(alz) - cos(alz)*sin(alx)*sin(aly)) - cos(blx)*cos(bly)*(sin(aly)*sin(alz) + cos(aly)*cos(alz)*sin(alx)) + cos(alx)*cos(alz)*sin(blx)),   (sin(bcy)*sin(bcz) + cos(bcy)*cos(bcz)*sin(bcx))*((sin(aly)*sin(alz) + cos(aly)*cos(alz)*sin(alx))*(sin(bly)*sin(blz) + cos(bly)*cos(blz)*sin(blx)) + (cos(aly)*sin(alz) - cos(alz)*sin(alx)*sin(aly))*(cos(bly)*sin(blz) - cos(blz)*sin(blx)*sin(bly)) + cos(alx)*cos(alz)*cos(blx)*cos(blz)) + (cos(bcz)*sin(bcy) - cos(bcy)*sin(bcx)*sin(bcz))*((sin(aly)*sin(alz) + cos(aly)*cos(alz)*sin(alx))*(cos(blz)*sin(bly) - cos(bly)*sin(blx)*sin(blz)) + (cos(aly)*sin(alz) - cos(alz)*sin(alx)*sin(aly))*(cos(bly)*cos(blz) + sin(blx)*sin(bly)*sin(blz)) - cos(alx)*cos(alz)*cos(blx)*sin(blz)) - cos(bcx)*cos(bcy)*(cos(blx)*sin(bly)*(cos(aly)*sin(alz) - cos(alz)*sin(alx)*sin(aly)) - cos(blx)*cos(bly)*(sin(aly)*sin(alz) + cos(aly)*cos(alz)*sin(alx)) + cos(alx)*cos(alz)*sin(blx)), sin(bcx)*(cos(blx)*sin(bly)*(cos(aly)*sin(alz) - cos(alz)*sin(alx)*sin(aly)) - cos(blx)*cos(bly)*(sin(aly)*sin(alz) + cos(aly)*cos(alz)*sin(alx)) + cos(alx)*cos(alz)*sin(blx)) + cos(bcx)*cos(bcz)*((sin(aly)*sin(alz) + cos(aly)*cos(alz)*sin(alx))*(sin(bly)*sin(blz) + cos(bly)*cos(blz)*sin(blx)) + (cos(aly)*sin(alz) - cos(alz)*sin(alx)*sin(aly))*(cos(bly)*sin(blz) - cos(blz)*sin(blx)*sin(bly)) + cos(alx)*cos(alz)*cos(blx)*cos(blz)) - cos(bcx)*sin(bcz)*((sin(aly)*sin(alz) + cos(aly)*cos(alz)*sin(alx))*(cos(blz)*sin(bly) - cos(bly)*sin(blx)*sin(blz)) + (cos(aly)*sin(alz) - cos(alz)*sin(alx)*sin(aly))*(cos(bly)*cos(blz) + sin(blx)*sin(bly)*sin(blz)) - cos(alx)*cos(alz)*cos(blx)*sin(blz))]</code></pre>
+<p>（这个函数的作用后面还要研究下。<span  class="math">\(z\)</span>轴和<span  class="math">\(y\)</span>轴要互换以后，才跟代码对的上）</p>
+
+<p>虽然直接求解效率高，但是可读性实在太差。通过矩阵的展开、对比、分析，发现与代码一一对应。
+例如srx与<span  class="math">\(R(2,3)\)</span>是相对应的。</p>
 <div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#b00040">void</span> <span style="color:#00f">PluginIMURotation</span>(<span style="color:#b00040">float</span> bcx, <span style="color:#b00040">float</span> bcy, <span style="color:#b00040">float</span> bcz, <span style="color:#b00040">float</span> blx, <span style="color:#b00040">float</span> bly, <span style="color:#b00040">float</span> blz, 
                        <span style="color:#b00040">float</span> alx, <span style="color:#b00040">float</span> aly, <span style="color:#b00040">float</span> alz, <span style="color:#b00040">float</span> <span style="color:#666">&amp;</span>acx, <span style="color:#b00040">float</span> <span style="color:#666">&amp;</span>acy, <span style="color:#b00040">float</span> <span style="color:#666">&amp;</span>acz)
 {
@@ -583,7 +608,7 @@ p_1 = s R (p_2 - s t)
 &= \begin{pmatrix} -s\cos(\alpha s)*\sin(\beta s)*\sin(\gamma s) &  s\cos(\alpha s)*\cos(\gamma s)*\sin(\beta s) &  s\sin(\alpha s)*\sin(\beta s) \\
 s\sin(\alpha s)*\sin(\gamma s) &           -s\cos(\gamma s)*\sin(\alpha s) &            s\cos(\alpha s) \\
  s\cos(\alpha s)*\cos(\beta s)*\sin(\gamma s) & -s\cos(\alpha s)*\cos(\beta s)*\cos(\gamma s) & -s\cos(\beta s)*\sin(\alpha s)
-\end{pmatrix} \cdot (p_2-t)
+\end{pmatrix} \cdot s(p_2-st)
 \end{aligned}
 \]</span></p>
 
@@ -608,6 +633,8 @@ s\sin(\alpha s)*\sin(\gamma s) &           -s\cos(\gamma s)*\sin(\alpha s) &    
 按道理来说，每个点应该按照其所在的位置不同，将s设置为不同的比率，按照论文的思路也应该设置为不同的值。</p>
 
 <p>而代码中将s始终设置为1，可能是因为对Lidar Odometry的精度要求不高？后面的Lidar Mapping会进一步优化坐标。</p>
+
+<p>TODO：后面将进一步补充针对轴角做优化的公式。</p>
 
 <p>接下来分析<span  class="math">\(\partial d/\partial p_1\)</span>的计算过程。</p>
 
@@ -684,6 +711,28 @@ d=D(O,ABC) \\[2mm]
 <li>若这五个点分布在直线上，协方差矩阵的特征值包含一个元素显著大于其余两个，与该特征值相关的特征向量表示所处直线的方向；</li>
 <li>若这五个点分布在平面上，协方差矩阵的特征值存在一个显著小的元素，与该特征值相关的特征向量表示所处平面的法线方向。</li>
 </ol>
+
+<p><span  class="math">\[
+d=D(p_w) \\[2mm]
+\begin{aligned}
+p_w &= R p_L + t \\[2mm]
+&=\left(R_y(\beta)*R_x(\alpha)*R_z(\gamma)\right) \cdot p_L + t \\[2mm]
+\end{aligned}
+\]</span></p>
+
+<p>以<span  class="math">\(\alpha\)</span>为例，推导Jacobian：</p>
+
+<p><span  class="math">\[
+\begin{aligned}
+\frac{\partial p_L}{\partial \alpha} &= \frac{\partial R}{\partial \alpha} \cdot p_L \\[2mm]
+&=\frac{\partial \left(R_y(\beta)*R_x(\alpha)*R_z(\gamma)\right)}{\partial \alpha} \cdot p_L \\[2mm]
+&= \begin{pmatrix} 
+\cos(\alpha)*\sin(\beta)*\sin(\gamma)& \cos(\alpha)*\cos(\gamma)*\sin(\beta)& -\sin(\alpha)*\sin(\beta) \\
+-\sin(\alpha)*\sin(\gamma)&        -\cos(\gamma)*\sin(\alpha)&         -\cos(\alpha) \\
+\cos(\alpha)*\cos(\beta)*\sin(\gamma)& \cos(\alpha)*\cos(\beta)*\cos(\gamma)& -\cos(\beta)*\sin(\alpha)
+\end{pmatrix} \cdot p_L
+\end{aligned}
+\]</span></p>
 
 <p>优化过程与Lidar Odometry基本类似，不再赘述。</p>
 
