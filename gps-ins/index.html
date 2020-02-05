@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+	<script>
+		renderMathInElement(document.body,
+			{
+				delimiters: [
+					{left: "$$", right: "$$", display: true},
+					{left: "$", right: "$", display: false},
+				]
+			}
+		);
+
+		var inlineMathArray = document.querySelectorAll("script[type='math/tex']");
+		for (var i = 0; i < inlineMathArray.length; i++) {
+			var inlineMath = inlineMathArray[i];
+			var tex = inlineMath.innerText || inlineMath.textContent;
+			var replaced = document.createElement("span");
+			replaced.innerHTML = katex.renderToString(tex, {displayMode: false});
+			inlineMath.parentNode.replaceChild(replaced, inlineMath);
+		}
+
+		var displayMathArray = document.querySelectorAll("script[type='math/tex; mode=display']");
+		for (var i = 0; i < displayMathArray.length; i++) {
+			var displayMath = displayMathArray[i];
+			var tex = displayMath.innerHTML;
+			var replaced = document.createElement("span");
+			replaced.innerHTML = katex.renderToString(tex.replace(/%.*/g, ''), {displayMode: true});
+			displayMath.parentNode.replaceChild(replaced, displayMath);
+		}
+	</script>
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+
+    <link rel="canonical" href="https://nuhuo08.github.io/gps-ins/">
+    <meta name="generator" content="Hugo 0.62.2" />
+    <title>GPS/INS组合导航 | XiaoWu</title>
+
+    
+    <link rel="stylesheet" href="/css/uswds.min.c480a9b2a1fc1e7e564e62752462b22cd5f508a047f0340cb3725722f627fb1d.css">
+    
+    
+    <link rel="stylesheet" href="/css/custom.0a518097f5500782b25662ab2af4088600eefcc3d2d8828ce721e5e5fee436b5.min.css">
+  </head>
+  <body>
+    <a class="usa-skipnav" href="#main-content">Skip to main content</a>
+
+    <header class="usa-header usa-header--basic" role="banner">
+      <div class="usa-nav-container">
+        <div class="usa-navbar">
+          <div class="usa-logo" id="basic-mega-logo">
+            <em class="usa-logo__text">
+              <a href="/" title="Home" aria-label="Home">XiaoWu</a>
+            </em>
+          </div>
+          <button class="usa-menu-btn">Menu</button>
+        </div>
+
+        <nav role="navigation" class="usa-nav">
+          <button class="usa-nav__close">
+            <img src="/img/close.svg" alt="close" />
+          </button>
+          <ul class="usa-nav__primary usa-accordion">
+            
+            
+              
+              
+              
+              
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link " href="/">
+                  <span>Home</span>
+                </a>
+              </li>
+            
+              
+              
+              
+              
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link usa-current" href="/blog/">
+                  <span>Blog</span>
+                </a>
+              </li>
+            
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="usa-section" id="main-content">
+      <div class="grid-container">
+        <div class="grid-row grid-gap">
+          <div class="tablet:grid-col usa-prose">
+            
+  <h1>GPS/INS组合导航</h1>
+  
+  <p class="text-gray-50">
+    
+    
+    
+    <strong>Published: </strong>2020-01-16
+
+    
+    
+      
+      
+    
+    
+    
+    
+    </span>
+  </p>
+  
+  
+    
+
+<div class="toc">
+  <strong>Table of contents</strong>
+  <ol>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e5%b8%b8%e7%94%a8%e7%ac%a6%e5%8f%b7">
+        常用符号
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e5%8a%a8%e6%80%81%e6%96%b9%e7%a8%8b">
+        动态方程
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e8%a7%82%e6%b5%8b%e6%96%b9%e7%a8%8b">
+        观测方程
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e7%89%b9%e6%ae%8a%e5%a4%84%e7%90%86">
+        特殊处理
+      </a>
+    </li>
+    
+  </ol>
+</div>
+
+
+  
+  
+  
+
+<p>涉及到卡尔曼滤波，最重要的是想清楚待估计的状态量，并列出动态方程、观测方程。</p>
+
+<p>关于KF与Error-State KF，请参考<a href="../bayesian-filter">Bayesian Filter</a>。</p>
+
+<h2 id="常用符号">常用符号 <a aria-label="header link for 常用符号" href="#常用符号" class="header-link">#</a></h2>
+
+<p>待估参数：</p>
+
+<p>姿态角(roll, pitch, yaw)：</p>
+
+<p><span  class="math">\[  (roll, pitch, yaw) \]</span></p>
+
+<p>地理位置(latitude, longitude, height)：</p>
+
+<p><span  class="math">\[ ( B ,  L , h) \]</span></p>
+
+<p>NED系速度：</p>
+
+<p><span  class="math">\[ (v_N, v_E, v_D) \]</span></p>
+
+<p>子午圈、卯酉圈曲率半径：</p>
+
+<p><span  class="math">\[
+M=\frac{a(1-e^2)}{(1-e^2\sin^2 B )^{3/2}} \\[2mm]
+N=\frac{a}{(1-e^2\sin^2 B )^{1/2}}
+\]</span></p>
+
+<p>角速度<span  class="math">\(\omega_e=15.04107deg/h\)</span>：</p>
+
+<p><span  class="math">\[
+\begin{aligned}
+\omega_{ie}^n &= \begin{pmatrix} \omega_e\cos B  &0 &-\omega_e\sin B  \end{pmatrix}^T \\[2mm]
+\omega_{en}^n &= \begin{pmatrix} \dot{ L }\cos B  \\ -\dot{ B } \\ -\dot{ L }\sin B  \end{pmatrix}
+=\begin{pmatrix} v_e/(N+h) \\ -v_N/(M+h) \\ -v_E\tan B /(N+h) \end{pmatrix}
+\end{aligned}
+\]</span></p>
+
+<p>重力更新：</p>
+
+<p><span  class="math">\[
+g=9.7803267714\times\left(1-2\frac{h}{a}\right)\times\frac{1+0.001931851\sin^2L}{(1-0.006694379\sin^2L)^{1/2}}
+\]</span></p>
+
+<p>旋转矩阵（r/p/y for roll/pitch/yaw）：</p>
+
+<p><span  class="math">\[
+C_b^n = 
+\begin{pmatrix} \cos(y)*\cos(r) + \sin(p)*\sin(y)*\sin(r) &\cos(r)*\sin(p)*\sin(y) - \cos(y)*\sin(r) &\cos(p)*\sin(y) \\
+\cos(p)*\sin(r) &\cos(p)*\cos(r) &-\sin(p) \\
+\cos(y)*\sin(p)*\sin(r) - \cos(r)*\sin(y) &\sin(y)*\sin(r) + \cos(y)*\cos(r)*\sin(p) &\cos(p)*\cos(y)
+\end{pmatrix}
+\]</span></p>
+
+<h2 id="动态方程">动态方程 <a aria-label="header link for 动态方程" href="#动态方程" class="header-link">#</a></h2>
+
+<h3 id="微分方程">微分方程</h3>
+
+<p>速度微分方程：</p>
+
+<p><span  class="math">\[
+\dot{v_n} = C_b^n \cdot f^b + g_l^n - 2\omega_{ie}^n \times v^n - \omega_{en}^n \times v^n
+\]</span></p>
+
+<p>位置微分方程：</p>
+
+<p><span  class="math">\[
+\dot{r^n}=\begin{pmatrix} \dot{ B } \\ \dot{ L } \\ \dot{h}\end{pmatrix}
+=\begin{pmatrix} \frac{1}{M+h} &0 &0 \\ 0 &\frac{1}{(N+h)\cos B } &0 \\ 0 &0 &-1\end{pmatrix}
+\begin{pmatrix} v_N \\ v_E \\ v_D \end{pmatrix}
+\]</span></p>
+
+<p>姿态微分方程：</p>
+
+<p><span  class="math">\[
+\begin{aligned}
+\dot{q_b^n}&=\frac{1}{2}q_b^n\otimes\omega_{nb}^b \\[2mm]
+&=\frac{1}{2}q_b^n\otimes\left( \omega_{ib}^b - (C_b^n)^T \omega_{in}^n \right) \\[2mm]
+&=\frac{1}{2}q_b^n\otimes\left( \omega_{ib}^b - (C_b^n)^T (\omega_{ie}^n+\omega_{en}^n) \right)
+\end{aligned}
+\]</span></p>
+
+<p>等价于：</p>
+
+<p><span  class="math">\[
+\dot{C_b^n}=C_b^n(\omega_{ib}^b\times)-(\omega_{in}^n\times)C_b^n
+\]</span></p>
+
+<h3 id="更新方程">更新方程</h3>
+
+<p>速度更新方程：</p>
+
+<p><span  class="math">\[
+v_k^n = v_{k-1}^n + C_{b(k-1)}^{n(k-1)} \cdot f^b(t_k) \cdot (t_k-t_{k-1})
++[g_l^n-(2\omega_{ie}^n+\omega_{en}^n)\times v^n(t_{k-1})] \cdot (t_k-t_{k-1})
+\]</span></p>
+
+<p>位置更新方程：</p>
+
+<p><span  class="math">\[
+r_k^n=r_{k-1}^n+0.5\begin{pmatrix} \frac{1}{M+h} &0 &0 \\0 &\frac{1}{(N+h)\cos B } &0 \\ 0 &0 &-1\end{pmatrix}(v_k^n+v_{k-1}^n)\Delta t
+\]</span></p>
+
+<p>姿态更新方程：</p>
+
+<p><span  class="math">\[
+\omega_{nb}^b=\omega_{ib}^b-(C_b^n)^T(\omega_{ie}^n+\omega_{en}^n) \\[2mm]
+q_b^n(t_k)\approx \left(I+\frac{1}{2}\left(\mathcal{R(\omega_{nb}^b)}\cdot(t_k-t_{k-1})\right)\right)q_b^n(t_{k-1})
+\]</span></p>
+
+<h3 id="误差方程">误差方程</h3>
+
+<p>速度误差方程：</p>
+
+<p><span  class="math">\[
+\begin{aligned}
+\delta \dot{v^n}&=F_{vr} \cdot \delta r^n + F_{vv} \cdot \delta v^n + [C_b^n \cdot f^b]\times\delta\epsilon + C_b^n \cdot \delta f^b \\[2mm]
+&=\begin{pmatrix} -2v_E\omega_e\cos B -\frac{v_E^2}{(N+h)\cos^2 B } &0 &\frac{-v_N v_D}{(M+h)^2}+\frac{v_E^2\tan B }{(N+h)^2} \\
+2\omega_e(v_N\cos B -v_D\sin B ) + \frac{v_E v_N}{(N+h)\cos^2 B } &0 &\frac{-v_E v_D}{(N+h)^2}-\frac{v_N v_E\tan B }{(N+h)^2} \\
+2v_E\omega_e\sin B  &0 &\frac{v_E^2}{(N+h)^2}+\frac{v_N^2}{(M+h)^2}
+\end{pmatrix} \cdot \delta r^n \\[2mm]
+&+\begin{pmatrix} \frac{v_D}{M+h} &-2\omega_e\sin B  - 2\frac{v_E\tan B }{N+h} &\frac{v_N}{M+h} \\
+2\omega_e\sin B +\frac{v_E\tan B }{N+h} &\frac{v_D+v_N\tan B }{N+h} &2\omega_e\cos B +\frac{v_E}{N+h} \\
+-2\frac{v_N}{M+h} &-2\omega_e\cos B -2\frac{v_E}{N+h} &0
+\end{pmatrix}\cdot \delta v^n + [C_b^n \cdot f^b]\times\delta\epsilon + C_b^n \cdot \delta f^b
+\end{aligned}
+\]</span></p>
+
+<p>位置误差方程：</p>
+
+<p><span  class="math">\[
+\begin{aligned}
+\delta \dot{r^n} &= F_{rr} \delta r^n + F_{rv} \delta v^n \\[2mm]
+&=\begin{pmatrix} 0 &0 &\frac{-v_N}{(M+h)^2} \\ \frac{v_E\sin B }{(N+h)\cos^2 B } &0 &\frac{-v_E}{(N+h)\cos^2 B } \\0 &0 &0 \end{pmatrix}\delta r^n
++\begin{pmatrix} \frac{1}{M+h} &0 &0 \\ 0 &\frac{1}{(N+h)\cos B } &0 \\ 0 &0 &-1 \end{pmatrix} \delta v^n
+\end{aligned}
+\]</span></p>
+
+<p>姿态误差方程：</p>
+
+<p><span  class="math">\[
+\begin{aligned}
+\dot{\delta\epsilon^n} &= F_{er}\delta r^n + F_{ev} \delta v^n -(\omega_{in}^n\times)\delta\epsilon^n -C_b^n\delta\omega_{ib}^b \\[2mm]
+&=\begin{pmatrix} -\omega_e\sin B  &0 &\frac{-v_E}{(N+h)^2} \\ 0 &0 &\frac{v_N}{(M+h)^2} \\
+-\omega_e\cos B -\frac{v_E}{(N+h)\cos^2 B } &0 &\frac{v_E\tan B }{(N+h)^2} \end{pmatrix}
+\delta r^n + \begin{pmatrix} 0 &\frac{1}{N+h} &0 \\ \frac{-1}{M+h} &0 &0 \\ 0 &\frac{-\tan B }{N+h} &0\end{pmatrix}\delta v^n
+-(\omega_{in}^n\times)\delta\epsilon^n -C_b^n\delta\omega_{ib}^b \\[2mm]
+\end{aligned}
+\]</span></p>
+
+<p>整合在一起，可得到状态方程：</p>
+
+<p><span  class="math">\[
+\begin{pmatrix} \delta \dot{r^n} \\ \delta \dot{v^n} \\ \delta \dot{\epsilon^n} \end{pmatrix}
+=\begin{pmatrix} F_{rr} &F_{rv} &0 \\ F_{vr} &F_{vv} &[(C_b^n\cdot f^b)]\times \\ F_{er} &F_{ev} &-(\omega_{in}^n\times) \end{pmatrix}
+\begin{pmatrix} \delta r^n \\ \delta v^n \\ \delta \epsilon^n \end{pmatrix}
++\begin{pmatrix} 0 &0 \\ C_b^n &0 \\ 0 &-C_b^n \end{pmatrix} \begin{pmatrix} \delta f^b \\ \delta \omega_{ib}^b \end{pmatrix}
+\]</span></p>
+
+<p>若对陀螺仪、加速度计继续进行建模，分为白噪声的观测噪声，与随机游走的零偏之和，则：</p>
+
+<p><span  class="math">\[
+\delta \omega_{ib}^b = b_g + \omega_g \\
+\dot{b_g} = \omega_{bg} \\[2mm]
+\delta f^b = b_a + \omega_a \\
+\dot{b_a} = \omega_{ba}
+\]</span></p>
+
+<p>则可以得到15维的状态方程：</p>
+
+<p><span  class="math">\[
+\begin{pmatrix} \delta \dot{r^n} \\ \delta \dot{v^n} \\ \delta \dot{\epsilon^n} \\ \dot{b_g} \\ \dot{b_a} \end{pmatrix}
+=\begin{pmatrix} F_{rr} &F_{rv} &0 &0 &0 \\ F_{vr} &F_{vv} &[(C_b^n\cdot f^b)]\times &0 &C_b^n
+\\ F_{er} &F_{ev} &-(\omega_{in}^n\times) &-C_b^n &0 \\ 0 &0 &0 &0 &0 \\ 0 &0 &0 &0 &0 \end{pmatrix}
+\begin{pmatrix} \delta r^n \\ \delta v^n \\ \delta \epsilon^n \\ b_g \\ b_a \end{pmatrix}
++\begin{pmatrix} 0 &0 &0 &0 \\ 0 &C_b^n &0 &0 \\ -C_b^n &0 &0 &0 \\ 0 &0 &1 &0 \\ 0 &0 &0 &1 \end{pmatrix}
+\begin{pmatrix} \omega_g \\ \omega_a \\ \omega_{bg} \\ \omega_{ba} \end{pmatrix}
+\]</span></p>
+
+<p>计算协方差矩阵时，采用如下公式：</p>
+
+<p><span  class="math">\[
+F_k \approx I + F_t \delta t + \frac{1}{2}(F_t \delta t)^2 \\[2mm]
+G_k \approx (F_k G) Q (F_k G)^T \delta t
+\]</span></p>
+
+<h2 id="观测方程">观测方程 <a aria-label="header link for 观测方程" href="#观测方程" class="header-link">#</a></h2>
+
+<h3 id="gps">GPS</h3>
+
+<h3 id="零速检测">零速检测</h3>
+
+<h3 id="nhc约束">NHC约束</h3>
+
+<h3 id="速度约束">速度约束</h3>
+
+<h2 id="特殊处理">特殊处理 <a aria-label="header link for 特殊处理" href="#特殊处理" class="header-link">#</a></h2>
+
+<h3 id="杆臂补偿">杆臂补偿</h3>
+
+<h3 id="初始化">初始化</h3>
+
+
+
+  
+
+  
+    <br>
+    <strong>Previous:</strong> <a href="/ros-integration/">ROS Integration</a>
+  
+  
+  
+    <div id="disqus-container">
+  
+</div>
+
+  
+
+
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="usa-footer usa-footer--slim" role="contentinfo">
+      
+      <div class="usa-footer__secondary-section" id="footer-main">
+        <div class="grid-container">
+          <div class="grid-row grid-gap">
+            <div class="grid-col-12 text-center">
+              
+              
+                Made with <a href="https://gohugo.io/">Hugo</a> • Content in <a href="https://github.com/nuhuo08/uswds-hugo-theme">GitHub</a>
+                <br>
+                Last deployed on 2020-02-05
+              
+
+              
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    
+    <script src="/js/uswds.min.fcd9b25a27c51de427f4c618dee88490c2ff0a792a573531e316730d07df3f3d.js"></script>
+
+  </body>
+</html>

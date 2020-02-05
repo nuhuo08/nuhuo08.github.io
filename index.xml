@@ -6,13 +6,34 @@
     <description>Recent content on XiaoWu</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 15 Jan 2020 08:00:00 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 16 Jan 2020 08:00:00 +0800</lastBuildDate>
     
 	<atom:link href="https://nuhuo08.github.io/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Ros Integration</title>
+      <title>GPS/INS组合导航</title>
+      <link>https://nuhuo08.github.io/gps-ins/</link>
+      <pubDate>Thu, 16 Jan 2020 08:00:00 +0800</pubDate>
+      
+      <guid>https://nuhuo08.github.io/gps-ins/</guid>
+      <description>涉及到卡尔曼滤波，最重要的是想清楚待估计的状态量，并列出动态方程、观测方程。
+关于KF与Error-State KF，请参考Bayesian Filter。
+常用符号 待估参数：
+姿态角(roll, pitch, yaw)：
+\[ (roll, pitch, yaw) \]
+地理位置(latitude, longitude, height)：
+\[ ( B , L , h) \]
+NED系速度：
+\[ (v_N, v_E, v_D) \]
+子午圈、卯酉圈曲率半径：
+\[ M=\frac{a(1-e^2)}{(1-e^2\sin^2 B )^{3/2}} \\[2mm] N=\frac{a}{(1-e^2\sin^2 B )^{1/2}} \]
+角速度\(\omega_e=15.04107deg/h\)：
+\[ \begin{aligned} \omega_{ie}^n &amp;= \begin{pmatrix} \omega_e\cos B &amp;0 &amp;-\omega_e\sin B \end{pmatrix}^T \\[2mm] \omega_{en}^n &amp;= \begin{pmatrix} \dot{ L }\cos B \\ -\dot{ B } \\ -\dot{ L }\sin B \end{pmatrix} =\begin{pmatrix} v_e/(N+h) \\ -v_N/(M+h) \\ -v_E\tan B /(N+h) \end{pmatrix} \end{aligned} \]</description>
+    </item>
+    
+    <item>
+      <title>ROS Integration</title>
       <link>https://nuhuo08.github.io/ros-integration/</link>
       <pubDate>Wed, 15 Jan 2020 08:00:00 +0800</pubDate>
       
