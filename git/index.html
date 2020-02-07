@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+	<script>
+		renderMathInElement(document.body,
+			{
+				delimiters: [
+					{left: "$$", right: "$$", display: true},
+					{left: "$", right: "$", display: false},
+				]
+			}
+		);
+
+		var inlineMathArray = document.querySelectorAll("script[type='math/tex']");
+		for (var i = 0; i < inlineMathArray.length; i++) {
+			var inlineMath = inlineMathArray[i];
+			var tex = inlineMath.innerText || inlineMath.textContent;
+			var replaced = document.createElement("span");
+			replaced.innerHTML = katex.renderToString(tex, {displayMode: false});
+			inlineMath.parentNode.replaceChild(replaced, inlineMath);
+		}
+
+		var displayMathArray = document.querySelectorAll("script[type='math/tex; mode=display']");
+		for (var i = 0; i < displayMathArray.length; i++) {
+			var displayMath = displayMathArray[i];
+			var tex = displayMath.innerHTML;
+			var replaced = document.createElement("span");
+			replaced.innerHTML = katex.renderToString(tex.replace(/%.*/g, ''), {displayMode: true});
+			displayMath.parentNode.replaceChild(replaced, displayMath);
+		}
+	</script>
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+
+    <link rel="canonical" href="https://nuhuo08.github.io/git/">
+    <meta name="generator" content="Hugo 0.62.2" />
+    <title>Git | XiaoWu</title>
+
+    
+    <link rel="stylesheet" href="/css/uswds.min.c480a9b2a1fc1e7e564e62752462b22cd5f508a047f0340cb3725722f627fb1d.css">
+    
+    
+    <link rel="stylesheet" href="/css/custom.0a518097f5500782b25662ab2af4088600eefcc3d2d8828ce721e5e5fee436b5.min.css">
+  </head>
+  <body>
+    <a class="usa-skipnav" href="#main-content">Skip to main content</a>
+
+    <header class="usa-header usa-header--basic" role="banner">
+      <div class="usa-nav-container">
+        <div class="usa-navbar">
+          <div class="usa-logo" id="basic-mega-logo">
+            <em class="usa-logo__text">
+              <a href="/" title="Home" aria-label="Home">XiaoWu</a>
+            </em>
+          </div>
+          <button class="usa-menu-btn">Menu</button>
+        </div>
+
+        <nav role="navigation" class="usa-nav">
+          <button class="usa-nav__close">
+            <img src="/img/close.svg" alt="close" />
+          </button>
+          <ul class="usa-nav__primary usa-accordion">
+            
+            
+              
+              
+              
+              
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link " href="/">
+                  <span>Home</span>
+                </a>
+              </li>
+            
+              
+              
+              
+              
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link usa-current" href="/blog/">
+                  <span>Blog</span>
+                </a>
+              </li>
+            
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="usa-section" id="main-content">
+      <div class="grid-container">
+        <div class="grid-row grid-gap">
+          <div class="tablet:grid-col usa-prose">
+            
+  <h1>Git</h1>
+  
+  <p class="text-gray-50">
+    
+    
+    
+    <strong>Published: </strong>2020-01-17
+
+    
+    
+      
+      
+        | <strong>Lastmod: </strong>2020-02-08
+
+      
+    
+    
+    
+    
+    </span>
+  </p>
+  
+  
+    
+
+<div class="toc">
+  <strong>Table of contents</strong>
+  <ol>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e9%85%8d%e7%bd%ae">
+        配置
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e9%87%8d%e8%a6%81%e5%91%bd%e4%bb%a4">
+        重要命令
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e5%85%b6%e4%bb%96%e6%8a%80%e5%b7%a7">
+        其他技巧
+      </a>
+    </li>
+    
+  </ol>
+</div>
+
+
+  
+  
+  
+
+<h2 id="配置">配置 <a aria-label="header link for 配置" href="#配置" class="header-link">#</a></h2>
+
+<h3 id="ssh-key">SSH Key</h3>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">ssh-keygen -t rsa</code></pre></div>
+<p>这一步是生成了ssh的秘钥，可以建立本机与代码仓库之间的ssh链接来下载代码。<br>
+然后将~/.ssh文件夹下的id_rsa.pub文件里的文本内容，粘贴至代码服务器里面Settings --&gt; SSH keys --&gt; Add。</p>
+
+<h3 id="其他配置">其他配置</h3>
+
+<p><code>git config</code>命令实际上就是在修改仓库根目录下的<code>.git/config</code>文件。</p>
+
+<p>配置git提交记录里的用户名和邮箱：</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">git config user.name <span style="color:#ba2121">&#34;UserName&#34;</span>
+git config user.email <span style="color:#ba2121">&#34;Example@email.com&#34;</span></code></pre></div>
+<p>Windows盘上的文件在Ubuntu下的文件模式发生了变化，导致<code>git status</code>时显示所有文件都有更改。
+若要忽略文件模式的变化：</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">git config core.filemode true</code></pre></div>
+<p>当加上<code>--global</code>命令是，修改的是全局git配置，即<code>~/.gitconfig</code></p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">git config --global user.name <span style="color:#ba2121">&#34;UserName&#34;</span></code></pre></div>
+<h2 id="重要命令">重要命令 <a aria-label="header link for 重要命令" href="#重要命令" class="header-link">#</a></h2>
+
+<h3 id="branch">Branch</h3>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">git checkout -b develop
+git branch -d develop</code></pre></div>
+<h3 id="tag">tag</h3>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">git tag
+git tag v1.4-lw
+git push origin v1.4-lw
+git push origin --tags
+git tag -d v1.4-lw
+git push origin --delete &lt;tagname&gt;
+git checkout v1.4-lw</code></pre></div>
+<h3 id="working-directory">Working Directory</h3>
+
+<p>假设当前有两个分支，<code>master</code>和<code>develop</code>，对应的在服务器上有<code>origin/master</code>和<code>origin/develop</code>，此外还有一个指向当前commit的隐藏的<code>HEAD</code>。</p>
+
+<p>可以通过git status查看当前文件的状态：</p>
+
+<ol>
+<li>当文件被修改时，会发现<code>Working Directory</code>里的文件名是红色；</li>
+<li>运行<code>git add .</code>命令后，文件被添加到<code>Index</code>，此时文件名是绿色；</li>
+<li>运行<code>git commit</code>命令后，<code>HEAD</code>指向新生成新的commit，此时<code>origin/master</code>落后于<code>master</code>；</li>
+<li>运行<code>git push</code>命令后，<code>origin/master</code>与<code>master</code>会同步起来，指向同一个commit。</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/git/working-index-head.png">
+    <img src="/git/working-index-head.png" alt="Working Directory vs Index vs HEAD">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">git stash
+git stash list
+git stash pop</code></pre></div>
+<p>当编辑文件以后，Working Directory里面会有变红的文件名出现。若想暂时隐藏修改过的内容，可以用stash命令，将修改暂存起来，在之后需要的时候pop出来使用。</p>
+
+<h3 id="reset-vs-checkout">reset vs checkout</h3>
+
+<p>checkout只会移动HEAD，而reset则会将HEAD所指向的branch一起移动，如下图：</p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/git/reset-checkout.png">
+    <img src="/git/reset-checkout.png" alt="Reset vs Checkout">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<h3 id="merge-vs-rebase">merge vs rebase</h3>
+
+<h4 id="merge">merge</h4>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/git/merge-start.png">
+    <img src="/git/merge-start.png" alt="Merge Start">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">git checkout master
+git merge hotfix</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/git/merge-end.png">
+    <img src="/git/merge-end.png" alt="Merge End">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<p>由于<code>iss53</code>在<code>master</code>的直接的前方，merge的时候会直接把<code>master</code>移动到跟<code>iss53</code>一起，此过程成为Fast-Forward。
+而当<code>iss53</code>跟<code>master</code>分叉了的时候，会新建一个commit，将两者融合起来。</p>
+
+<h4 id="rebase">rebase</h4>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/git/rebase.png">
+    <img src="/git/rebase.png" alt="Rebase">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">git checkout experiment
+git rebase master</code></pre></div>
+<p>rebase可以得到一个更加干净的代码线，上面两句话等价于<code>git rebase master experiment</code>。</p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/git/rebase-2.png">
+    <img src="/git/rebase-2.png" alt="Rebase">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">git checkout master
+git merge experiment</code></pre></div>
+<p>然后再把<code>master</code>分支merge到最新状态。</p>
+
+<p><strong>rebase的高级用法</strong></p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/git/rebase-3.png">
+    <img src="/git/rebase-3.png" alt="Rebase">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<p>This basically says, “Take the <code>client</code> branch, figure out the patches since it diverged from the <code>server</code> branch, and replay these patches in the <code>client</code> branch as if it was based directly off the <code>master</code> branch instead.”</p>
+
+<h2 id="其他技巧">其他技巧 <a aria-label="header link for 其他技巧" href="#其他技巧" class="header-link">#</a></h2>
+
+<h3 id="modify">Modify</h3>
+
+<p>修改git仓库里的用户名和邮箱信息
+<a href="https://stackoverflow.com/questions/3042437/how-to-change-the-commit-author-for-one-specific-commit">How to change the commit author for one specific commit?</a></p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">git config user.name <span style="color:#ba2121">&#34;Username&#34;</span>
+git config user.email <span style="color:#ba2121">&#34;Example@email.com&#34;</span>
+git rebase -i -p --root // and <span style="color:#008000;font-weight:bold">then</span> replace pick with edit
+git commit --amend --author<span style="color:#666">=</span><span style="color:#ba2121">&#34;Username &lt;Example@email.com&gt;&#34;</span> --no-edit <span style="color:#666">&amp;&amp;</span> git rebase --continue
+git push origin master -f</code></pre></div>
+<h3 id="compare">Compare</h3>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#666">[</span>diff<span style="color:#666">]</span>
+	<span style="color:#19177c">tool</span> <span style="color:#666">=</span> meld
+<span style="color:#666">[</span>difftool<span style="color:#666">]</span>
+	<span style="color:#19177c">prompt</span> <span style="color:#666">=</span> <span style="color:#008000">false</span>
+<span style="color:#666">[</span>difftool <span style="color:#ba2121">&#34;meld&#34;</span><span style="color:#666">]</span>
+	<span style="color:#19177c">cmd</span> <span style="color:#666">=</span> meld <span style="color:#ba2121">&#34;</span><span style="color:#19177c">$LOCAL</span><span style="color:#ba2121">&#34;</span> <span style="color:#ba2121">&#34;</span><span style="color:#19177c">$REMOTE</span><span style="color:#ba2121">&#34;</span></code></pre></div>
+<p>在 <code>~/.gitconfig</code> 文件中添加上述配置以后，若要比较commit之间的文件差异，
+可以采用如下命令打开meld对比工具进行整个工程中，有变化的文件进行可视化比较，非常方便。</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">git difftool -d b8de0b2 a532c05</code></pre></div>
+
+
+  
+
+  
+    <br>
+    <strong>Previous:</strong> <a href="/gps-ins/">GPS/INS组合导航</a>
+  
+  
+  
+    <div id="utter-container">
+    <script src="https://utteranc.es/client.js"
+        repo= 'nuhuo08/blog-comments'
+        issue-term= "pathname"
+        theme= 'github-light'
+        crossorigin= "anonymous"
+        async>
+    </script> 
+    </div>
+
+  
+
+
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="usa-footer usa-footer--slim" role="contentinfo">
+      
+      <div class="usa-footer__secondary-section" id="footer-main">
+        <div class="grid-container">
+          <div class="grid-row grid-gap">
+            <div class="grid-col-12 text-center">
+              
+              
+                Made with <a href="https://gohugo.io/">Hugo</a> • Content in <a href="https://github.com/nuhuo08/uswds-hugo-theme">GitHub</a>
+                <br>
+                Last deployed on 2020-02-08
+              
+
+              
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    
+    <script src="/js/uswds.min.fcd9b25a27c51de427f4c618dee88490c2ff0a792a573531e316730d07df3f3d.js"></script>
+
+  </body>
+</html>

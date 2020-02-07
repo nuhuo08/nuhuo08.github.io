@@ -6,10 +6,25 @@
     <description>Recent content in Blogs on XiaoWu</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 16 Jan 2020 08:00:00 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 17 Jan 2020 08:00:00 +0800</lastBuildDate>
     
 	<atom:link href="https://nuhuo08.github.io/blog/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Git</title>
+      <link>https://nuhuo08.github.io/git/</link>
+      <pubDate>Fri, 17 Jan 2020 08:00:00 +0800</pubDate>
+      
+      <guid>https://nuhuo08.github.io/git/</guid>
+      <description>配置 SSH Key ssh-keygen -t rsa 这一步是生成了ssh的秘钥，可以建立本机与代码仓库之间的ssh链接来下载代码。
+然后将~/.ssh文件夹下的id_rsa.pub文件里的文本内容，粘贴至代码服务器里面Settings --&amp;gt; SSH keys --&amp;gt; Add。
+其他配置 git config命令实际上就是在修改仓库根目录下的.git/config文件。
+配置git提交记录里的用户名和邮箱：
+git config user.name &amp;#34;UserName&amp;#34; git config user.email &amp;#34;Example@email.com&amp;#34; Windows盘上的文件在Ubuntu下的文件模式发生了变化，导致git status时显示所有文件都有更改。 若要忽略文件模式的变化：
+git config core.filemode true 当加上--global命令是，修改的是全局git配置，即~/.gitconfig
+git config --global user.name &amp;#34;UserName&amp;#34; 重要命令 Branch git checkout -b develop git branch -d develop tag git tag git tag v1.4-lw git push origin v1.4-lw git push origin --tags git tag -d v1.4-lw git push origin --delete &amp;lt;tagname&amp;gt; git checkout v1.</description>
+    </item>
     
     <item>
       <title>GPS/INS组合导航</title>
