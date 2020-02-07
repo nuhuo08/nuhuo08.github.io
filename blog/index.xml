@@ -250,8 +250,11 @@ Github Pages 新建username.github.io的仓库，此仓库保存Hugo生成出来
 Binary Package
 新建私人博客文件夹 创建网站文件夹 新建网站文件夹，并用hugo生成基本网站文件
 mkdir MyWebsite &amp;amp;&amp;amp; cd MyWebsite hugo new site . 链接Github私人博客仓库 添加git源，保存私人的markdown源文件
-git init git remote add origin https://github.com/username/Hugo_Blogs.git 添加并使用新的theme git submodule add https://github.com/nuhuo08/uswds-hugo-theme.git themes/uswds-hugo-theme git submodule update --remote --merge cp themes/uswds-hugo-theme/exampleSite/config.yaml . 编辑网页 链接Github Pages 为了能够使用git submodule，需要先在仓库里添加点文件，之后再把它删掉。
-mkdir public &amp;amp;&amp;amp; cd public &amp;amp;&amp;amp; touch abc git remote add origin https://github.com/username/username.github.io.git git add . git commit -m &amp;quot;abc&amp;quot; git push orign master cd .</description>
+git init git remote add origin https://github.com/username/Hugo_Blogs.git 添加并使用新的theme git submodule add https://github.com/nuhuo08/uswds-hugo-theme.git themes/uswds-hugo-theme git submodule update --remote --merge cp themes/uswds-hugo-theme/exampleSite/config.yaml . 修改配置 设置 utterances，链接到username/username.github.io仓库，开启utterance修改Issue的权限。
+在config.yaml文件中，修改params.utter.repo属性为username/username.github.io；
+修改baseURL属性为https://username.github.io/
+编辑网页 链接Github Pages 为了能够使用git submodule，需要先在仓库里添加点文件，之后再把它删掉。
+mkdir public &amp;amp;&amp;amp; cd public &amp;amp;&amp;amp; touch abc git remote add origin https://github.com/username/username.github.io.git git add .</description>
     </item>
     
   </channel>

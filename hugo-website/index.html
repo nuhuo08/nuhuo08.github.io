@@ -218,7 +218,11 @@ git remote add origin https://github.com/username/Hugo_Blogs.git
 <pre><code>git submodule add https://github.com/nuhuo08/uswds-hugo-theme.git themes/uswds-hugo-theme
 git submodule update --remote --merge
 cp themes/uswds-hugo-theme/exampleSite/config.yaml .
-</code></pre><h2 id="编辑网页">编辑网页 <a aria-label="header link for 编辑网页" href="#编辑网页" class="header-link">#</a></h2>
+</code></pre><h3 id="修改配置">修改配置</h3>
+<p>设置 <a href="https://github.com/apps/utterances">utterances</a>，链接到<code>username/username.github.io</code>仓库，开启utterance修改Issue的权限。</p>
+<p>在config.yaml文件中，修改<code>params.utter.repo</code>属性为<code>username/username.github.io</code>；<br>
+修改<code>baseURL</code>属性为<code>https://username.github.io/</code></p>
+<h2 id="编辑网页">编辑网页 <a aria-label="header link for 编辑网页" href="#编辑网页" class="header-link">#</a></h2>
 <h3 id="链接github-pages">链接Github Pages</h3>
 <p>为了能够使用<code>git submodule</code>，需要先在仓库里添加点文件，之后再把它删掉。</p>
 <pre><code>mkdir public &amp;&amp; cd public &amp;&amp; touch abc
@@ -259,9 +263,15 @@ git push origin master
   
   
   
-    <div id="disqus-container">
-  
-</div>
+    <div id="utter-container">
+    <script src="https://utteranc.es/client.js"
+        repo= 'nuhuo08/blog-comments'
+        issue-term= "pathname"
+        theme= 'github-light'
+        crossorigin= "anonymous"
+        async>
+    </script> 
+    </div>
 
   
 
@@ -281,7 +291,7 @@ git push origin master
               
                 Made with <a href="https://gohugo.io/">Hugo</a> • Content in <a href="https://github.com/nuhuo08/uswds-hugo-theme">GitHub</a>
                 <br>
-                Last deployed on 2020-02-05
+                Last deployed on 2020-02-07
               
 
               

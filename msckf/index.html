@@ -276,7 +276,7 @@ P_{k|k} = A P_{k|k} A^T
 \)</span></p>
 
 <p><strong>多余的话</strong><br>
-关于协方差增广，可以与 slam for dummies 进行对比学习。在该文中，新的特征点与当前的机器人位姿、激光观测量都有关系，其协方差为：</p>
+关于协方差增广，可以与 <a href="../slam-for-dummies">slam for dummies</a> 进行对比学习。在该文中，新的特征点与当前的机器人位姿、激光观测量都有关系，其协方差为：</p>
 
 <p><span  class="math">\[
 P^{N+1 \  N+1} = J_{xr} P J_{xr}^T + J_z R J_z^T
@@ -296,12 +296,14 @@ z = \begin{pmatrix} \frac{h_0}{h_2} \\ \frac{h_1}{h_2} \end{pmatrix}
 <p>由此得到雅可比矩阵：</p>
 
 <p><span  class="math">\[
-J = \frac{\partial e_i}{\partial(\alpha, \beta, \rho)}
+\begin{aligned}
+J &= \frac{\partial e_i}{\partial(\alpha, \beta, \rho)}
 = -\frac{\partial z}{\partial h} \begin{bmatrix} \frac{\partial h}{\partial \alpha} & \frac{\partial h}{\partial \beta} & \frac{\partial h}{\partial \rho} \end{bmatrix} \\
-= -\begin{bmatrix} \frac{1}{h_2} & 0 & -\frac{h_0}{h_2^2} \\
+&= -\begin{bmatrix} \frac{1}{h_2} & 0 & -\frac{h_0}{h_2^2} \\
 0 & \frac{1}{h_2} & -\frac{h_1}{h_2^2} \end{bmatrix}
 \begin{bmatrix} R\begin{pmatrix} 1 \\ 0 \\ 0 \end{pmatrix} 
 & R\begin{pmatrix} 0 \\ 1 \\ 0 \end{pmatrix} & t \end{bmatrix} \\
+\end{aligned}
 \]</span></p>
 
 <h2 id="观测模型">观测模型 <a aria-label="header link for 观测模型" href="#观测模型" class="header-link">#</a></h2>
@@ -317,20 +319,24 @@ J = \frac{\partial e_i}{\partial(\alpha, \beta, \rho)}
 <p>对相机位姿、特征点位置的误差求雅可比：</p>
 
 <p><span  class="math">\[
-r_i^{(j)} \approx \frac{\partial z_i^{(j)}}{\partial ^{C_i} p_j} \frac{\partial ^{C_i} p_j}{\partial X_{C_i}} \tilde X +
+\begin{aligned}
+r_i^{(j)} &\approx \frac{\partial z_i^{(j)}}{\partial ^{C_i} p_j} \frac{\partial ^{C_i} p_j}{\partial X_{C_i}} \tilde X +
 \frac{\partial z_i^{(j)}}{\partial ^{C_i} p_j} \frac{\partial ^{C_i} p_j}{\partial ^Gp_j} {^G}{\tilde{p}_{j}} \\
-= \begin{bmatrix} \frac{1}{^{C_i} \hat Z_j} & 0 & -\frac{^{C_i} \hat X_j}{^{C_i} \hat Z_j} \\
+&= \begin{bmatrix} \frac{1}{^{C_i} \hat Z_j} & 0 & -\frac{^{C_i} \hat X_j}{^{C_i} \hat Z_j} \\
 0 & \frac{1}{^{C_i} \hat Z_j} & -\frac{^{C_i} \hat Y_j}{^{C_i} \hat Z_j} \end{bmatrix}
 \begin{bmatrix} \lfloor {^{C_i} \hat p _{j}}_\times \rfloor & -C(^{C_i} _G \hat q) \end{bmatrix} \tilde X +
 \begin{bmatrix} \frac{1}{^{C_i} \hat Z_j} & 0 & -\frac{^{C_i} \hat X_j}{^{C_i} \hat Z_j} \\
 0 & \frac{1}{^{C_i} \hat Z_j} & -\frac{^{C_i} \hat Y_j}{^{C_i} \hat Z_j} \end{bmatrix} \begin{bmatrix} C(^{C_i} _G \hat q) \end{bmatrix} {^G}{\tilde{p}_{j}}
+\end{aligned}
 \]</span></p>
 
 <p>精华：将观测到该特征点的多个相机观测值累积到一起形成大型矩阵，并将观测量误差投影到相机坐标误差雅可比矩阵的左零空间中，消去特征点坐标误差。由此，观测量误差仅与相机坐标误差相关！</p>
 
 <p><span  class="math">\[
-r^{(j)} \simeq H_X^{(j)} \tilde{X} + H_f^{(j)} {^G}{\tilde{p}_{f_j}} + n^{(j)} \\
-r_o^{(j)} = A^T r^{(j)} \simeq A^T H_X^{(j)} \tilde{X} + A^Tn^{(j)} = H_o^{(j)} \tilde{X} ^{(j)} + n_o^{(j)}
+\begin{aligned}
+r^{(j)} &\simeq H_X^{(j)} \tilde{X} + H_f^{(j)} {^G}{\tilde{p}_{f_j}} + n^{(j)} \\
+r_o^{(j)} = A^T r^{(j)} &\simeq A^T H_X^{(j)} \tilde{X} + A^Tn^{(j)} = H_o^{(j)} \tilde{X} ^{(j)} + n_o^{(j)}
+\end{aligned}
 \]</span></p>
 
 <h2 id="滤波更新">滤波更新 <a aria-label="header link for 滤波更新" href="#滤波更新" class="header-link">#</a></h2>
@@ -338,8 +344,10 @@ r_o^{(j)} = A^T r^{(j)} \simeq A^T H_X^{(j)} \tilde{X} + A^Tn^{(j)} = H_o^{(j)} 
 <p>使用QR分解，仅保留观测值中的有效信息。</p>
 
 <p><span  class="math">\[
-r_o = \begin{bmatrix} Q_1 &Q_2 \end{bmatrix} \begin{bmatrix} T_H \\ 0 \end{bmatrix} \tilde{X} + n_o \\
-r_n = Q_1^Tr_o = T_H \tilde{X} + n_n
+\begin{aligned}
+r_o &= \begin{bmatrix} Q_1 &Q_2 \end{bmatrix} \begin{bmatrix} T_H \\ 0 \end{bmatrix} \tilde{X} + n_o \\[2mm]
+r_n &= Q_1^Tr_o = T_H \tilde{X} + n_n
+\end{aligned}
 \]</span></p>
 
 <h2 id="滑窗的特殊性">滑窗的特殊性 <a aria-label="header link for 滑窗的特殊性" href="#滑窗的特殊性" class="header-link">#</a></h2>
@@ -360,9 +368,15 @@ r_n = Q_1^Tr_o = T_H \tilde{X} + n_n
   
   
   
-    <div id="disqus-container">
-  
-</div>
+    <div id="utter-container">
+    <script src="https://utteranc.es/client.js"
+        repo= 'nuhuo08/blog-comments'
+        issue-term= "pathname"
+        theme= 'github-light'
+        crossorigin= "anonymous"
+        async>
+    </script> 
+    </div>
 
   
 
@@ -382,7 +396,7 @@ r_n = Q_1^Tr_o = T_H \tilde{X} + n_n
               
                 Made with <a href="https://gohugo.io/">Hugo</a> • Content in <a href="https://github.com/nuhuo08/uswds-hugo-theme">GitHub</a>
                 <br>
-                Last deployed on 2020-02-05
+                Last deployed on 2020-02-07
               
 
               
