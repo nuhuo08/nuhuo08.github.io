@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+	<script>
+		renderMathInElement(document.body,
+			{
+				delimiters: [
+					{left: "$$", right: "$$", display: true},
+					{left: "$", right: "$", display: false},
+				]
+			}
+		);
+
+		var inlineMathArray = document.querySelectorAll("script[type='math/tex']");
+		for (var i = 0; i < inlineMathArray.length; i++) {
+			var inlineMath = inlineMathArray[i];
+			var tex = inlineMath.innerText || inlineMath.textContent;
+			var replaced = document.createElement("span");
+			replaced.innerHTML = katex.renderToString(tex, {displayMode: false});
+			inlineMath.parentNode.replaceChild(replaced, inlineMath);
+		}
+
+		var displayMathArray = document.querySelectorAll("script[type='math/tex; mode=display']");
+		for (var i = 0; i < displayMathArray.length; i++) {
+			var displayMath = displayMathArray[i];
+			var tex = displayMath.innerHTML;
+			var replaced = document.createElement("span");
+			replaced.innerHTML = katex.renderToString(tex.replace(/%.*/g, ''), {displayMode: true});
+			displayMath.parentNode.replaceChild(replaced, displayMath);
+		}
+	</script>
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+
+    <link rel="canonical" href="https://nuhuo08.github.io/vim/">
+    <meta name="generator" content="Hugo 0.62.2" />
+    <title>Vim | XiaoWu</title>
+
+    
+    <link rel="stylesheet" href="/css/uswds.min.c480a9b2a1fc1e7e564e62752462b22cd5f508a047f0340cb3725722f627fb1d.css">
+    
+    
+    <link rel="stylesheet" href="/css/custom.0a518097f5500782b25662ab2af4088600eefcc3d2d8828ce721e5e5fee436b5.min.css">
+  </head>
+  <body>
+    <a class="usa-skipnav" href="#main-content">Skip to main content</a>
+
+    <header class="usa-header usa-header--basic" role="banner">
+      <div class="usa-nav-container">
+        <div class="usa-navbar">
+          <div class="usa-logo" id="basic-mega-logo">
+            <em class="usa-logo__text">
+              <a href="/" title="Home" aria-label="Home">XiaoWu</a>
+            </em>
+          </div>
+          <button class="usa-menu-btn">Menu</button>
+        </div>
+
+        <nav role="navigation" class="usa-nav">
+          <button class="usa-nav__close">
+            <img src="/img/close.svg" alt="close" />
+          </button>
+          <ul class="usa-nav__primary usa-accordion">
+            
+            
+              
+              
+              
+              
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link " href="/">
+                  <span>Home</span>
+                </a>
+              </li>
+            
+              
+              
+              
+              
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link usa-current" href="/blog/">
+                  <span>Blog</span>
+                </a>
+              </li>
+            
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="usa-section" id="main-content">
+      <div class="grid-container">
+        <div class="grid-row grid-gap">
+          <div class="tablet:grid-col usa-prose">
+            
+  <h1>Vim</h1>
+  
+  <p class="text-gray-50">
+    
+    
+    
+    <strong>Published: </strong>2020-02-08
+
+    
+    
+      
+      
+    
+    
+    
+    
+    </span>
+  </p>
+  
+  
+    
+
+<div class="toc">
+  <strong>Table of contents</strong>
+  <ol>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e5%ae%89%e8%a3%85">
+        安装
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e5%b8%b8%e7%94%a8%e5%bf%ab%e6%8d%b7%e5%91%bd%e4%bb%a4">
+        常用快捷命令
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#vim%e7%9a%84%e9%85%8d%e7%bd%ae">
+        Vim的配置
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e5%85%b6%e4%bb%96">
+        其他
+      </a>
+    </li>
+    
+  </ol>
+</div>
+
+
+  
+  
+  
+
+<h2 id="安装">安装 <a aria-label="header link for 安装" href="#安装" class="header-link">#</a></h2>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#008000">cd</span> ~
+git clone git@github.com:nuhuo08/MyVimrc.git
+mv MyVimrc .vim_mengqi
+ln -s .vim_mengqi/.vimrc .vimrc
+ln -s .vim_mengqi/.ackrc .ackrc
+<span style="color:#408080;font-style:italic"># ln -s .vim_mengqi/.bash_aliases .bash_aliases</span>
+<span style="color:#008000">cd</span> .vim_mengqi
+mkdir -p cache plugged temp_dirs/undodir
+vi
+:PlugInstall
+
+<span style="color:#408080;font-style:italic">#NOTE: You may need to run the command below for several times. Since downloading submodules may fail.</span>
+<span style="color:#008000">cd</span> ~/.vim_mengqi/plugged/YouCompleteMe
+git submodule update --init --recursive
+
+python3 install.py --clang-completer</code></pre></div>
+<h2 id="常用快捷命令">常用快捷命令 <a aria-label="header link for 常用快捷命令" href="#常用快捷命令" class="header-link">#</a></h2>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">,w                 保存
+
+,nn                打开文件浏览树
+,nf                将文件浏览树定位到当前文件
+,tb                打开函数列表
+
+,f                 查找工程文件
+,j                 最近编辑文件列表
+
+,g                 开始查找某字符串
+,r                 替换visual选中的字符串
+gv                 查找visual选中模式下的字符串
+
+gcc                注释
+ga*|               以|符号对选中的多行进行对齐
+
+ctrl+n             开始多光标模式
+ctrl+x             多光标模式，跳过当前词
+ctrl+p             多光标模式，回到上一次选中词
+
+,q                 打开quickfix窗口
+,n                 下一个quickfix记录
+,p                 上一个quickfix记录
+
+alt+p              粘贴上一个剪切板内容
+alt+m              粘贴下一个剪切板内容
+
+g<span style="color:#666">]</span>                 跳转到tag
+
+,,w                高级的移动模式
+
+ctrl+d             窗口翻页
+ctrl+u
+ctrl+f
+ctrl+b
+
+
+zt                 当前行在窗口的位置
+zz
+zb
+
+*                  查找并高亮字符串
+#
+
+,m                 删除^M符号
+
+gt                 下一个tab
+gT                 上一个tab
+2gt                第二个tab
+
+<span style="color:#666">]</span>c                 跳到下一处Git修改处
+<span style="color:#666">[</span>c
+
+,hs                git stash
+,hu                git undo
+,hp                git preview
+,d		           toggle gitgutter
+
+ma                 设置书签a
+<span style="color:#ba2121">`</span>a
+<span style="">&#39;</span>a</code></pre></div>
+<h2 id="vim的配置">Vim的配置 <a aria-label="header link for Vim的配置" href="#vim的配置" class="header-link">#</a></h2>
+
+<p>vim有强大的可扩展性，请参考<a href="https://learnvimscriptthehardway.stevelosh.com/">Learn Vimscript the Hard Way</a>。</p>
+
+<p><code>~/.vim_mengqi/vimrc/</code>文件夹下面时候个人定制的很多配置项，熟悉以后可以自定义很多快捷的操作。</p>
+
+<h3 id="basic-settings">Basic Settings</h3>
+
+<p><code>set</code>用于配置基本的vim属性。例如，设置下面命令，可以在vim中使用鼠标。</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#008000">set</span> <span style="color:#19177c">mouse</span><span style="color:#666">=</span>a</code></pre></div>
+<p><code>map</code>用于映射快捷键。例如，下面的命令，可以使用<code>&lt;C-j&gt;</code>映射<code>&lt;C-W&gt;j</code>，实现在窗口中跳转。</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">map &lt;C-j&gt; &lt;C-W&gt;j</code></pre></div>
+<p><code>map</code>的变体有多种，例如<code>vnoremap</code>可以在visual模式下映射一些命令。</p>
+
+<h3 id="extended-settings">Extended Settings</h3>
+<pre><code>fun! CleanExtraSpaces()
+    let save_cursor = getpos(".")
+    let old_query = getreg('/')
+    silent! %s/\s\+$//e
+    call setpos('.', save_cursor)
+    call setreg('/', old_query)
+endfun
+
+if has("autocmd")
+    autocmd BufWritePre *.txt,*.js,*.py,*.wiki,*.sh,*.h,*.c,*.cpp,*.m :call CleanExtraSpaces()
+endif</code></pre>
+<p>可以自定义函数<code>CleanExtraSpaces</code>，可以使用<code>autocmd</code>自动运行，<code>BufWritePre</code>则表示在写入buffer之前做一些操作。
+上面这段脚本，可以自动清除<code>txt</code>等文件末尾多余的空白符。</p>
+
+<h3 id="plugin-settings">Plugin Settings</h3>
+
+<p>使用了<code>Plug</code>作为插件管理器，插件可以扩展vim的功能，使编辑更为高效。</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">call plug#begin<span style="color:#666">(</span><span style="color:#ba2121">&#39;~/.vim_mengqi/plugged&#39;</span><span style="color:#666">)</span>
+
+Plug <span style="color:#ba2121">&#39;tpope/vim-fugitive&#39;</span>,
+Plug <span style="color:#ba2121">&#39;airblade/vim-gitgutter&#39;</span>
+
+call plug#end<span style="color:#666">(</span><span style="color:#666">)</span></code></pre></div>
+<p>上面的命令，为vim添加了两个插件的git仓库，运行<code>:PlugInstall</code>，就可以安装好相应的两个插件。</p>
+
+<p>插件可以配置相对应的快捷键，例如：</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#008000">let</span> g:gitgutter_enabled<span style="color:#666">=</span><span style="color:#666">1</span>
+<span style="color:#008000">let</span> g:gitgutter_diff_args <span style="color:#666">=</span> <span style="color:#ba2121">&#39;-w&#39;</span>
+<span style="color:#008000">set</span> <span style="color:#19177c">updatetime</span><span style="color:#666">=</span><span style="color:#666">100</span>
+nnoremap &lt;silent&gt; &lt;leader&gt;d :GitGutterToggle&lt;cr&gt;</code></pre></div>
+<p>启动gitgutter插件；忽略空白字符的修改；更新时间为100ms；使用<code>,d</code>启动或关闭该插件的功能。</p>
+
+<h2 id="其他">其他 <a aria-label="header link for 其他" href="#其他" class="header-link">#</a></h2>
+
+<p>Add flag to CMakeList.txt: <code>-DCMAKE_EXPORT_COMPILE_COMMANDS=1</code>： YouCompleteMe就可以自动识别到所需要的代码文件了。
+此功能由.ycm_c-c++_conf.py提供。</p>
+
+<p><code>cd --</code>：可以看到terminal里面cd的目录历史。此功能由acd_func.sh提供。</p>
+
+
+
+  
+
+  
+    <br>
+    <strong>Previous:</strong> <a href="/git/">Git</a>
+  
+  
+  
+    <div id="utter-container">
+    <script src="https://utteranc.es/client.js"
+        repo= 'nuhuo08/blog-comments'
+        issue-term= "pathname"
+        theme= 'github-light'
+        crossorigin= "anonymous"
+        async>
+    </script> 
+    </div>
+
+  
+
+
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="usa-footer usa-footer--slim" role="contentinfo">
+      
+      <div class="usa-footer__secondary-section" id="footer-main">
+        <div class="grid-container">
+          <div class="grid-row grid-gap">
+            <div class="grid-col-12 text-center">
+              
+              
+                Made with <a href="https://gohugo.io/">Hugo</a> • Content in <a href="https://github.com/nuhuo08/uswds-hugo-theme">GitHub</a>
+                <br>
+                Last deployed on 2020-02-08
+              
+
+              
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    
+    <script src="/js/uswds.min.fcd9b25a27c51de427f4c618dee88490c2ff0a792a573531e316730d07df3f3d.js"></script>
+
+  </body>
+</html>

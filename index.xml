@@ -6,10 +6,19 @@
     <description>Recent content on XiaoWu</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 17 Jan 2020 08:00:00 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 08 Feb 2020 18:10:46 +0800</lastBuildDate>
     
 	<atom:link href="https://nuhuo08.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Vim</title>
+      <link>https://nuhuo08.github.io/vim/</link>
+      <pubDate>Sat, 08 Feb 2020 18:10:46 +0800</pubDate>
+      
+      <guid>https://nuhuo08.github.io/vim/</guid>
+      <description>安装 cd ~ git clone git@github.com:nuhuo08/MyVimrc.git mv MyVimrc .vim_mengqi ln -s .vim_mengqi/.vimrc .vimrc ln -s .vim_mengqi/.ackrc .ackrc # ln -s .vim_mengqi/.bash_aliases .bash_aliases cd .vim_mengqi mkdir -p cache plugged temp_dirs/undodir vi :PlugInstall #NOTE: You may need to run the command below for several times. Since downloading submodules may fail. cd ~/.vim_mengqi/plugged/YouCompleteMe git submodule update --init --recursive python3 install.py --clang-completer 常用快捷命令 ,w 保存 ,nn 打开文件浏览树 ,nf 将文件浏览树定位到当前文件 ,tb 打开函数列表 ,f 查找工程文件 ,j 最近编辑文件列表 ,g 开始查找某字符串 ,r 替换visual选中的字符串 gv 查找visual选中模式下的字符串 gcc 注释 ga*| 以|符号对选中的多行进行对齐 ctrl+n 开始多光标模式 ctrl+x 多光标模式，跳过当前词 ctrl+p 多光标模式，回到上一次选中词 ,q 打开quickfix窗口 ,n 下一个quickfix记录 ,p 上一个quickfix记录 alt+p 粘贴上一个剪切板内容 alt+m 粘贴下一个剪切板内容 g] 跳转到tag ,,w 高级的移动模式 ctrl+d 窗口翻页 ctrl+u ctrl+f ctrl+b zt 当前行在窗口的位置 zz zb * 查找并高亮字符串 # ,m 删除^M符号 gt 下一个tab gT 上一个tab 2gt 第二个tab ]c 跳到下一处Git修改处 [c ,hs git stash ,hu git undo ,hp git preview ,d	toggle gitgutter ma 设置书签a `a &amp;#39;a Vim的配置 vim有强大的可扩展性，请参考Learn Vimscript the Hard Way。</description>
+    </item>
     
     <item>
       <title>Git</title>

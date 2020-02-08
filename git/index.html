@@ -244,10 +244,32 @@ git checkout v1.4-lw</code></pre></div>
   </div>
 </div>
 
+
+<h4 id="stash">stash</h4>
 <div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">git stash
 git stash list
-git stash pop</code></pre></div>
+git stash pop
+git stash apply stash@<span style="color:#666">{</span>0<span style="color:#666">}</span>
+git stash apply --index
+git stash drop stash@<span style="color:#666">{</span>0<span style="color:#666">}</span>
+git stash save <span style="color:#ba2121">&#34;guacamole sauce WIP&#34;</span>
+git stash apply stash^<span style="color:#666">{</span>/guacamo<span style="color:#666">}</span></code></pre></div>
 <p>当编辑文件以后，Working Directory里面会有变红的文件名出现。若想暂时隐藏修改过的内容，可以用stash命令，将修改暂存起来，在之后需要的时候pop出来使用。</p>
+
+<h4 id="push">push</h4>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">git remote add origin git@github.com:USERNAME/REPOSITORY.git
+git remote set-url origin git@github.com:USERNAME/REPOSITORY.git</code></pre></div>
+<p>Send local changes in the current branch to its remote counterpart: <code>git push</code><br>
+Send local changes in a given branch to its remote counterpart: <code>git push remote_name local_branch</code><br>
+Publish the current branch to a remote repository, setting the remote branch name: <code>git push remote_name -u remote_branch</code></p>
+
+<h4 id="cherrypick">cherry-pick</h4>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">git cherry-pick f2e6f51</code></pre></div>
+<p>可以直接将某一特定commit追加到当前分支。</p>
+
+<h4 id="amend">amend</h4>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">git commit --amend</code></pre></div>
+<p>若上一次提交遗漏了某些文件，或者想修改commit msg，可以使用amend命令。</p>
 
 <h3 id="reset-vs-checkout">reset vs checkout</h3>
 
@@ -408,8 +430,22 @@ git merge experiment</code></pre></div>
   </div>
 </div>
 
-
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">git rebase --onto master server client</code></pre></div>
 <p>This basically says, “Take the <code>client</code> branch, figure out the patches since it diverged from the <code>server</code> branch, and replay these patches in the <code>client</code> branch as if it was based directly off the <code>master</code> branch instead.”</p>
+
+<p>只要是<code>server</code>相关的都不要，剩下与<code>client</code>相关的都需要，追加到<code>master</code>上。</p>
+
+<p>由此得到的变体：</p>
+
+<p><strong>删除连续的commit</strong></p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">1---2---3---4---5---master
+1---2---5---master
+git rebase --onto master~4 master~2 master</code></pre></div>
+<p><strong>删除特定commit</strong></p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">git rebase --onto &lt;commit-id&gt;^ &lt;commit-id&gt;</code></pre></div>
+<p><strong>将两个commit合并成为一个</strong></p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">git rebase -i HEAD~2</code></pre></div>
+<p>and then modify the second commit message from &quot;pick&quot; to &quot;f&quot;</p>
 
 <h2 id="其他技巧">其他技巧 <a aria-label="header link for 其他技巧" href="#其他技巧" class="header-link">#</a></h2>
 
@@ -432,8 +468,19 @@ git push origin master -f</code></pre></div>
 <p>在 <code>~/.gitconfig</code> 文件中添加上述配置以后，若要比较commit之间的文件差异，
 可以采用如下命令打开meld对比工具进行整个工程中，有变化的文件进行可视化比较，非常方便。</p>
 <div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">git difftool -d b8de0b2 a532c05</code></pre></div>
+<h3 id="改写服务器历史">改写服务器历史</h3>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">git checkout --orphan temp f2e6f51
+git commit -m <span style="color:#ba2121">&#34;Truncated history&#34;</span>
+git rebase --onto temp f2e6f51 master
+git branch -D temp
+git push -f origin master</code></pre></div>
+<p><code>git push -f</code>会强制推送到服务器上，若推送失败，可能是该分支被保护了，一般在远程仓库的设置中可以取消保护： Settings --&gt; Protected branches --&gt; Unprotect</p>
 
 
+
+  
+    <br>
+    <strong>Next:</strong> <a href="/vim/">Vim</a>
   
 
   
