@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+	<script>
+		renderMathInElement(document.body,
+			{
+				delimiters: [
+					{left: "$$", right: "$$", display: true},
+					{left: "$", right: "$", display: false},
+				]
+			}
+		);
+
+		var inlineMathArray = document.querySelectorAll("script[type='math/tex']");
+		for (var i = 0; i < inlineMathArray.length; i++) {
+			var inlineMath = inlineMathArray[i];
+			var tex = inlineMath.innerText || inlineMath.textContent;
+			var replaced = document.createElement("span");
+			replaced.innerHTML = katex.renderToString(tex, {displayMode: false});
+			inlineMath.parentNode.replaceChild(replaced, inlineMath);
+		}
+
+		var displayMathArray = document.querySelectorAll("script[type='math/tex; mode=display']");
+		for (var i = 0; i < displayMathArray.length; i++) {
+			var displayMath = displayMathArray[i];
+			var tex = displayMath.innerHTML;
+			var replaced = document.createElement("span");
+			replaced.innerHTML = katex.renderToString(tex.replace(/%.*/g, ''), {displayMode: true});
+			displayMath.parentNode.replaceChild(replaced, displayMath);
+		}
+	</script>
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+
+    <link rel="canonical" href="https://nuhuo08.github.io/path-planning/">
+    <meta name="generator" content="Hugo 0.62.2" />
+    <title>Path Planning | XiaoWu</title>
+
+    
+    <link rel="stylesheet" href="/css/uswds.min.c480a9b2a1fc1e7e564e62752462b22cd5f508a047f0340cb3725722f627fb1d.css">
+    
+    
+    <link rel="stylesheet" href="/css/custom.0a518097f5500782b25662ab2af4088600eefcc3d2d8828ce721e5e5fee436b5.min.css">
+  </head>
+  <body>
+    <a class="usa-skipnav" href="#main-content">Skip to main content</a>
+
+    <header class="usa-header usa-header--basic" role="banner">
+      <div class="usa-nav-container">
+        <div class="usa-navbar">
+          <div class="usa-logo" id="basic-mega-logo">
+            <em class="usa-logo__text">
+              <a href="/" title="Home" aria-label="Home">XiaoWu</a>
+            </em>
+          </div>
+          <button class="usa-menu-btn">Menu</button>
+        </div>
+
+        <nav role="navigation" class="usa-nav">
+          <button class="usa-nav__close">
+            <img src="/img/close.svg" alt="close" />
+          </button>
+          <ul class="usa-nav__primary usa-accordion">
+            
+            
+              
+              
+              
+              
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link " href="/">
+                  <span>Home</span>
+                </a>
+              </li>
+            
+              
+              
+              
+              
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link usa-current" href="/blog/">
+                  <span>Blog</span>
+                </a>
+              </li>
+            
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="usa-section" id="main-content">
+      <div class="grid-container">
+        <div class="grid-row grid-gap">
+          <div class="tablet:grid-col usa-prose">
+            
+  <h1>Path Planning</h1>
+  
+  <p class="text-gray-50">
+    
+    
+    
+    <strong>Published: </strong>2020-02-09
+
+    
+    
+      
+      
+    
+    
+    
+    
+    </span>
+  </p>
+  
+  
+    
+
+<div class="toc">
+  <strong>Table of contents</strong>
+  <ol>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#search">
+        Search
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#prediction">
+        Prediction
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#behavior-planning">
+        Behavior Planning
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#trajectory-generation-1">
+        Trajectory Generation
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#paper-reading">
+        Paper Reading
+      </a>
+    </li>
+    
+  </ol>
+</div>
+
+
+  
+  
+  
+
+<ol>
+<li>search algorithms used in discrete path planning</li>
+<li>prediction which is where we use the data from sensor fusion to generate predictions about what all the other objects around us are likely to do.</li>
+<li>behavior planning: what the car shall do in the next 10 seconds or so.</li>
+<li>trajectory generation, which is where we create smooth, drivable, and collision-free trajectories.</li>
+</ol>
+
+<h2 id="search">Search <a aria-label="header link for Search" href="#search" class="header-link">#</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/path-planning/search/search.png">
+    <img src="/path-planning/search/search.png" alt="Search">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<p>A star with heuristic function:</p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/path-planning/search/a-star.png">
+    <img src="/path-planning/search/a-star.png" alt="A Star">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<p>Dynamic Programming:<br>
+Given: Map &amp; Goal<br>
+Outputs: Best path from ANYWHERE</p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/path-planning/search/dynamic-programming.png">
+    <img src="/path-planning/search/dynamic-programming.png" alt="Dynamic Programming">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<h2 id="prediction">Prediction <a aria-label="header link for Prediction" href="#prediction" class="header-link">#</a></h2>
+
+<p>A prediction module uses a map and data from sensor fusion to generate predictions for what all other dynamic objects in view are likely to do.
+Neither approach (model based or data driven) is strictly better than the other but there are certain situations in which one is more useful than the other.</p>
+
+<p>There are two different approaches to handle the prediction problem: Model-based approach vs Data-driven approach.</p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/path-planning/prediction/model-based-vs-data-driven.png">
+    <img src="/path-planning/prediction/model-based-vs-data-driven.png" alt="Model-based vs Data-driven Approaches">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<h3 id="datadriven">Data-driven</h3>
+
+<p>Data-driven approaches would be more useful in the following situations:</p>
+
+<ol>
+<li>Predicting the behavior of an unidentified object sitting on the road.</li>
+</ol>
+
+<p>Data-driven approaches solve the prediction problem in two phases:</p>
+
+<ol>
+<li>Offline training</li>
+<li>Online Prediction</li>
+</ol>
+
+<h4 id="offline-training">Offline Training</h4>
+
+<p>In this phase the goal is to feed some machine learning algorithm a lot of data to train it. For the trajectory clustering example this involved:</p>
+
+<ol>
+<li><strong>Define similarity</strong> - we first need a definition of similarity that agrees with human common-sense definition.</li>
+<li><strong>Unsupervised clustering</strong> - at this step some machine learning algorithm clusters the trajectories we've observed.</li>
+<li><strong>Define Prototype Trajectories</strong> - for each cluster identify some small number of typical &quot;prototype&quot; trajectories.</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/path-planning/prediction/data-driven-1.png">
+    <img src="/path-planning/prediction/data-driven-1.png" alt="Model-based Approaches">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<h4 id="online-prediction">Online Prediction</h4>
+
+<p>Once the algorithm is trained we bring it onto the road. When we encounter a situation for which the trained algorithm is appropriate (returning to an intersection for example) we can use that algorithm to actually predict the trajectory of the vehicle. For the intersection example this meant:</p>
+
+<ol>
+<li><strong>Observe Partial Trajectory</strong> - As the target vehicle drives we can think of it leaving a &quot;partial trajectory&quot; behind it.</li>
+<li><strong>Compare to Prototype Trajectories</strong> - We can compare this partial trajectory to the corresponding parts of the prototype trajectories. When these partial trajectories are more similar (using the same notion of similarity defined earlier) their likelihoods should increase relative to the other trajectories.</li>
+<li><strong>Generate Predictions</strong> - For each cluster we identify the most likely prototype trajectory. We broadcast each of these trajectories along with the associated probability (see the image below).</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/path-planning/prediction/data-driven-2.png">
+    <img src="/path-planning/prediction/data-driven-2.png" alt="Model-based Approaches">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<h3 id="modelbased">Model-based</h3>
+
+<p>Model-based approaches would be more useful in the following situations:</p>
+
+<ol>
+<li>Determining maximum safe turning speed on a wet road.</li>
+<li>Predicting the behavior of a vehicle on a two lane highway in light traffic.</li>
+</ol>
+
+<p>You can think of model based solutions to the prediction problem as also having an &quot;offline&quot; and online component. In that view, this approach requires:</p>
+
+<ol>
+<li><strong>Defining</strong> process models (offline).</li>
+<li><strong>Using</strong> process models to compare driver behavior to what would be expected for each model.</li>
+<li><strong>Probabilistically classifying</strong> driver intent by comparing the likelihoods of various behaviors with a multiple-model algorithm.</li>
+<li><strong>Extrapolating</strong> process models to generate trajectories.</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/path-planning/prediction/model-based.png">
+    <img src="/path-planning/prediction/model-based.png" alt="Model-based Approaches">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<h4 id="defining-process-models">Defining Process Models</h4>
+
+<p>You saw how process models can vary in complexity from very simple...</p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/path-planning/prediction/process-model.png">
+    <img src="/path-planning/prediction/process-model.png" alt="Process Models">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<h4 id="using-process-models">Using Process Models</h4>
+
+<p>Process Models are first used to compare a target vehicle's observed behavior to the behavior we would expect for each of the maneuvers we've created models for. The pictures below help explain how process models are used to calculate these likelihoods.</p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/path-planning/prediction/prediction-2.jpg">
+    <img src="/path-planning/prediction/prediction-2.jpg" alt="">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<p>On the left we see two images of a car. At time <span  class="math">\(k-1\)</span> we predicted where the car would be if it were to go straight vs go right. Then at time <span  class="math">\(k\)</span> we look at where the car actually is. The graph on the right shows the car's observed ss coordinate along with the probability distributions for where we expected the car to be at that time. In this case, the ss that we observe is substantially more consistent with turning right than going straight.</p>
+
+<h4 id="classifying-intent-with-multiple-model-algorithm">Classifying Intent with Multiple Model Algorithm</h4>
+
+<p>In the image at the top of the page you can see a bar chart representing probabilities of various clusters over time. Multiple model algorithms serve a similar purpose for model based approaches: they are responsible for maintaining beliefs for the probability of each maneuver. The algorithm we discussed is called the <strong>Autonomous Multiple Model algorithm</strong> (AMM). AMM can be summarized with this equation:</p>
+
+<p><span  class="math">\[
+\mu_k^{(i)}=\frac{\mu_{k-1}^{(i)}L_k^{(i)}}{\sum_{j=1}^M\mu_{k-1}^{(j)}L_k^{(j)}}
+\]</span></p>
+
+<p>or, if we ignore the denominator (since it just serves to normalize the probabilities), we can capture the essence of this algorithm with</p>
+
+<p><span  class="math">\[
+\mu_k^{(i)} \propto \mu_{k-1}^{(i)}L_k^{(i)}
+\]</span></p>
+
+<p>where the <span  class="math">\(\mu_k^{(i)}\)</span> is the probability that model number <span  class="math">\(i\)</span> is the correct model at time <span  class="math">\(k\)</span> and <span  class="math">\(L_k^{(i)}\)</span> is the <strong>likelihood</strong> for that model (as computed by comparison to process model).</p>
+
+<p>The paper, <a href="a-comparative-study-of-multiple-model-algorithms-for-maneuvering-target-tracking.pdf">&quot;A comparative study of multiple model algorithms for maneuvering target tracking&quot;</a> is a good reference to learn more.</p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/path-planning/prediction/multimodel-estimation.png">
+    <img src="/path-planning/prediction/multimodel-estimation.png" alt="Multimodel Estimation">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<h4 id="trajectory-generation">Trajectory Generation</h4>
+
+<p>Trajectory generation is straightforward once we have a process model. We simply iterate our model over and over until we've generated a prediction that spans whatever time horizon we are supposed to cover. Note that each iteration of the process model will necessarily add uncertainty to our prediction.</p>
+
+<h3 id="hybrid-approach">Hybrid Approach</h3>
+
+<p>Replace Multimodel Estimator with Machine Learning Method.
+For more info, please refer to <a href="../machine-learning">machine learning</a>.</p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/path-planning/prediction/hybrid-approach.png">
+    <img src="/path-planning/prediction/hybrid-approach.png" alt="Hybrid Approach">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<h2 id="behavior-planning">Behavior Planning <a aria-label="header link for Behavior Planning" href="#behavior-planning" class="header-link">#</a></h2>
+
+<p>It's possible to suggest a wide variety of behaviors by specifying only a few quantities. For example by specifying only a target lane, a target vehicle (to follow), a target speed, and a time to reach these targets, we can make suggestions as nuanced as &quot;stay in your lane but get behind that vehicle in the right lane so that you can pass it when the gap gets big enough.&quot;</p>
+
+<p>The behavior planning team is responsible for providing guidance to the trajectory planner about what sorts of maneuvers they should plan trajectories for.</p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/path-planning/behavior-planning/behavior-planning.png">
+    <img src="/path-planning/behavior-planning/behavior-planning.png" alt="Behavior Planning">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/path-planning/behavior-planning/overview.png">
+    <img src="/path-planning/behavior-planning/overview.png" alt="Overview">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<p>Finite State Machine:</p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/path-planning/behavior-planning/finite-state-machine.png">
+    <img src="/path-planning/behavior-planning/finite-state-machine.png" alt="Finite State Machine">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<p>One way to implement a transition function is by generating rough trajectories for each accessible &quot;next state&quot; and then finding the best. To &quot;find the best&quot; we generally use <strong>cost functions</strong>. We can then figure out how costly each rough trajectory is and then select the state with the lowest cost trajectory.</p>
+
+<p>From what I understood it goes as follows (note that I had to read all the subsequent lessons to get to this understanding): The goal lane is the lane that we should aim to in the long run (e.g. the right most lane for normal driving) and it is used to compute the distance (and cost). Then we need to choose the behaviour according to traffic, here we have different choices when it comes to passing cars and there is the catch that we have two different states to change lane: <strong>prepare for change lane</strong>  and <strong>change lane</strong> with the former aimed to mach the speed to perform a lane change and the latter to actually move to the adjacent lane. The &quot;final lane&quot; is the lane that the state will be at, while the &quot;intended lane&quot; is the lane that the state is aiming for. So, when we prepare for a lane change the final lane will be the same lane we are at, as we <strong>do not</strong> change lane at this stage, while the &quot;intended lane&quot; is the lane we are preparing for. When we change lane the &quot;final lane&quot; is the lane we are going to, which corresponds to the &quot;intended lane&quot; as at this stage we are actually changing the lane.</p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/path-planning/behavior-planning/cost-function-1.png">
+    <img src="/path-planning/behavior-planning/cost-function-1.png" alt="Cost Function">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/path-planning/behavior-planning/cost-function-2.png">
+    <img src="/path-planning/behavior-planning/cost-function-2.png" alt="Cost Function">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<p>An Programming Examples:<br>
+<a href="behavior-planning/python-3-practice.zip">practice</a><br>
+<a href="behavior-planning/python-3-solution.zip">solution</a></p>
+
+<h2 id="trajectory-generation-1">Trajectory Generation <a aria-label="header link for Trajectory Generation" href="#trajectory-generation-1" class="header-link">#</a></h2>
+
+<h3 id="types-of-motion-planning-algorithms">Types of Motion Planning Algorithms</h3>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/path-planning/trajectory-generation/types-of-algorithms.png">
+    <img src="/path-planning/trajectory-generation/types-of-algorithms.png" alt="Types of Algorithms">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/path-planning/trajectory-generation/sampling-based-methods.png">
+    <img src="/path-planning/trajectory-generation/sampling-based-methods.png" alt="Types of Algorithms">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<h3 id="hybrid-a">Hybrid A*</h3>
+
+<ol>
+<li>It uses a continuous search space.</li>
+<li>It uses an <strong>optimistic</strong> heuristic function to guide grid cell expansion.</li>
+<li>Solutions it finds are <strong>drivable</strong></li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/path-planning/trajectory-generation/hybrid-a-star.png">
+    <img src="/path-planning/trajectory-generation/hybrid-a-star.png" alt="Types of Algorithms">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/path-planning/trajectory-generation/hybrid-a-star-2.png">
+    <img src="/path-planning/trajectory-generation/hybrid-a-star-2.png" alt="Types of Algorithms">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<p>Exercise:<br>
+<a href="trajectory-generation/hybrid-a-star.zip">hybrid-a-star</a></p>
+
+<p>Hybrid A* doesn't take advantage of the pre-defined environment information.</p>
+
+<h3 id="structured-trajectory-generation">Structured Trajectory Generation</h3>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/path-planning/trajectory-generation/structured-environment.png">
+    <img src="/path-planning/trajectory-generation/structured-environment.png" alt="Structured Environment">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/path-planning/trajectory-generation/structured-environment-2.png">
+    <img src="/path-planning/trajectory-generation/structured-environment-2.png" alt="Structured Environment">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<h3 id="jerk-minimizing-trajectories">Jerk Minimizing Trajectories</h3>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/path-planning/trajectory-generation/jerk-minimizing-1.png">
+    <img src="/path-planning/trajectory-generation/jerk-minimizing-1.png" alt="Jerk Minimizing">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/path-planning/trajectory-generation/jerk-minimizing-2.png">
+    <img src="/path-planning/trajectory-generation/jerk-minimizing-2.png" alt="Jerk Minimizing">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/path-planning/trajectory-generation/jerk-minimizing-3.png">
+    <img src="/path-planning/trajectory-generation/jerk-minimizing-3.png" alt="Jerk Minimizing">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/path-planning/trajectory-generation/jerk-minimizing-4.png">
+    <img src="/path-planning/trajectory-generation/jerk-minimizing-4.png" alt="Jerk Minimizing">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<p>Implementing Feasibility:</p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/path-planning/trajectory-generation/feasibility.png">
+    <img src="/path-planning/trajectory-generation/feasibility.png" alt="Feasibility">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<p>When evaluating the feasibility of a potential trajectory, the following quantities should be checked</p>
+
+<ol>
+<li>Maximum velocity (with respect to car's capabilities and speed limit)</li>
+<li>Minimum velocity</li>
+<li>Maximum acceleration</li>
+<li>Minimum acceleration</li>
+<li>Steering angle</li>
+</ol>
+
+<p>Cost Functions:</p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/path-planning/trajectory-generation/cost-function.png">
+    <img src="/path-planning/trajectory-generation/cost-function.png" alt="Cost Function">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<p>If you are interested in learning more about PTG, I've included a link to a paper (below) titled <a href="trajectory-generation/werling-optimal-trajectory-generation-for-dynamic-street-scenarios-in-a-frenet-frame.pdf">&quot;Optimal Trajectory Generation for Dynamic Street Scenarios in a Frenet Frame&quot;</a>. It is short and discusses some interesting (and potentially useful) topics like:</p>
+
+<ol>
+<li>Cost Functions.</li>
+<li>Differences between high speed and low speed trajectory generation.</li>
+<li>Implementation of specific maneuvers relevant to highway driving like following, merging, and velocity keeping.</li>
+<li>How to combining lateral and longitudinal trajectories.</li>
+<li>A derivation of the transformation from Frenet coordinates to global coordinates (in the appendix).</li>
+</ol>
+
+<p>Exercises:<br>
+Polynomial Playground (making PTG work)<br>
+<a href="trajectory-generation/trajectoryexercise2-python3.zip">trajectoryexercise2-python3</a></p>
+
+<h2 id="paper-reading">Paper Reading <a aria-label="header link for Paper Reading" href="#paper-reading" class="header-link">#</a></h2>
+
+<p>Indoors<br>
+<a href="trajectory-generation/intention-net.pdf">Intention-Net: Integrating Planning and Deep Learning for Goal-Directed Autonomous Navigation</a> by S. W. Gao, et. al.</p>
+
+<p>City Navigation<br>
+<a href="trajectory-generation/city-navigation.pdf">Learning to Navigate in Cities Without a Map</a> by P. Mirowski, et. al.</p>
+
+<p>Intersections<br>
+<a href="trajectory-generation/intersections.pdf">A Look at Motion Planning for Autonomous Vehicles at an Intersection</a> by S. Krishnan, et. al.</p>
+
+<p>Planning in Traffic with Deep Reinforcement Learning<br>
+<a href="trajectory-generation/DeepTraffic.pdf">DeepTraffic: Crowdsourced Hyperparameter Tuning of Deep Reinforcement Learning Systems for Multi-Agent Dense Traffic Navigation</a> by L. Fridman, J. Terwilliger and B. Jenik</p>
+
+
+
+  
+
+  
+    <br>
+    <strong>Previous:</strong> <a href="/vim/">Vim</a>
+  
+  
+  
+    <div id="utter-container">
+    <script src="https://utteranc.es/client.js"
+        repo= 'nuhuo08/blog-comments'
+        issue-term= "pathname"
+        theme= 'github-light'
+        crossorigin= "anonymous"
+        async>
+    </script> 
+    </div>
+
+  
+
+
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="usa-footer usa-footer--slim" role="contentinfo">
+      
+      <div class="usa-footer__secondary-section" id="footer-main">
+        <div class="grid-container">
+          <div class="grid-row grid-gap">
+            <div class="grid-col-12 text-center">
+              
+              
+                Made with <a href="https://gohugo.io/">Hugo</a> • Content in <a href="https://github.com/nuhuo08/uswds-hugo-theme">GitHub</a>
+                <br>
+                Last deployed on 2020-02-09
+              
+
+              
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    
+    <script src="/js/uswds.min.fcd9b25a27c51de427f4c618dee88490c2ff0a792a573531e316730d07df3f3d.js"></script>
+
+  </body>
+</html>
