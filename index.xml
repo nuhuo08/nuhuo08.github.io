@@ -6,10 +6,21 @@
     <description>Recent content on XiaoWu</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 09 Feb 2020 18:22:30 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 10 Feb 2020 09:31:36 +0800</lastBuildDate>
     
 	<atom:link href="https://nuhuo08.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Bayesian Filter</title>
+      <link>https://nuhuo08.github.io/bayesian-filter/</link>
+      <pubDate>Mon, 10 Feb 2020 09:31:36 +0800</pubDate>
+      
+      <guid>https://nuhuo08.github.io/bayesian-filter/</guid>
+      <description>Kalman Filter Imagine you are in a car equipped with sensors on the outside. The car sensors can detect objects moving around: for example, the sensors might detect a pedestrian, as described in the video, or even a bicycle. For variety, let&#39;s step through the Kalman Filter algorithm using the bicycle example.
+The Kalman Filter algorithm will go through the following steps:
+ first measurement - the filter will receive initial measurements of the bicycle&#39;s position relative to the car.</description>
+    </item>
     
     <item>
       <title>Path Planning</title>
@@ -167,7 +178,8 @@ sudo sh -c &amp;#39;. /etc/lsb-release &amp;amp;&amp;amp; echo &amp;#34;deb http
       <pubDate>Wed, 08 Jan 2020 08:00:00 +0800</pubDate>
       
       <guid>https://nuhuo08.github.io/gmapping/</guid>
-      <description>基本理论 SLAM问题的分解 \[ \begin{aligned} p(x_{1:t},m|u_{1:t},z_{1:t}) &amp;= p(x_{1:t}|u_{1:t},z_{1:t}) p(m|u_{1:t},z_{1:t})\\ &amp;= p(x_{1:t}|u_{1:t},z_{1:t}) p(m|z_{1:t}) \end{aligned} \]
+      <description>基本理论 粒子滤波基本原理请参考 Particle Filter
+SLAM问题的分解 \[ \begin{aligned} p(x_{1:t},m|u_{1:t},z_{1:t}) &amp;= p(x_{1:t}|u_{1:t},z_{1:t}) p(m|u_{1:t},z_{1:t})\\ &amp;= p(x_{1:t}|u_{1:t},z_{1:t}) p(m|z_{1:t}) \end{aligned} \]
 将SLAM问题分解为：机器人的定位；基于已知机器人位姿的构图。
 Fast-SLAM 根据贝叶斯公式，可以将机器人位姿的估计，转换成一个增量估计问题。
 \[ \begin{aligned} p(x_{1:t}|u_{1:t},z_{1:t}) &amp;= \eta p(z_t|x_{1:t},u_{1:t},z_{1:t-1}) p(x_{1:t}|z_{1:t-1},u_{1,t})\\ &amp;= \eta p(z_t|x_t) p(x_{1:t}|z_{1:t-1},u_{1:t})\\ &amp;= \eta p(z_t|x_t) p(x_t|x_{1:t-1},z_{1:t-1},u_{1:t}) p(x_{1:t-1}|z_{1:t-1},u_{1:t})\\ &amp;= \eta p(z_t|x_t) p(x_t|x_{t-1},u_{1:t}) p(x_{1:t-1}|z_{1:t-1},u_{1:t-1}) \end{aligned} \]
@@ -252,7 +264,8 @@ https://zhuanlan.zhihu.com/p/61614421
       <pubDate>Thu, 02 Jan 2020 08:00:00 +0800</pubDate>
       
       <guid>https://nuhuo08.github.io/amcl/</guid>
-      <description>ROS-AMCL    粒子聚类 对外输出的机器人状态不应该是某一个最好的粒子，因为很有可能某些粒子的值都非常接近，可能会引起频繁的粒子切换，导致输出的结果来回跳变。
+      <description>ROS-AMCL    粒子滤波基本原理请参考 Particle Filter
+粒子聚类 对外输出的机器人状态不应该是某一个最好的粒子，因为很有可能某些粒子的值都非常接近，可能会引起频繁的粒子切换，导致输出的结果来回跳变。
 基于此考虑， 应该对相似的粒子进行聚类。将最好的那一簇粒子的统计状态作为输出的机器人状态。
 KD-Tree 当涉及到距离查找时，作为算法工程师，我们应该首先想到KD-Tree。树的叶子节点是每一个粒子，而非叶子节点则保存的是该节点的分叉判断的标准，小于此分叉判断标准的在左边，大于此分叉标准的在右边。
 查询的基本思路：首先通过二叉树搜索（比较待查询节点和分裂节点的分裂维的值，小于等于就进入左子树分支，等于就进入右子树分支直到叶子结点），顺着“搜索路径”很快能找到最近邻的近似点，也就是与待查询点处于同一个子空间的叶子结点；然后再回溯搜索路径，并判断搜索路径上的结点的其他子结点空间中是否可能有距离查询点更近的数据点，如果有可能，则需要跳到其他子结点空间中去搜索（将其他子结点加入到搜索路径）。重复这个过程直到搜索路径为空。

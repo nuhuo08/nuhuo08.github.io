@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+	<script>
+		renderMathInElement(document.body,
+			{
+				delimiters: [
+					{left: "$$", right: "$$", display: true},
+					{left: "$", right: "$", display: false},
+				]
+			}
+		);
+
+		var inlineMathArray = document.querySelectorAll("script[type='math/tex']");
+		for (var i = 0; i < inlineMathArray.length; i++) {
+			var inlineMath = inlineMathArray[i];
+			var tex = inlineMath.innerText || inlineMath.textContent;
+			var replaced = document.createElement("span");
+			replaced.innerHTML = katex.renderToString(tex, {displayMode: false});
+			inlineMath.parentNode.replaceChild(replaced, inlineMath);
+		}
+
+		var displayMathArray = document.querySelectorAll("script[type='math/tex; mode=display']");
+		for (var i = 0; i < displayMathArray.length; i++) {
+			var displayMath = displayMathArray[i];
+			var tex = displayMath.innerHTML;
+			var replaced = document.createElement("span");
+			replaced.innerHTML = katex.renderToString(tex.replace(/%.*/g, ''), {displayMode: true});
+			displayMath.parentNode.replaceChild(replaced, displayMath);
+		}
+	</script>
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+
+    <link rel="canonical" href="https://nuhuo08.github.io/bayesian-filter/">
+    <meta name="generator" content="Hugo 0.62.2" />
+    <title>Bayesian Filter | XiaoWu</title>
+
+    
+    <link rel="stylesheet" href="/css/uswds.min.c480a9b2a1fc1e7e564e62752462b22cd5f508a047f0340cb3725722f627fb1d.css">
+    
+    
+    <link rel="stylesheet" href="/css/custom.0a518097f5500782b25662ab2af4088600eefcc3d2d8828ce721e5e5fee436b5.min.css">
+  </head>
+  <body>
+    <a class="usa-skipnav" href="#main-content">Skip to main content</a>
+
+    <header class="usa-header usa-header--basic" role="banner">
+      <div class="usa-nav-container">
+        <div class="usa-navbar">
+          <div class="usa-logo" id="basic-mega-logo">
+            <em class="usa-logo__text">
+              <a href="/" title="Home" aria-label="Home">XiaoWu</a>
+            </em>
+          </div>
+          <button class="usa-menu-btn">Menu</button>
+        </div>
+
+        <nav role="navigation" class="usa-nav">
+          <button class="usa-nav__close">
+            <img src="/img/close.svg" alt="close" />
+          </button>
+          <ul class="usa-nav__primary usa-accordion">
+            
+            
+              
+              
+              
+              
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link " href="/">
+                  <span>Home</span>
+                </a>
+              </li>
+            
+              
+              
+              
+              
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link usa-current" href="/blog/">
+                  <span>Blog</span>
+                </a>
+              </li>
+            
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="usa-section" id="main-content">
+      <div class="grid-container">
+        <div class="grid-row grid-gap">
+          <div class="tablet:grid-col usa-prose">
+            
+  <h1>Bayesian Filter</h1>
+  
+  <p class="text-gray-50">
+    
+    
+    
+    <strong>Published: </strong>2020-02-10
+
+    
+    
+      
+      
+    
+    
+    
+    
+    </span>
+  </p>
+  
+  
+    
+
+<div class="toc">
+  <strong>Table of contents</strong>
+  <ol>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#kalman-filter">
+        Kalman Filter
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#unscented-kalman-filter">
+        Unscented Kalman Filter
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#partical-filter">
+        Partical Filter
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e5%a4%9a%e4%bd%99%e7%9a%84%e8%af%9d">
+        多余的话
+      </a>
+    </li>
+    
+  </ol>
+</div>
+
+
+  
+  
+  
+
+<h2 id="kalman-filter">Kalman Filter <a aria-label="header link for Kalman Filter" href="#kalman-filter" class="header-link">#</a></h2>
+
+<p>Imagine you are in a car equipped with sensors on the outside. The car sensors can detect objects moving around: for example, the sensors might detect a pedestrian, as described in the video, or even a bicycle. For variety, let's step through the Kalman Filter algorithm using the bicycle example.</p>
+
+<p>The Kalman Filter algorithm will go through the following steps:</p>
+
+<ol>
+<li><strong>first measurement</strong> - the filter will receive initial measurements of the bicycle's position relative to the car. These measurements will come from a radar or lidar sensor.</li>
+<li><strong>initialize state and covariance matrices</strong> - the filter will initialize the bicycle's position based on the first measurement.</li>
+<li>then the car will receive another sensor measurement after a time period <span  class="math">\(\Delta t\)</span>.</li>
+<li><strong>predict</strong> - the algorithm will predict where the bicycle will be after time <span  class="math">\(\Delta t\)</span>. One basic way to predict the bicycle location after <span  class="math">\(\Delta t\)</span> is to assume the bicycle's velocity is constant; thus the bicycle will have moved velocity * <span  class="math">\(\Delta t\)</span>. In the extended Kalman filter lesson, we will assume the velocity is constant.</li>
+<li><strong>update</strong> - the filter compares the &quot;predicted&quot; location with what the sensor measurement says. The predicted location and the measured location are combined to give an updated location. The Kalman filter will put more weight on either the predicted location or the measured location depending on the uncertainty of each value.</li>
+<li>then the car will receive another sensor measurement after a time period <span  class="math">\(\Delta t\)</span>. The algorithm then does another <strong>predict</strong> and <strong>update</strong> step.</li>
+</ol>
+
+<h3 id="extended-kalman-filter-ekf">Extended Kalman Filter (EKF)</h3>
+
+<h4 id="动态方程">动态方程</h4>
+
+<p>常速度模型下，加速度为白噪声。</p>
+
+<p><span  class="math">\[
+\begin{pmatrix}
+p'_x \\ p'_y \\ v'_x \\ v'_y
+\end{pmatrix} =
+\underbrace{\begin{pmatrix}
+1 &0 &\Delta t &0 \\ 0 &1 &0 &\Delta t \\ 0 &0 &1 &0 \\ 0 &0 &0 &1
+\end{pmatrix}}_F
+\begin{pmatrix}
+p_x \\ p_y \\ v_x \\ v_y
+\end{pmatrix} +
+\begin{pmatrix}
+\frac{a_x \Delta t^2}{2} \\ \frac{a_y \Delta t^2}{2} \\ a_x \Delta t \\ a_y \Delta t
+\end{pmatrix}
+\]</span></p>
+
+<p>其中动态噪声的协方差矩阵，应该根据与加速度白噪声的关系确定。而加速度的白噪声大小属于先验值。</p>
+
+<p><span  class="math">\[
+\begin{pmatrix}
+\frac{a_x \Delta t^2}{2} \\ \frac{a_y \Delta t^2}{2} \\ a_x \Delta t \\ a_y \Delta t
+\end{pmatrix} =
+\underbrace{\begin{pmatrix}
+\frac{\Delta t^2}{2} &0 \\ 0 &\frac{\Delta t^2}{2} \\ \Delta t &0 \\ 0 &\Delta t
+\end{pmatrix}}_G
+\begin{pmatrix}
+a_x \\ a_y
+\end{pmatrix}
+\]</span></p>
+
+<p>根据协方差传播定律，在已知<span  class="math">\(a_x\)</span>、<span  class="math">\(a_y\)</span>的标准差为<span  class="math">\(\sigma_{ax}\)</span>、<span  class="math">\(\sigma_{ay}\)</span>的情况下，动态噪声的协方差矩阵为：</p>
+
+<p><span  class="math">\[
+Q = GQ_vG^T=
+\begin{pmatrix}
+\frac{\Delta t^2}{2} &0 \\ 0 &\frac{\Delta t^2}{2} \\ \Delta t &0 \\ 0 &\Delta t
+\end{pmatrix}
+\begin{pmatrix}
+\sigma_{ax}^2 &0 \\ 0 &\sigma_{ay}^2
+\end{pmatrix}
+\begin{pmatrix}
+\frac{\Delta t^2}{2} &0 &\Delta t &0 \\ 0 &\frac{\Delta t^2}{2} &0 &\Delta t
+\end{pmatrix}
+\]</span></p>
+
+<h4 id="lidar">Lidar</h4>
+
+<p><span  class="math">\[
+\begin{pmatrix}
+p_x \\ p_y
+\end{pmatrix} =
+\underbrace{\begin{pmatrix}
+1 &0 &0 &0 \\ 0 &1 &0 &0
+\end{pmatrix}}_H
+\begin{pmatrix}
+p'_x \\ p'_y \\ v'_x \\ v'_y
+\end{pmatrix}
+\]</span></p>
+
+<p>观测值的噪声为先验值：</p>
+
+<p><span  class="math">\[
+R=\begin{pmatrix}
+\sigma_{px}^2 &0 \\ 0 &\sigma_{py}^2
+\end{pmatrix}
+\]</span></p>
+
+<h4 id="radar">Radar</h4>
+
+<p><span  class="math">\[
+\begin{aligned}
+\begin{pmatrix}
+\rho \\ \phi \\ \dot{\rho}
+\end{pmatrix} &=
+\begin{pmatrix}
+\sqrt{{p'_x}^2+{p'_y}^2} \\ \arctan(p'_y / p'_x) \\ \frac{p'_x v'_x + p'_y v'_y}{\sqrt{{p'_x}^2+{p'_y}^2}}
+\end{pmatrix} \\[2mm]
+&\approx
+\begin{pmatrix}
+\sqrt{p_x^2+p_y^2} \\ \arctan(p_y / p_x) \\ \frac{p_x v_x + p_y v_y}{\sqrt{p_x^2+p_y^2}}
+\end{pmatrix} +
+\underbrace{\begin{pmatrix}
+\frac{p_x}{\sqrt{p_x^2+p_y^2}} &\frac{p_y}{\sqrt{p_x^2+p_y^2}} &0 &0 \\
+-\frac{p_y}{p_x^2+p_y^2} &\frac{p_x}{p_x^2+p_y^2} &0 &0 \\
+\frac{p_y(v_xp_y-v_yp_x)}{(p_x^2+p_y^2)^{3/2}} &\frac{p_x(v_yp_x-v_xp_y)}{(p_x^2+p_y^2)^{3/2}} &\frac{p_x}{\sqrt{p_x^2+p_y^2}} &\frac{p_y}{\sqrt{p_x^2+p_y^2}}
+\end{pmatrix}}_{H_j}
+\begin{pmatrix}
+p'_x - p_x \\ p'_y - p_y \\ v'_x - v_x \\ v'_y - v_y
+\end{pmatrix}
+\end{aligned}
+\]</span></p>
+
+<p>观测值的噪声为先验值：</p>
+
+<p><span  class="math">\[
+R=\begin{pmatrix}
+\sigma_{\rho}^2 &0 &0 \\ 0 &\sigma_{\phi}^2 &0 \\ 0 &0 &\sigma_{\dot{\rho}}^2
+\end{pmatrix}
+\]</span></p>
+
+<p>已知状态转移矩阵<span  class="math">\(F\)</span>、动态噪声<span  class="math">\(Q\)</span>，便可以预测下一时刻的状态和协方差；<br>
+已知观测矩阵<span  class="math">\(H\)</span>、观测噪声<span  class="math">\(R\)</span>，当更新一个观测量<span  class="math">\(z\)</span>时，便可以得到最优估计状态和协方差。</p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/bayesian-filter/kf-ekf.png">
+    <img src="/bayesian-filter/kf-ekf.png" alt="Kalman Filter vs Extended Kalman Filter">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/bayesian-filter/ekf-flow.png">
+    <img src="/bayesian-filter/ekf-flow.png" alt="Lidar and Radar Fusion with Kalman Filter">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<h3 id="error-state-extended-kalman-filter-esekf">Error State Extended Kalman Filter (ES-EKF)</h3>
+
+<p>参考 <a href="https://www.coursera.org/lecture/state-estimation-localization-self-driving-cars/lesson-4-an-improved-ekf-the-error-state-extended-kalman-filter-7Nwfw">An Improved EKF - The Error State Extended Kalman Filter</a></p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/bayesian-filter/es-ekf.png">
+    <img src="/bayesian-filter/es-ekf.png" alt="Error State Extended Kalman Filter">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/bayesian-filter/why-es-ekf.png">
+    <img src="/bayesian-filter/why-es-ekf.png" alt="Why Choose Error State Extended Kalman Filter">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/bayesian-filter/summary-es-ekf.png">
+    <img src="/bayesian-filter/summary-es-ekf.png" alt="Summary of Error State Extended Kalman Filter">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<h3 id="more">More</h3>
+
+<p>迭代卡尔曼：当非线性化程度高的时候，可能需要迭代多次。每次迭代时候，协方差<span  class="math">\(P\)</span>要保持相同不变，只更新先验的状态量<span  class="math">\(x\)</span>。</p>
+
+<p>最小二乘：当迭代多次，且动态噪声设置为无穷大时，观测噪声起主导作用，其效果等同于最小二乘。</p>
+
+<h2 id="unscented-kalman-filter">Unscented Kalman Filter <a aria-label="header link for Unscented Kalman Filter" href="#unscented-kalman-filter" class="header-link">#</a></h2>
+
+<h3 id="cvtr">CVTR</h3>
+
+<p>CVTR表示运动模型为常速度、常转向角速度，其微分方程可以写做：</p>
+
+<p><span  class="math">\[
+\begin{pmatrix}
+\dot{p_x} \\ \dot{p_y} \\ \dot{v} \\ \dot{\psi} \\ \ddot{\psi}
+\end{pmatrix} =
+\begin{pmatrix}
+v\cdot\cos(\psi) \\ v\cdot\sin(\psi) \\ 0 \\ \dot{\psi} \\ 0
+\end{pmatrix}
+\]</span></p>
+
+<p>对上式进行积分，可得：</p>
+
+<p><span  class="math">\[
+\begin{aligned}
+x_{k+1} &= x_k + \int_{t_k}^{t_{k+1}}
+\begin{pmatrix}
+\dot{p_x}(t) \\ \dot{p_x}(t) \\ \dot{v}(t) \\ \dot{\psi}(t) \\ \ddot{\psi}(t)
+\end{pmatrix} dt + \nu \\[2mm]
+&=x_k+
+\begin{pmatrix}
+v_k\int_{t_k}^{t_{k+1}}\cos(\psi_k+\dot{\psi}_k\cdot(t-t_k))dt \\ v_k\int_{t_k}^{t_{k+1}}\cos(\psi_k+\dot{\psi}_k\cdot(t-t_k))dt \\
+0 \\ \dot{\psi}_k\Delta t \\ 0
+\end{pmatrix} + \nu \\[2mm]
+&=x_k+
+\begin{pmatrix}
+\frac{v_k}{\dot{\psi}_k}\left(\sin(\psi_k+\dot{\psi}_k\Delta t)-\sin(\psi_k)\right) \\
+\frac{v_k}{\dot{\psi}_k}\left(-\cos(\psi_k+\dot{\psi}_k\Delta t)+\cos(\psi_k)\right) \\
+0 \\ \dot{\psi}_k\Delta t \\ 0
+\end{pmatrix} +
+\begin{pmatrix}
+\frac{1}{2}(\Delta t)^2\cos(\psi_k)\cdot\nu_{a,k} \\ \frac{1}{2}(\Delta t)^2\sin(\psi_k)\cdot\nu_{a,k} \\ \Delta t\cdot\nu_{a,k} \\
+\frac{1}{2}(\Delta t)^2\cdot\nu_{\ddot{\psi},k} \\ \Delta t\cdot\nu_{\ddot{\psi},k}
+\end{pmatrix}
+\text{ if } \dot{\psi}\neq0 \\[2mm]
+&=x_k+
+\begin{pmatrix}
+v_k\cos\psi_k\Delta t \\ v_k\sin\psi_k\Delta \\ 0 \\ 0 \\0
+\end{pmatrix} +
+\begin{pmatrix}
+\frac{1}{2}(\Delta t)^2\cos(\psi_k)\cdot\nu_{a,k} \\ \frac{1}{2}(\Delta t)^2\sin(\psi_k)\cdot\nu_{a,k} \\ \Delta t\cdot\nu_{a,k} \\
+\frac{1}{2}(\Delta t)^2\cdot\nu_{\ddot{\psi},k} \\ \Delta t\cdot\nu_{\ddot{\psi},k}
+\end{pmatrix}
+\text{ if } \dot{\psi}=0
+\end{aligned}
+\]</span></p>
+
+<h3 id="ukf">UKF</h3>
+
+<p>对于动态方程高度非线性化，可以使用UKF进行参数估计。其核心思想为，按照高斯分布采样点，通过非线性函数后，对变化后的点进行高斯分布拟合。</p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/bayesian-filter/ukf.png">
+    <img src="/bayesian-filter/ukf.png" alt="Unscented Kalman Filter">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<h4 id="generate-sigma-points">Generate Sigma Points</h4>
+
+<p><span  class="math">\[
+X_{k|k} =
+\begin{pmatrix}
+x_{k|k} & x_{k|k}+\sqrt{(\lambda+n_x)P_{k|k}} & x_{k|k}-\sqrt{(\lambda+n_x)P_{k|k}}
+\end{pmatrix}
+\]</span></p>
+
+<p>with scaling factor <span  class="math">\(\lambda=3-n_x\)</span></p>
+
+<p>为了将动态噪声的影响纳入，需要采用状态增广的方法：</p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/bayesian-filter/ukf-augmentation.png">
+    <img src="/bayesian-filter/ukf-augmentation.png" alt="UKF Augmentation">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<h4 id="predict-sigma-points">Predict Sigma Points</h4>
+
+<p>使用上面推导的CVTR模型，预测Sigma Points。</p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/bayesian-filter/sigma-point-prediction.png">
+    <img src="/bayesian-filter/sigma-point-prediction.png" alt="Predict Sigma Points">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<h4 id="predict-mean-and-covariance">Predict Mean and Covariance</h4>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/bayesian-filter/predict-mean-and-covar.png">
+    <img src="/bayesian-filter/predict-mean-and-covar.png" alt="Predict Mean and Covariance">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<h4 id="measurement-prediction">Measurement Prediction</h4>
+
+<p>由于观测噪声是可直接相加，因此不再需要状态增广。</p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/bayesian-filter/measurement-prediction.png">
+    <img src="/bayesian-filter/measurement-prediction.png" alt="Measurement Prediction">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/bayesian-filter/measurement-prediction-2.png">
+    <img src="/bayesian-filter/measurement-prediction-2.png" alt="Measurement Prediction">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<h4 id="ukf-update">UKF Update</h4>
+
+<p>Here you need the cross-correlation matrix between the predicted sigma points in the state space and the predicted sigma points in the measurement space.</p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/bayesian-filter/ukf-update.png">
+    <img src="/bayesian-filter/ukf-update.png" alt="UKF Update">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<h4 id="parameters-and-consistency">Parameters And Consistency</h4>
+
+<p>服从<span  class="math">\(\chi^2\)</span>分布，对于Radar传感器，有3个观测量，自由度为3。查表可知，统计上来说，5%的NIS值会超过7.8。</p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/bayesian-filter/parameters-consistency.png">
+    <img src="/bayesian-filter/parameters-consistency.png" alt="Parameters And Consistency">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<h2 id="partical-filter">Partical Filter <a aria-label="header link for Partical Filter" href="#partical-filter" class="header-link">#</a></h2>
+
+<h3 id="init">Init</h3>
+
+<p>在初始点附近生成N个粒子。</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#008000;font-weight:bold">for</span> (<span style="color:#b00040">int</span> i <span style="color:#666">=</span> <span style="color:#666">0</span>; i <span style="color:#666">&lt;</span> num_particles; <span style="color:#666">+</span><span style="color:#666">+</span>i) {
+    Particle p;
+    p.id <span style="color:#666">=</span> i;
+    p.weight <span style="color:#666">=</span> <span style="color:#666">1.0</span>;
+    p.x	<span style="color:#666">=</span> dist_x(gen);
+    p.y	<span style="color:#666">=</span> dist_y(gen);
+    p.theta	<span style="color:#666">=</span> dist_theta(gen);
+    particles.push_back(p);
+}
+</code></pre></div>
+<h3 id="prediction">Prediction</h3>
+
+<p>根据Motion Model，预测下一时刻位置，并添加动态噪声。</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#008000;font-weight:bold">if</span> (fabs(yaw_rate) <span style="color:#666">&gt;</span> <span style="color:#666">1e-5</span>) {
+    theta_new <span style="color:#666">=</span> theta_old <span style="color:#666">+</span> yaw_rate <span style="color:#666">*</span> delta_t;
+    x_new <span style="color:#666">=</span> x_old <span style="color:#666">+</span> velocity <span style="color:#666">/</span> yaw_rate <span style="color:#666">*</span> (sin(theta_new) <span style="color:#666">-</span> sin(theta_old));
+    y_new <span style="color:#666">=</span> y_old <span style="color:#666">+</span> velocity <span style="color:#666">/</span> yaw_rate <span style="color:#666">*</span> (cos(theta_old) <span style="color:#666">-</span> cos(theta_new));
+} <span style="color:#008000;font-weight:bold">else</span> {
+    theta_new <span style="color:#666">=</span> theta_old;
+    x_new <span style="color:#666">=</span> x_old <span style="color:#666">+</span> velocity <span style="color:#666">*</span> delta_t <span style="color:#666">*</span> cos(theta_old);
+    y_new <span style="color:#666">=</span> y_old <span style="color:#666">+</span> velocity <span style="color:#666">*</span> delta_t <span style="color:#666">*</span> sin(theta_old);
+}
+
+normal_distribution<span style="color:#666">&lt;</span><span style="color:#b00040">double</span><span style="color:#666">&gt;</span> dist_x(x_new, std_pos[<span style="color:#666">0</span>]);
+normal_distribution<span style="color:#666">&lt;</span><span style="color:#b00040">double</span><span style="color:#666">&gt;</span> dist_y(y_new, std_pos[<span style="color:#666">1</span>]);
+normal_distribution<span style="color:#666">&lt;</span><span style="color:#b00040">double</span><span style="color:#666">&gt;</span> dist_theta(theta_new, std_pos[<span style="color:#666">2</span>]);
+
+particle.x <span style="color:#666">=</span> dist_x(gen);
+particle.y <span style="color:#666">=</span> dist_y(gen);
+particle.theta <span style="color:#666">=</span> dist_theta(gen);
+</code></pre></div>
+<h3 id="dataassociation">DataAssociation</h3>
+
+<p>根据观测值，找到地图上对应的点。</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#008000;font-weight:bold">for</span> (<span style="color:#008000;font-weight:bold">auto</span><span style="color:#666">&amp;</span> <span style="color:#a0a000">observation</span> : observations) {
+    <span style="color:#b00040">double</span> min_dist <span style="color:#666">=</span> <span style="color:#666">9999.0</span>;
+    <span style="color:#008000;font-weight:bold">for</span> (<span style="color:#008000;font-weight:bold">auto</span><span style="color:#666">&amp;</span> <span style="color:#a0a000">predict</span> : predicted) {
+        <span style="color:#b00040">double</span> d <span style="color:#666">=</span> dist(observation.x, observation.y, predict.x, predict.y);
+        <span style="color:#008000;font-weight:bold">if</span> (d <span style="color:#666">&lt;</span> min_dist) {
+            observation.id <span style="color:#666">=</span> predict.id;
+            min_dist <span style="color:#666">=</span> d;
+        }
+    }
+}
+</code></pre></div>
+<h3 id="update-weight">Update Weight</h3>
+
+<p>把观测的点，与找到的地图上的点，求正态分布概率。</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#008000;font-weight:bold">for</span> (<span style="color:#008000;font-weight:bold">auto</span><span style="color:#666">&amp;</span> <span style="color:#a0a000">obs</span> : observations_map) {
+    <span style="color:#008000;font-weight:bold">for</span> (<span style="color:#008000;font-weight:bold">auto</span><span style="color:#666">&amp;</span> <span style="color:#a0a000">land</span>: visibleLandmarks_map)
+        <span style="color:#008000;font-weight:bold">if</span> (obs.id <span style="color:#666">=</span><span style="color:#666">=</span> land.id) {
+            mu_x <span style="color:#666">=</span> land.x;
+            mu_y <span style="color:#666">=</span> land.y;
+            <span style="color:#008000;font-weight:bold">break</span>;
+        }
+    <span style="color:#b00040">double</span> tmp <span style="color:#666">=</span> exp( <span style="color:#666">-</span>( pow(obs.x <span style="color:#666">-</span> mu_x, <span style="color:#666">2</span>) <span style="color:#666">/</span> (<span style="color:#666">2</span> <span style="color:#666">*</span> std_landmark[<span style="color:#666">0</span>] <span style="color:#666">*</span> std_landmark[<span style="color:#666">0</span>]) 
+               <span style="color:#666">+</span> pow(obs.y <span style="color:#666">-</span> mu_y, <span style="color:#666">2</span>) <span style="color:#666">/</span> (<span style="color:#666">2</span> <span style="color:#666">*</span> std_landmark[<span style="color:#666">1</span>]<span style="color:#666">*</span> std_landmark[<span style="color:#666">1</span>]) ) ) 
+               <span style="color:#666">/</span> (<span style="color:#666">2</span> <span style="color:#666">*</span> M_PI <span style="color:#666">*</span> std_landmark[<span style="color:#666">0</span>]<span style="color:#666">*</span> std_landmark[<span style="color:#666">1</span>]);
+    <span style="color:#008000;font-weight:bold">if</span>(fabs(tmp) <span style="color:#666">&lt;</span> <span style="color:#666">1e-15</span>) <span style="color:#008000;font-weight:bold">continue</span>;
+    particle_likelihood <span style="color:#666">*</span><span style="color:#666">=</span> tmp;
+}
+particle.weight <span style="color:#666">=</span> particle_likelihood;
+</code></pre></div>
+<p>之后对粒子的概率进行归一化。</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#008000;font-weight:bold">for</span> (<span style="color:#008000;font-weight:bold">auto</span><span style="color:#666">&amp;</span> <span style="color:#a0a000">particle</span> : particles)
+    particle.weight <span style="color:#666">/</span><span style="color:#666">=</span> weights_sum;
+</code></pre></div>
+<h3 id="resample">Resample</h3>
+
+<p>根据权值重采样，权值大的容易被多次采到，表示该粒子所在的位置更接近真实值，粒子在此处渐渐聚集。
+重采样之后，每个粒子的权值重新赋值为1。</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp">vector<span style="color:#666">&lt;</span><span style="color:#b00040">double</span><span style="color:#666">&gt;</span> particle_weights;
+<span style="color:#008000;font-weight:bold">for</span> (<span style="color:#008000;font-weight:bold">auto</span><span style="color:#666">&amp;</span> <span style="color:#a0a000">particle</span> : particles)
+    particle_weights.push_back(particle.weight);
+
+discrete_distribution<span style="color:#666">&lt;</span><span style="color:#b00040">int</span><span style="color:#666">&gt;</span> weighted_distribution(particle_weights.begin(), particle_weights.end());
+
+vector<span style="color:#666">&lt;</span>Particle<span style="color:#666">&gt;</span> resampled_particles;
+default_random_engine gen;
+<span style="color:#008000;font-weight:bold">for</span> (<span style="color:#b00040">int</span> i <span style="color:#666">=</span> <span style="color:#666">0</span>; i <span style="color:#666">&lt;</span> num_particles; <span style="color:#666">+</span><span style="color:#666">+</span>i) {
+    <span style="color:#b00040">int</span> k <span style="color:#666">=</span> weighted_distribution(gen);
+    particles[k].weight <span style="color:#666">=</span> <span style="color:#666">1.0</span>;
+    resampled_particles.push_back(particles[k]);
+}
+
+particles <span style="color:#666">=</span> resampled_particles;
+</code></pre></div>
+<h2 id="多余的话">多余的话 <a aria-label="header link for 多余的话" href="#多余的话" class="header-link">#</a></h2>
+
+<p>动态方程的确定：</p>
+
+<ol>
+<li>直接写出下一时刻状态量<span  class="math">\(x_{k+1}\)</span>与当前时刻状态量<span  class="math">\(x_k\)</span>的数学方程；（<a href="./#kalman-filter">本文中的EKF</a>）</li>
+<li>直接写出状态量导数<span  class="math">\(\dot{x}\)</span>与状态量<span  class="math">\(x\)</span>的数学方程；
+
+<ul>
+<li>积分得到下一时刻状态量<span  class="math">\(x_{k+1}\)</span>与当前时刻状态量<span  class="math">\(x_k\)</span>的数学方程；（<a href="./#unscented-kalman-filter">本文中的UKF</a> / <a href="../vins-mono/#动态方程">VINS-MONO的代码实现</a>）</li>
+<li>求得error-state状态方程，即<span  class="math">\(\dot{\delta x}\)</span>与<span  class="math">\(\delta x\)</span>的数学方程；（<a href="../msckf/">MSCKF</a> / <a href="../gps-ins/#动态方程">GPS&amp;INS组合导航</a> / VINS-MONO论文）</li>
+</ul></li>
+</ol>
+
+
+
+  
+
+  
+    <br>
+    <strong>Previous:</strong> <a href="/path-planning/">Path Planning</a>
+  
+  
+  
+    <div id="utter-container">
+    <script src="https://utteranc.es/client.js"
+        repo= 'nuhuo08/blog-comments'
+        issue-term= "pathname"
+        theme= 'github-light'
+        crossorigin= "anonymous"
+        async>
+    </script> 
+    </div>
+
+  
+
+
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="usa-footer usa-footer--slim" role="contentinfo">
+      
+      <div class="usa-footer__secondary-section" id="footer-main">
+        <div class="grid-container">
+          <div class="grid-row grid-gap">
+            <div class="grid-col-12 text-center">
+              
+              
+                Made with <a href="https://gohugo.io/">Hugo</a> • Content in <a href="https://github.com/nuhuo08/uswds-hugo-theme">GitHub</a>
+                <br>
+                Last deployed on 2020-02-10
+              
+
+              
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    
+    <script src="/js/uswds.min.fcd9b25a27c51de427f4c618dee88490c2ff0a792a573531e316730d07df3f3d.js"></script>
+
+  </body>
+</html>
