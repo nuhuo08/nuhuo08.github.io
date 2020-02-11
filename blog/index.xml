@@ -6,10 +6,30 @@
     <description>Recent content in Blogs on XiaoWu</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 10 Feb 2020 09:31:36 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 11 Feb 2020 20:28:42 +0800</lastBuildDate>
     
 	<atom:link href="https://nuhuo08.github.io/blog/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Rotation</title>
+      <link>https://nuhuo08.github.io/rotation/</link>
+      <pubDate>Tue, 11 Feb 2020 20:28:42 +0800</pubDate>
+      
+      <guid>https://nuhuo08.github.io/rotation/</guid>
+      <description>旋转有很多种表达形式，Active/Passive，坐标/坐标系等等。 不同的表达形式得到的矩阵表达形式有较大差异，为了避免混淆，最重要的是，给自己构建一套统一的旋转表示系统。
+简单旋转 假设有一世界坐标系\(w\)，将\(w\)坐标系逆时针旋转45°，得到一个局部坐标系\(b\)。那么，在\(w\)坐标系下，坐标为\(\begin{pmatrix}1 \\ 0\end{pmatrix}\)的点，在\(b\)坐标系下的坐标是多少呢？
+采用如下公式求得：
+\[ r_b = R_{bw}r_w \]
+其中，\(r_w\)表示点在\(w\)坐标系下的坐标，即\(\begin{pmatrix}1 \\ 0\end{pmatrix}\)。
+而\(R_{bw}\)表示\(w\)相对于\(b\)的旋转。由于\(b\)是将\(w\)逆时针旋转45°得到的，也就是说，从\(b\)出发，转到\(w\)的角度为-45°，从而得到：
+\[ R_{bw}=\begin{pmatrix}\cos\theta &amp; -\sin\theta \\ \sin\theta &amp; \cos\theta\end{pmatrix} =\begin{pmatrix}\cos(-45\degree) &amp; -\sin(-45\degree) \\ \sin(-45\degree) &amp; \cos(-45\degree)\end{pmatrix} =\begin{pmatrix}\frac{\sqrt{2}}{2} &amp; \frac{\sqrt{2}}{2} \\ -\frac{\sqrt{2}}{2} &amp; \frac{\sqrt{2}}{2}\end{pmatrix} \]
+由此可知：
+\[ r_b = R_{bw}r_w=\begin{pmatrix}\frac{\sqrt{2}}{2} \\ -\frac{\sqrt{2}}{2}\end{pmatrix} \]
+这正是我们所期待的结果。
+三维旋转 旋转都是按照roll，pitch，yaw的顺序进行的。这里假设分别对应的是X，Y，Z坐标轴。 若从\(w\)坐标系出发，通过旋转roll，pitch，yaw的角度后，得到\(b\)坐标系，则\(b\)坐标系下的点\(P_b\)，在\(w\)坐标系下的坐标为：
+\[ \begin{aligned} P_w &amp;= R_{wb} * P_b \\[2mm] &amp;= R_z(yaw) * R_y(pitch) * R_x(roll) * P_b \\[2mm] &amp;= \begin{pmatrix} \cos &amp;-\sin &amp;0 \\ \sin &amp;\cos &amp;0 \\ 0 &amp;0 &amp;1 \end{pmatrix} \begin{pmatrix} \cos &amp;0 &amp;\sin \\ 0 &amp;1 &amp;0 \\ -\sin &amp;0 &amp;\cos \end{pmatrix} \begin{pmatrix} 1 &amp;0 &amp;0 \\ 0 &amp;\cos &amp;-\sin \\ 0 &amp;\sin &amp;\cos \end{pmatrix} * P_b \end{aligned} \]</description>
+    </item>
     
     <item>
       <title>Bayesian Filter</title>

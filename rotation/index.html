@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+	<script>
+		renderMathInElement(document.body,
+			{
+				delimiters: [
+					{left: "$$", right: "$$", display: true},
+					{left: "$", right: "$", display: false},
+				]
+			}
+		);
+
+		var inlineMathArray = document.querySelectorAll("script[type='math/tex']");
+		for (var i = 0; i < inlineMathArray.length; i++) {
+			var inlineMath = inlineMathArray[i];
+			var tex = inlineMath.innerText || inlineMath.textContent;
+			var replaced = document.createElement("span");
+			replaced.innerHTML = katex.renderToString(tex, {displayMode: false});
+			inlineMath.parentNode.replaceChild(replaced, inlineMath);
+		}
+
+		var displayMathArray = document.querySelectorAll("script[type='math/tex; mode=display']");
+		for (var i = 0; i < displayMathArray.length; i++) {
+			var displayMath = displayMathArray[i];
+			var tex = displayMath.innerHTML;
+			var replaced = document.createElement("span");
+			replaced.innerHTML = katex.renderToString(tex.replace(/%.*/g, ''), {displayMode: true});
+			displayMath.parentNode.replaceChild(replaced, displayMath);
+		}
+	</script>
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+
+    <link rel="canonical" href="https://nuhuo08.github.io/rotation/">
+    <meta name="generator" content="Hugo 0.62.2" />
+    <title>Rotation | XiaoWu</title>
+
+    
+    <link rel="stylesheet" href="/css/uswds.min.c480a9b2a1fc1e7e564e62752462b22cd5f508a047f0340cb3725722f627fb1d.css">
+    
+    
+    <link rel="stylesheet" href="/css/custom.0a518097f5500782b25662ab2af4088600eefcc3d2d8828ce721e5e5fee436b5.min.css">
+  </head>
+  <body>
+    <a class="usa-skipnav" href="#main-content">Skip to main content</a>
+
+    <header class="usa-header usa-header--basic" role="banner">
+      <div class="usa-nav-container">
+        <div class="usa-navbar">
+          <div class="usa-logo" id="basic-mega-logo">
+            <em class="usa-logo__text">
+              <a href="/" title="Home" aria-label="Home">XiaoWu</a>
+            </em>
+          </div>
+          <button class="usa-menu-btn">Menu</button>
+        </div>
+
+        <nav role="navigation" class="usa-nav">
+          <button class="usa-nav__close">
+            <img src="/img/close.svg" alt="close" />
+          </button>
+          <ul class="usa-nav__primary usa-accordion">
+            
+            
+              
+              
+              
+              
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link " href="/">
+                  <span>Home</span>
+                </a>
+              </li>
+            
+              
+              
+              
+              
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link usa-current" href="/blog/">
+                  <span>Blog</span>
+                </a>
+              </li>
+            
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="usa-section" id="main-content">
+      <div class="grid-container">
+        <div class="grid-row grid-gap">
+          <div class="tablet:grid-col usa-prose">
+            
+  <h1>Rotation</h1>
+  
+  <p class="text-gray-50">
+    
+    
+    
+    <strong>Published: </strong>2020-02-11
+
+    
+    
+      
+      
+    
+    
+    
+    
+    </span>
+  </p>
+  
+  
+    
+
+<div class="toc">
+  <strong>Table of contents</strong>
+  <ol>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e7%ae%80%e5%8d%95%e6%97%8b%e8%bd%ac">
+        简单旋转
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e4%b8%89%e7%bb%b4%e6%97%8b%e8%bd%ac">
+        三维旋转
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e5%8f%b3%e6%89%8b%e7%b3%bb%e5%9b%9b%e5%85%83%e6%95%b0">
+        右手系四元数
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e5%9b%9b%e5%85%83%e6%95%b0%e4%b8%8e%e6%97%8b%e8%bd%ac%e7%9f%a9%e9%98%b5%e7%9a%84%e5%85%b3%e7%b3%bb">
+        四元数与旋转矩阵的关系
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e5%b7%a6%e6%89%8b%e7%b3%bb%e5%9b%9b%e5%85%83%e6%95%b0">
+        左手系四元数
+      </a>
+    </li>
+    
+  </ol>
+</div>
+
+
+  
+  
+  
+
+<p>旋转有很多种表达形式，Active/Passive，坐标/坐标系等等。
+不同的表达形式得到的矩阵表达形式有较大差异，为了避免混淆，最重要的是，给自己构建一套统一的旋转表示系统。</p>
+
+<h2 id="简单旋转">简单旋转 <a aria-label="header link for 简单旋转" href="#简单旋转" class="header-link">#</a></h2>
+
+<p>假设有一世界坐标系<span  class="math">\(w\)</span>，将<span  class="math">\(w\)</span>坐标系逆时针旋转45°，得到一个局部坐标系<span  class="math">\(b\)</span>。那么，在<span  class="math">\(w\)</span>坐标系下，坐标为<span  class="math">\(\begin{pmatrix}1 \\ 0\end{pmatrix}\)</span>的点，在<span  class="math">\(b\)</span>坐标系下的坐标是多少呢？</p>
+
+<p>采用如下公式求得：</p>
+
+<p><span  class="math">\[
+r_b = R_{bw}r_w
+\]</span></p>
+
+<p>其中，<span  class="math">\(r_w\)</span>表示点在<span  class="math">\(w\)</span>坐标系下的坐标，即<span  class="math">\(\begin{pmatrix}1 \\ 0\end{pmatrix}\)</span>。</p>
+
+<p>而<span  class="math">\(R_{bw}\)</span>表示<span  class="math">\(w\)</span>相对于<span  class="math">\(b\)</span>的旋转。由于<span  class="math">\(b\)</span>是将<span  class="math">\(w\)</span>逆时针旋转45°得到的，也就是说，从<span  class="math">\(b\)</span>出发，转到<span  class="math">\(w\)</span>的角度为-45°，从而得到：</p>
+
+<p><span  class="math">\[
+R_{bw}=\begin{pmatrix}\cos\theta & -\sin\theta \\ \sin\theta & \cos\theta\end{pmatrix}
+=\begin{pmatrix}\cos(-45\degree) & -\sin(-45\degree) \\ \sin(-45\degree) & \cos(-45\degree)\end{pmatrix}
+=\begin{pmatrix}\frac{\sqrt{2}}{2} & \frac{\sqrt{2}}{2} \\ -\frac{\sqrt{2}}{2} & \frac{\sqrt{2}}{2}\end{pmatrix}
+\]</span></p>
+
+<p>由此可知：</p>
+
+<p><span  class="math">\[
+r_b = R_{bw}r_w=\begin{pmatrix}\frac{\sqrt{2}}{2} \\ -\frac{\sqrt{2}}{2}\end{pmatrix}
+\]</span></p>
+
+<p>这正是我们所期待的结果。</p>
+
+<h2 id="三维旋转">三维旋转 <a aria-label="header link for 三维旋转" href="#三维旋转" class="header-link">#</a></h2>
+
+<p>旋转都是按照roll，pitch，yaw的顺序进行的。这里假设分别对应的是X，Y，Z坐标轴。
+若从<span  class="math">\(w\)</span>坐标系出发，通过旋转roll，pitch，yaw的角度后，得到<span  class="math">\(b\)</span>坐标系，则<span  class="math">\(b\)</span>坐标系下的点<span  class="math">\(P_b\)</span>，在<span  class="math">\(w\)</span>坐标系下的坐标为：</p>
+
+<p><span  class="math">\[
+\begin{aligned}
+P_w &= R_{wb} * P_b \\[2mm]
+&= R_z(yaw) * R_y(pitch) * R_x(roll) * P_b \\[2mm]
+&=
+\begin{pmatrix}
+\cos &-\sin &0 \\ \sin &\cos &0 \\ 0 &0 &1
+\end{pmatrix}
+\begin{pmatrix}
+\cos &0 &\sin \\ 0 &1 &0 \\ -\sin &0 &\cos
+\end{pmatrix}
+\begin{pmatrix}
+1 &0 &0 \\ 0 &\cos &-\sin \\ 0 &\sin &\cos
+\end{pmatrix} * P_b
+\end{aligned}
+\]</span></p>
+
+<p>请注意Y轴对应的旋转矩阵的符号，跟X，Z轴是不同的。</p>
+
+<h2 id="右手系四元数">右手系四元数 <a aria-label="header link for 右手系四元数" href="#右手系四元数" class="header-link">#</a></h2>
+
+<p><span  class="math">\[
+q=\cos\frac{\theta}{2}+u^w\cdot\sin\frac{\theta}{2}
+\]</span></p>
+
+<p>其中：<span  class="math">\(u^w\)</span>表示在参考系<span  class="math">\(w\)</span>下的某个单位矢量。<span  class="math">\(q\)</span>描述的是将坐标系<span  class="math">\(w\)</span>旋转成新的坐标系<span  class="math">\(b\)</span>。</p>
+
+<p>注意！！！<br>
+在原始Hamilton Notation的情况下，会采用<span  class="math">\(_w^bq\)</span>表示将坐标系<span  class="math">\(w\)</span>旋转成新的坐标系<span  class="math">\(b\)</span>，或者采用<span  class="math">\(q_{bw}\)</span>。这与上一节，我们所习惯的旋转矩阵出现了不统一。按照旋转矩阵的写法，应该是<span  class="math">\(R_{wb}\)</span></p>
+
+<p>这在实际运算过程中会带来很多麻烦，因此，我们直接采用如下规定：<br>
+采用<span  class="math">\(_b^wq\)</span>表示将坐标系<span  class="math">\(w\)</span>旋转成新的坐标系<span  class="math">\(b\)</span>，或者采用<span  class="math">\(q_{wb}\)</span></p>
+
+<p><span  class="math">\[
+\begin{aligned}
+r_w&={_b^w}q\otimes r_b \otimes {_b^w}q^{-1}\\
+&=q_{wb}\otimes r_b \otimes q_{wb}^{-1}\\
+&=R_{wb}r_b
+\end{aligned}
+\]</span></p>
+
+<p>我们可以注意到，VINS，组合导航，都是采用了这套符号规定！<br>
+在《捷联惯导算法与组合导航原理讲义》一书中，<span  class="math">\(C_b^i\)</span>表示从坐标系<span  class="math">\(i\)</span>转到坐标系<span  class="math">\(b\)</span>，在程序中对应的变量名为Ci2b，对应于我们规定的旋转矩阵应该是<span  class="math">\(R_{ib}\)</span>。
+参考<a href="../gps-ins">GPS/INS组合导航</a>。</p>
+
+<h2 id="四元数与旋转矩阵的关系">四元数与旋转矩阵的关系 <a aria-label="header link for 四元数与旋转矩阵的关系" href="#四元数与旋转矩阵的关系" class="header-link">#</a></h2>
+
+<p>下面这套转换关系通过Matlab代码验证过，请参考<a href="rotation.m">代码文件</a>。</p>
+
+<p><span  class="math">\[
+\mathbf{q} = q_0 +  q_1 i + q_2 j + q_3 k = [s, \mathbf{v}]
+\]</span></p>
+
+<p>四元数转旋转矩阵：</p>
+
+<p><span  class="math">\[
+R = \begin{bmatrix} 
+1 - 2 q_2^2 - 2 q_3^2 & 2q_1 q_2 - 2q_0 q_3 & 2 q_1 q_3 + 2 q_0 q_2 \\
+2q_1 q_2 + 2q_0 q_3 & 1 - 2 q_1^2 - 2 q_3^2 & 2 q_2 q_3 - 2 q_0 q_1 \\
+2 q_1 q_3 - 2 q_0 q_2 & 2 q_2 q_3 + 2 q_0 q_1 & 1 - 2 q_1^2 - 2 q_2^2
+\end{bmatrix}
+\]</span></p>
+
+<p>旋转矩阵转四元数：</p>
+
+<p><span  class="math">\[
+\begin{aligned}
+q_0 &= \frac{\sqrt{1+r_{11}+r_{22}+r_{33}}}{2} \\[2mm]
+q_1 &= \frac{r_{32}-r_{23}}{4q_0} \\[2mm]
+q_2 &= \frac{r_{13}-r_{31}}{4q_0} \\[2mm]
+q_3 &= \frac{r_{21}-r_{12}}{4q_0}
+\end{aligned}
+\]</span></p>
+
+<p>四元数乘法：</p>
+
+<p><span  class="math">\[
+\begin{aligned}
+\mathbf{q}_1 &= [s_1, \mathbf{v}_1]=\begin{pmatrix} a_1 & b_1 & c_1 & d_1 \end{pmatrix}^T \\[2mm]
+\mathbf{q}_2 &= [s_2, \mathbf{v}_2]=\begin{pmatrix} a_2 & b_2 & c_2 & d_2 \end{pmatrix}^T \\[2mm]
+\mathbf{q}_1 \mathbf{q}_2 &= \begin{pmatrix} a_1 a_2 - b_1 b_2 - c_1 c_2 - d_1 d_2 \\ a_1 b_2 + b_1 a_2 + c_1 d_2 - d_1 c_2 \\ a_1 c_2 - b_1 d_2 + c_1 a_2 + d_1 b_2 \\ a_1 d_2 + b_1 c_2 - c_1 b_2 + d_1 a_2 \end{pmatrix}
+\end{aligned}
+\]</span></p>
+
+<p>四元数的逆：</p>
+
+<p><span  class="math">\[
+\mathbf{q}^* = s - \mathbf{v} = [s, -\mathbf{v}] \\[2mm]
+\mathbf{q}^{-1} = \frac{\mathbf{q}^*}{||\mathbf{q}||^2}
+\]</span></p>
+
+<p>反对称阵：</p>
+
+<p><span  class="math">\[
+[\omega]_{\times} =
+\begin{pmatrix}
+0 &-\omega_z &\omega_y \\ \omega_z &0 &-\omega_x \\ -\omega_y &\omega_x &0
+\end{pmatrix}
+\]</span></p>
+
+<p>其它常用公式：</p>
+
+<p><span  class="math">\[
+a_{\times}b=-b_{\times}a \\[2mm]
+(Rb)_\times=Rb_{\times}R^T
+\]</span></p>
+
+<p>按照上面的这一套符号系统，可以看到旋转矩阵与四元数在进行旋转计算时，完全统一：</p>
+
+<p><span  class="math">\[
+\begin{aligned}
+P_c &= R_{cb}R_{ba}P_a \\[2mm]
+&= (\mathbf{q}_{cb} \mathbf{q}_{ba})\begin{pmatrix} 0 \\ P_a\end{pmatrix} (\mathbf{q}_{cb} \mathbf{q}_{ba})^{-1}
+\end{aligned}
+\]</span></p>
+
+<p>四元数的导数：</p>
+
+<p><span  class="math">\[
+\begin{aligned}
+\dot{\mathbf{q}}&=\frac{1}{2}\mathbf{\Omega}(\mathbf{\omega}_{\mathcal{L}})\mathbf{q}=\frac{1}{2}\mathbf{q}\otimes\mathbf{\omega}_{\mathcal{L}} \\[2mm]
+&=\frac{1}{2}
+\begin{pmatrix}
+0 &-\omega_x &-\omega_y & -\omega_z \\ \omega_x &0 &\omega_z &-\omega_y \\ \omega_y &-\omega_z &0 &\omega_x \\ \omega_z & \omega_y &-\omega_x &0
+\end{pmatrix}\mathbf{q}
+\end{aligned}
+\]</span></p>
+
+<p>对应的旋转矩阵导数：</p>
+
+<p><span  class="math">\[
+\dot{R}=R[\omega_{\mathcal{L}}]_{\times}
+\]</span></p>
+
+<h2 id="左手系四元数">左手系四元数 <a aria-label="header link for 左手系四元数" href="#左手系四元数" class="header-link">#</a></h2>
+
+<p>通过上面的定义，右手系四元数与旋转矩阵得到了统一，而左手系四元数将会反而显得比较奇怪了。</p>
+
+<p><span  class="math">\({_G^I}q\)</span> is the unit quaternion describing the rotation from frame {<span  class="math">\(G\)</span>} to frame {<span  class="math">\(I\)</span>}</p>
+
+<p><span  class="math">\[
+r_I={_G^I}q \cdot r_G=R_{IG} \cdot r_G
+\]</span></p>
+
+<p>MSCKF采用的是这套符号规定，看论文时需要特别注意！</p>
+
+
+
+  
+
+  
+    <br>
+    <strong>Previous:</strong> <a href="/bayesian-filter/">Bayesian Filter</a>
+  
+  
+  
+    <div id="utter-container">
+    <script src="https://utteranc.es/client.js"
+        repo= 'nuhuo08/blog-comments'
+        issue-term= "pathname"
+        theme= 'github-light'
+        crossorigin= "anonymous"
+        async>
+    </script> 
+    </div>
+
+  
+
+
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="usa-footer usa-footer--slim" role="contentinfo">
+      
+      <div class="usa-footer__secondary-section" id="footer-main">
+        <div class="grid-container">
+          <div class="grid-row grid-gap">
+            <div class="grid-col-12 text-center">
+              
+              
+                Made with <a href="https://gohugo.io/">Hugo</a> • Content in <a href="https://github.com/nuhuo08/uswds-hugo-theme">GitHub</a>
+                <br>
+                Last deployed on 2020-02-11
+              
+
+              
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    
+    <script src="/js/uswds.min.fcd9b25a27c51de427f4c618dee88490c2ff0a792a573531e316730d07df3f3d.js"></script>
+
+  </body>
+</html>
