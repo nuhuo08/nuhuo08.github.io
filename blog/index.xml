@@ -6,10 +6,22 @@
     <description>Recent content in Blogs on XiaoWu</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 11 Feb 2020 20:28:42 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 12 Feb 2020 20:11:58 +0800</lastBuildDate>
     
 	<atom:link href="https://nuhuo08.github.io/blog/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Control</title>
+      <link>https://nuhuo08.github.io/control/</link>
+      <pubDate>Wed, 12 Feb 2020 20:11:58 +0800</pubDate>
+      
+      <guid>https://nuhuo08.github.io/control/</guid>
+      <description>PID PID原理 P Controller：将控制参数设置成误差的比例，快速接近目标，但是会造成震荡。
+steering = -tau * crosstrack_error PD Controller：将误差的变化率也考虑进来。当误差变小的同时，误差的变化率也在不断变小。 两者之和将会更小，从而使控制器做出更微小的调节，防止出现控制过头，引发震荡。
+steering = -tau_p * CTE - tau_d * diff_CTE where: differential crosstrack error (diff_CTE) is given by CTE(t) - CTE(t-1) PID Controller：当存在系统误差时，可以通过误差积分可以反映出来。
+steering = -tau_p * CTE - tau_d * diff_CTE - tau_i * int_CTE where: the integrated crosstrack error (int_CTE) is the sum of all the previous crosstrack errors. This term works to cancel out steering drift. Twiddle Algorithm Twiddle算法提供了一套非常好的参数估计方法。当代价函数与待估参数之间没有严格的数学关系，通过twiddle算法可以高校估算出结果。</description>
+    </item>
     
     <item>
       <title>Rotation</title>

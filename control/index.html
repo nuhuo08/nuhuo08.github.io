@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+	<script>
+		renderMathInElement(document.body,
+			{
+				delimiters: [
+					{left: "$$", right: "$$", display: true},
+					{left: "$", right: "$", display: false},
+				]
+			}
+		);
+
+		var inlineMathArray = document.querySelectorAll("script[type='math/tex']");
+		for (var i = 0; i < inlineMathArray.length; i++) {
+			var inlineMath = inlineMathArray[i];
+			var tex = inlineMath.innerText || inlineMath.textContent;
+			var replaced = document.createElement("span");
+			replaced.innerHTML = katex.renderToString(tex, {displayMode: false});
+			inlineMath.parentNode.replaceChild(replaced, inlineMath);
+		}
+
+		var displayMathArray = document.querySelectorAll("script[type='math/tex; mode=display']");
+		for (var i = 0; i < displayMathArray.length; i++) {
+			var displayMath = displayMathArray[i];
+			var tex = displayMath.innerHTML;
+			var replaced = document.createElement("span");
+			replaced.innerHTML = katex.renderToString(tex.replace(/%.*/g, ''), {displayMode: true});
+			displayMath.parentNode.replaceChild(replaced, displayMath);
+		}
+	</script>
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+
+    <link rel="canonical" href="https://nuhuo08.github.io/control/">
+    <meta name="generator" content="Hugo 0.62.2" />
+    <title>Control | XiaoWu</title>
+
+    
+    <link rel="stylesheet" href="/css/uswds.min.c480a9b2a1fc1e7e564e62752462b22cd5f508a047f0340cb3725722f627fb1d.css">
+    
+    
+    <link rel="stylesheet" href="/css/custom.0a518097f5500782b25662ab2af4088600eefcc3d2d8828ce721e5e5fee436b5.min.css">
+  </head>
+  <body>
+    <a class="usa-skipnav" href="#main-content">Skip to main content</a>
+
+    <header class="usa-header usa-header--basic" role="banner">
+      <div class="usa-nav-container">
+        <div class="usa-navbar">
+          <div class="usa-logo" id="basic-mega-logo">
+            <em class="usa-logo__text">
+              <a href="/" title="Home" aria-label="Home">XiaoWu</a>
+            </em>
+          </div>
+          <button class="usa-menu-btn">Menu</button>
+        </div>
+
+        <nav role="navigation" class="usa-nav">
+          <button class="usa-nav__close">
+            <img src="/img/close.svg" alt="close" />
+          </button>
+          <ul class="usa-nav__primary usa-accordion">
+            
+            
+              
+              
+              
+              
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link " href="/">
+                  <span>Home</span>
+                </a>
+              </li>
+            
+              
+              
+              
+              
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link usa-current" href="/blog/">
+                  <span>Blog</span>
+                </a>
+              </li>
+            
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="usa-section" id="main-content">
+      <div class="grid-container">
+        <div class="grid-row grid-gap">
+          <div class="tablet:grid-col usa-prose">
+            
+  <h1>Control</h1>
+  
+  <p class="text-gray-50">
+    
+    
+    
+    <strong>Published: </strong>2020-02-12
+
+    
+    
+      
+      
+    
+    
+    
+    
+    </span>
+  </p>
+  
+  
+    
+
+<div class="toc">
+  <strong>Table of contents</strong>
+  <ol>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#pid">
+        PID
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#mpc">
+        MPC
+      </a>
+    </li>
+    
+  </ol>
+</div>
+
+
+  
+  
+  
+
+<h2 id="pid">PID <a aria-label="header link for PID" href="#pid" class="header-link">#</a></h2>
+
+<h3 id="pid原理">PID原理</h3>
+
+<p>P Controller：将控制参数设置成误差的比例，快速接近目标，但是会造成震荡。</p>
+<pre><code>steering = -tau * crosstrack_error</code></pre>
+<p>PD Controller：将误差的变化率也考虑进来。当误差变小的同时，误差的变化率也在不断变小。
+两者之和将会更小，从而使控制器做出更微小的调节，防止出现控制过头，引发震荡。</p>
+<pre><code>steering = -tau_p * CTE - tau_d * diff_CTE
+
+where:
+    differential crosstrack error (diff_CTE) is given by CTE(t) - CTE(t-1)</code></pre>
+<p>PID Controller：当存在系统误差时，可以通过误差积分可以反映出来。</p>
+<pre><code>steering = -tau_p * CTE - tau_d * diff_CTE - tau_i * int_CTE
+
+where:
+    the integrated crosstrack error (int_CTE) is the sum of all the previous crosstrack errors.
+    This term works to cancel out steering drift.</code></pre>
+<h3 id="twiddle-algorithm">Twiddle Algorithm</h3>
+
+<p>Twiddle算法提供了一套非常好的参数估计方法。当代价函数与待估参数之间没有严格的数学关系，通过twiddle算法可以高校估算出结果。</p>
+
+<p>其思想是：对每个参数，在其附近上下调节。
+若调节的方向正确，使得代价函数减小，就加大调节步长；若上下调节都无法使代价函数减小，则缩小调节步长。
+直至调节步长缩小到满足阈值，认为优化结束。</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#408080;font-style:italic"># Choose an initialization parameter vector</span>
+p <span style="color:#666">=</span> [<span style="color:#666">0</span>, <span style="color:#666">0</span>, <span style="color:#666">0</span>]
+<span style="color:#408080;font-style:italic"># Define potential changes</span>
+dp <span style="color:#666">=</span> [<span style="color:#666">1</span>, <span style="color:#666">1</span>, <span style="color:#666">1</span>]
+<span style="color:#408080;font-style:italic"># Calculate the error</span>
+best_err <span style="color:#666">=</span> A(p)
+
+threshold <span style="color:#666">=</span> <span style="color:#666">0.001</span>
+
+<span style="color:#008000;font-weight:bold">while</span> <span style="color:#008000">sum</span>(dp) <span style="color:#666">&gt;</span> threshold:
+    <span style="color:#008000;font-weight:bold">for</span> i <span style="color:#a2f;font-weight:bold">in</span> <span style="color:#008000">range</span>(<span style="color:#008000">len</span>(p)):
+        p[i] <span style="color:#666">+</span><span style="color:#666">=</span> dp[i]
+        err <span style="color:#666">=</span> A(p)
+
+        <span style="color:#008000;font-weight:bold">if</span> err <span style="color:#666">&lt;</span> best_err:  <span style="color:#408080;font-style:italic"># There was some improvement</span>
+            best_err <span style="color:#666">=</span> err
+            dp[i] <span style="color:#666">*</span><span style="color:#666">=</span> <span style="color:#666">1.1</span>
+        <span style="color:#008000;font-weight:bold">else</span>:  <span style="color:#408080;font-style:italic"># There was no improvement</span>
+            p[i] <span style="color:#666">-</span><span style="color:#666">=</span> <span style="color:#666">2</span><span style="color:#666">*</span>dp[i]  <span style="color:#408080;font-style:italic"># Go into the other direction</span>
+            err <span style="color:#666">=</span> A(p)
+
+            <span style="color:#008000;font-weight:bold">if</span> err <span style="color:#666">&lt;</span> best_err:  <span style="color:#408080;font-style:italic"># There was an improvement</span>
+                best_err <span style="color:#666">=</span> err
+                dp[i] <span style="color:#666">*</span><span style="color:#666">=</span> <span style="color:#666">1.05</span>
+            <span style="color:#008000;font-weight:bold">else</span>  <span style="color:#408080;font-style:italic"># There was no improvement</span>
+                p[i] <span style="color:#666">+</span><span style="color:#666">=</span> dp[i]
+                <span style="color:#408080;font-style:italic"># As there was no improvement, the step size in either</span>
+                <span style="color:#408080;font-style:italic"># direction, the step size might simply be too big.</span>
+                dp[i] <span style="color:#666">*</span><span style="color:#666">=</span> <span style="color:#666">0.95</span></code></pre></div>
+<h2 id="mpc">MPC <a aria-label="header link for MPC" href="#mpc" class="header-link">#</a></h2>
+
+<h3 id="kinematic-model">Kinematic Model</h3>
+
+<p>对自车进行位姿预测时，由于已知方向盘、油门刹车的输入<span  class="math">\(\)</span>，可以使用动态模型进行预测：</p>
+
+<p><span  class="math">\[
+\begin{aligned}
+x_{t+1}&=x_t+v_t\cos(\psi_t)*dt \\[2mm]
+y_{t+1}&=y_t+v_t\sin(\psi_t)*dt \\[2mm]
+\psi_{t+1}&=\psi_t+\frac{v_t}{L_f}\delta*dt \\[2mm]
+v_{t+1}&=v_t+a_t*dt
+\end{aligned}
+\]</span></p>
+
+<p><span  class="math">\(\begin{bmatrix} x, y, \psi, v \end{bmatrix}\)</span> is the state of the vehicle, <span  class="math">\(L_f\)</span> is a physical characteristic of the vehicle,
+and <span  class="math">\(\begin{bmatrix} \delta, a \end{bmatrix}\)</span> are the actuators, or control inputs, to our system.</p>
+
+<p>we add a multiplicative factor of the steering angle, <span  class="math">\(\delta\)</span> to <span  class="math">\(\psi\)</span>. <span  class="math">\(L_f\)</span> measures the distance between the center of mass of the vehicle and it's front axle. The larger the vehicle, the slower the turn rate.<br>
+If you've driven a vehicle you're well aware at higher speeds you turn quicker than at lower speeds. This is why <span  class="math">\(v\)</span> is the included in the update.</p>
+
+<h3 id="errors">Errors</h3>
+
+<p>We can capture how the errors we are interested in change over time by deriving our kinematic model around these errors as our new state vector.
+The new state is <span  class="math">\( \begin{pmatrix} x, y, \psi, v, cte, e\psi \end{pmatrix}\)</span>.</p>
+
+<p><span  class="math">\[
+\begin{aligned}
+cte_{t+1}&=f(x_t)-y_t+(v_t*\sin(e\psi_t)*dt) \\[2mm]
+e\psi_{t+1}&=\psi_t-\psi des_t + (\frac{v_t}{L_f}*\delta t*dt)
+\end{aligned}
+\]</span></p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/control/error.png">
+    <img src="/control/error.png" alt="Error">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#b00040">double</span> cost <span style="color:#666">=</span> <span style="color:#666">0</span>;
+<span style="color:#008000;font-weight:bold">for</span> (<span style="color:#b00040">int</span> t <span style="color:#666">=</span> <span style="color:#666">0</span>; t <span style="color:#666">&lt;</span> N; <span style="color:#666">+</span><span style="color:#666">+</span>t) {
+  cost <span style="color:#666">+</span><span style="color:#666">=</span> pow(cte[t], <span style="color:#666">2</span>);
+  cost <span style="color:#666">+</span><span style="color:#666">=</span> pow(epsi[t], <span style="color:#666">2</span>);
+}
+</code></pre></div>
+<p>还可以添加很多其他误差项。例如方向盘、油门刹车的变化不能太剧烈：</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#008000;font-weight:bold">for</span> (<span style="color:#b00040">int</span> t <span style="color:#666">=</span> <span style="color:#666">0</span>; t <span style="color:#666">&lt;</span> N<span style="color:#666">-</span><span style="color:#666">1</span>; <span style="color:#666">+</span><span style="color:#666">+</span>t) {
+  cost <span style="color:#666">+</span><span style="color:#666">=</span> pow(delta[t], <span style="color:#666">2</span>);
+}
+</code></pre></div><div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#008000;font-weight:bold">for</span> (<span style="color:#b00040">int</span> t <span style="color:#666">=</span> <span style="color:#666">0</span>; t <span style="color:#666">&lt;</span> N<span style="color:#666">-</span><span style="color:#666">1</span>; <span style="color:#666">+</span><span style="color:#666">+</span>t) {
+  cost <span style="color:#666">+</span><span style="color:#666">=</span> pow(delta[t<span style="color:#666">+</span><span style="color:#666">1</span>] <span style="color:#666">-</span> delta[t], <span style="color:#666">2</span>);
+  cost <span style="color:#666">+</span><span style="color:#666">=</span> pow(a[t<span style="color:#666">+</span><span style="color:#666">1</span>] <span style="color:#666">-</span> a[t], <span style="color:#666">2</span>);
+}
+</code></pre></div>
+<h3 id="dynamic-model">Dynamic Model</h3>
+
+<p>Dynamic Model 精度更高，但是需要考虑各种力学模型，建模也比Kinematic Model 更为复杂。
+A dynamic model considers: tire forces, longitudinal and lateral forces, gravity, air resistance, drag.</p>
+
+<p><strong>What we have learned so far</strong>
+From the previous lessons we have learned to apply the bicycle model, polynomial fitting, low complexity heuristics (e.g. CTE), and short time steps, to enable vehicles to follow a complex (polynomial) trajectories.
+This is an effective, practical, and commonly used approach, which can be applied to many autonomous vehicle scenarios, in real time.</p>
+
+<p><strong>Coming Next</strong>
+For the next few lessons we will round out our discussion of vehicle models with an overview of the more comprehensive, but less practical, dynamic models.
+Dynamic models and the elements which comprise them are rigorous and could be modules or courses unto themselves.
+The content that follows is targeted developing awareness and intuition that can be applied to further study and consists of:</p>
+
+<ul>
+<li>Dynamic Model Forces</li>
+<li>Tire Slip Angle</li>
+<li>Tire Slip Ratio</li>
+<li>Tire Models</li>
+</ul>
+
+<p>Additional resources are linked to each lesson to encourage and enable more in depth study.
+<a href="IV_KinematicMPC_jason.pdf">One of these resources</a> makes a good case for the use of lower complexity kinematic models, as:</p>
+
+<p>Compared to higher fidelity vehicle models, the system identification on the kinematic bicycle model is easier because there are only two parameters to identify, lf and lr.
+This makes it simpler to port the same controller or path planner to other vehicles with differently sized wheelbases.</p>
+
+<p>To further expand on this, lower complexity models have two strong advantages over higher complexity (dynamic included) models.
+They can run in real time (essential requirement of any model operating in a vehicle) and they are transferable to vehicles with differing attributes, such as mass.
+To use a dynamic model engineers would have to be able to control the vehicle attributes of the vehicles they are deploying models into (they probably won't have control over this).
+High complexity models would need major re-adjustment to account for even small differences.
+Lower complexity models do not suffer from this constraint and so can be placed in a wider range of vehicles, with far less additional effort, and unpredictability.</p>
+
+<p>Another frequently asked question is where our model comes from and why it differs from other models seen in the program and from other sources.</p>
+
+<p>The kinematic model we derive and use here is not quite the same as in the Berkeley paper (linked above), although they are similar.
+It is possible to use different models in different parts of your pipeline, depending on what levels of accuracy you need in different places.
+It is common to see this in industry. The principles of model we present can be applied to add parameters into the model to make models fit to purpose.</p>
+
+<p><strong>Additional Reading</strong></p>
+
+<ul>
+<li><a href="pacejka87.pdf">Pacejka Tire Model</a></li>
+<li><a href="IV_KinematicMPC_jason.pdf">This paper</a> presents a comparison between a kinematic and dynamic model.</li>
+<li><a href="9783658039776-c1.pdf">A brief overview of essential topics in vehicle dynamics</a></li>
+<li><a href="eScholarship UC item 1s2777sr.pdf">Drew Gray's dissertation thesis</a> This contains an excellent review, additional resources, and novel approaches/findings.</li>
+<li><a href="https://www.springer.com/us/book/9781461414322">An excellent book</a> This is not a free resource but is highly recommended by domain experts.</li>
+</ul>
+
+<h3 id="mpc原理">MPC原理</h3>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/control/mpc.png">
+    <img src="/control/mpc.png" alt="MPC">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<h4 id="约束条件">约束条件</h4>
+
+<p>约束条件即为运动学方程，转换成等式，上下界都为0。对应的代码：</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp">size_t n_constraints <span style="color:#666">=</span> <span style="color:#666">6</span> <span style="color:#666">*</span> N;
+
+Dvector <span style="color:#00f">constraints_lowerbound</span>(n_constraints);
+Dvector <span style="color:#00f">constraints_upperbound</span>(n_constraints);
+<span style="color:#008000;font-weight:bold">for</span> (i <span style="color:#666">=</span> <span style="color:#666">0</span>; i <span style="color:#666">&lt;</span> n_constraints; i<span style="color:#666">+</span><span style="color:#666">+</span>) {
+  constraints_lowerbound[i] <span style="color:#666">=</span> <span style="color:#666">0</span>;
+  constraints_upperbound[i] <span style="color:#666">=</span> <span style="color:#666">0</span>;
+}
+
+constraints_lowerbound[x_start] <span style="color:#666">=</span> constraints_upperbound[x_start] <span style="color:#666">=</span> state[<span style="color:#666">0</span>];
+constraints_lowerbound[y_start] <span style="color:#666">=</span> constraints_upperbound[y_start] <span style="color:#666">=</span> state[<span style="color:#666">1</span>];
+constraints_lowerbound[psi_start] <span style="color:#666">=</span> constraints_upperbound[psi_start] <span style="color:#666">=</span> state[<span style="color:#666">2</span>];
+constraints_lowerbound[v_start] <span style="color:#666">=</span> constraints_upperbound[v_start] <span style="color:#666">=</span> state[<span style="color:#666">3</span>];
+constraints_lowerbound[cte_start] <span style="color:#666">=</span> constraints_upperbound[cte_start] <span style="color:#666">=</span> state[<span style="color:#666">4</span>];
+constraints_lowerbound[epsi_start] <span style="color:#666">=</span> constraints_upperbound[epsi_start] <span style="color:#666">=</span> state[<span style="color:#666">5</span>];
+</code></pre></div>
+<h4 id="待估变量">待估变量</h4>
+
+<p>变量包括： <span  class="math">\([x,y,\psi,v,cte,e\psi]\)</span>，外加N个时刻的<span  class="math">\([\delta, a]\)</span>。对应的代码：</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp">size_t n_vars <span style="color:#666">=</span> <span style="color:#666">6</span> <span style="color:#666">*</span> N <span style="color:#666">+</span> <span style="color:#666">2</span> <span style="color:#666">*</span> (N <span style="color:#666">-</span> <span style="color:#666">1</span>);
+
+Dvector <span style="color:#00f">vars</span>(n_vars);
+<span style="color:#008000;font-weight:bold">for</span> (i <span style="color:#666">=</span> <span style="color:#666">0</span>; i <span style="color:#666">&lt;</span> n_vars; i<span style="color:#666">+</span><span style="color:#666">+</span>) {
+  vars[i] <span style="color:#666">=</span> <span style="color:#666">0</span>;
+}
+
+<span style="color:#008000;font-weight:bold">for</span> (i <span style="color:#666">=</span> delta_start; i <span style="color:#666">&lt;</span> a_start; i<span style="color:#666">+</span><span style="color:#666">+</span>) {
+  vars_lowerbound[i] <span style="color:#666">=</span> <span style="color:#666">-</span><span style="color:#666">0.436332</span>;
+  vars_upperbound[i] <span style="color:#666">=</span> <span style="color:#666">0.436332</span>;
+}
+
+<span style="color:#008000;font-weight:bold">for</span> (i <span style="color:#666">=</span> a_start; i <span style="color:#666">&lt;</span> n_vars; i<span style="color:#666">+</span><span style="color:#666">+</span>) {
+  vars_lowerbound[i] <span style="color:#666">=</span> <span style="color:#666">-</span><span style="color:#666">1.0</span>;
+  vars_upperbound[i] <span style="color:#666">=</span> <span style="color:#666">1.0</span>;
+}
+</code></pre></div>
+<h4 id="残差">残差</h4>
+
+<p>残差为：</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#408080;font-style:italic">// The part of the cost based on the reference state.
+</span><span style="color:#408080;font-style:italic"></span><span style="color:#008000;font-weight:bold">for</span> (size_t t <span style="color:#666">=</span> <span style="color:#666">0</span>; t <span style="color:#666">&lt;</span> N; t<span style="color:#666">+</span><span style="color:#666">+</span>) {
+  fg[<span style="color:#666">0</span>] <span style="color:#666">+</span><span style="color:#666">=</span> <span style="color:#666">1000</span> <span style="color:#666">*</span> CppAD<span style="color:#666">:</span><span style="color:#666">:</span>pow(vars[cte_start <span style="color:#666">+</span> t], <span style="color:#666">2</span>);
+  fg[<span style="color:#666">0</span>] <span style="color:#666">+</span><span style="color:#666">=</span> <span style="color:#666">1000</span> <span style="color:#666">*</span> CppAD<span style="color:#666">:</span><span style="color:#666">:</span>pow(vars[epsi_start <span style="color:#666">+</span> t], <span style="color:#666">2</span>);
+  fg[<span style="color:#666">0</span>] <span style="color:#666">+</span><span style="color:#666">=</span> CppAD<span style="color:#666">:</span><span style="color:#666">:</span>pow(vars[v_start <span style="color:#666">+</span> t] <span style="color:#666">-</span> ref_v, <span style="color:#666">2</span>);
+}
+
+<span style="color:#408080;font-style:italic">// Minimize the use of actuators.
+</span><span style="color:#408080;font-style:italic"></span><span style="color:#008000;font-weight:bold">for</span> (size_t t <span style="color:#666">=</span> <span style="color:#666">0</span>; t <span style="color:#666">&lt;</span> N <span style="color:#666">-</span> <span style="color:#666">1</span>; t<span style="color:#666">+</span><span style="color:#666">+</span>) {
+  fg[<span style="color:#666">0</span>] <span style="color:#666">+</span><span style="color:#666">=</span> CppAD<span style="color:#666">:</span><span style="color:#666">:</span>pow(vars[delta_start <span style="color:#666">+</span> t], <span style="color:#666">2</span>);
+  fg[<span style="color:#666">0</span>] <span style="color:#666">+</span><span style="color:#666">=</span> CppAD<span style="color:#666">:</span><span style="color:#666">:</span>pow(vars[a_start <span style="color:#666">+</span> t], <span style="color:#666">2</span>);
+}
+
+<span style="color:#408080;font-style:italic">// Minimize the value gap between sequential actuations.
+</span><span style="color:#408080;font-style:italic"></span><span style="color:#008000;font-weight:bold">for</span> (size_t t <span style="color:#666">=</span> <span style="color:#666">0</span>; t <span style="color:#666">&lt;</span> N <span style="color:#666">-</span> <span style="color:#666">2</span>; t<span style="color:#666">+</span><span style="color:#666">+</span>) {
+  fg[<span style="color:#666">0</span>] <span style="color:#666">+</span><span style="color:#666">=</span> <span style="color:#666">500</span> <span style="color:#666">*</span> CppAD<span style="color:#666">:</span><span style="color:#666">:</span>pow(vars[delta_start <span style="color:#666">+</span> t <span style="color:#666">+</span> <span style="color:#666">1</span>] <span style="color:#666">-</span> vars[delta_start <span style="color:#666">+</span> t], <span style="color:#666">2</span>);
+  fg[<span style="color:#666">0</span>] <span style="color:#666">+</span><span style="color:#666">=</span> <span style="color:#666">500</span> <span style="color:#666">*</span> CppAD<span style="color:#666">:</span><span style="color:#666">:</span>pow(vars[a_start <span style="color:#666">+</span> t <span style="color:#666">+</span> <span style="color:#666">1</span>] <span style="color:#666">-</span> vars[a_start <span style="color:#666">+</span> t], <span style="color:#666">2</span>);
+}
+</code></pre></div>
+<h4 id="动力学方程">动力学方程</h4>
+
+<p>运动学方程，构建了各个变量之间的数学关系。</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#408080;font-style:italic">// Initialize the model to the initial state
+</span><span style="color:#408080;font-style:italic"></span>fg[<span style="color:#666">1</span> <span style="color:#666">+</span> x_start] <span style="color:#666">=</span> vars[x_start];
+fg[<span style="color:#666">1</span> <span style="color:#666">+</span> y_start] <span style="color:#666">=</span> vars[y_start];
+fg[<span style="color:#666">1</span> <span style="color:#666">+</span> psi_start] <span style="color:#666">=</span> vars[psi_start];
+fg[<span style="color:#666">1</span> <span style="color:#666">+</span> v_start] <span style="color:#666">=</span> vars[v_start];
+fg[<span style="color:#666">1</span> <span style="color:#666">+</span> cte_start] <span style="color:#666">=</span> vars[cte_start];
+fg[<span style="color:#666">1</span> <span style="color:#666">+</span> epsi_start] <span style="color:#666">=</span> vars[epsi_start];
+
+<span style="color:#008000;font-weight:bold">for</span> (size_t t <span style="color:#666">=</span> <span style="color:#666">1</span>; t <span style="color:#666">&lt;</span> N; t<span style="color:#666">+</span><span style="color:#666">+</span>) {
+  <span style="color:#408080;font-style:italic">// The state at time t+1 .
+</span><span style="color:#408080;font-style:italic"></span>  AD<span style="color:#666">&lt;</span><span style="color:#b00040">double</span><span style="color:#666">&gt;</span> x1 <span style="color:#666">=</span> vars[x_start <span style="color:#666">+</span> t];
+  AD<span style="color:#666">&lt;</span><span style="color:#b00040">double</span><span style="color:#666">&gt;</span> y1 <span style="color:#666">=</span> vars[y_start <span style="color:#666">+</span> t];
+  AD<span style="color:#666">&lt;</span><span style="color:#b00040">double</span><span style="color:#666">&gt;</span> psi1 <span style="color:#666">=</span> vars[psi_start <span style="color:#666">+</span> t];
+  AD<span style="color:#666">&lt;</span><span style="color:#b00040">double</span><span style="color:#666">&gt;</span> v1 <span style="color:#666">=</span> vars[v_start <span style="color:#666">+</span> t];
+  AD<span style="color:#666">&lt;</span><span style="color:#b00040">double</span><span style="color:#666">&gt;</span> cte1 <span style="color:#666">=</span> vars[cte_start <span style="color:#666">+</span> t];
+  AD<span style="color:#666">&lt;</span><span style="color:#b00040">double</span><span style="color:#666">&gt;</span> epsi1 <span style="color:#666">=</span> vars[epsi_start <span style="color:#666">+</span> t];
+
+  <span style="color:#408080;font-style:italic">// The state at time t.
+</span><span style="color:#408080;font-style:italic"></span>  AD<span style="color:#666">&lt;</span><span style="color:#b00040">double</span><span style="color:#666">&gt;</span> x0 <span style="color:#666">=</span> vars[x_start <span style="color:#666">+</span> t <span style="color:#666">-</span> <span style="color:#666">1</span>];
+  AD<span style="color:#666">&lt;</span><span style="color:#b00040">double</span><span style="color:#666">&gt;</span> y0 <span style="color:#666">=</span> vars[y_start <span style="color:#666">+</span> t <span style="color:#666">-</span> <span style="color:#666">1</span>];
+  AD<span style="color:#666">&lt;</span><span style="color:#b00040">double</span><span style="color:#666">&gt;</span> psi0 <span style="color:#666">=</span> vars[psi_start <span style="color:#666">+</span> t <span style="color:#666">-</span> <span style="color:#666">1</span>];
+  AD<span style="color:#666">&lt;</span><span style="color:#b00040">double</span><span style="color:#666">&gt;</span> v0 <span style="color:#666">=</span> vars[v_start <span style="color:#666">+</span> t <span style="color:#666">-</span> <span style="color:#666">1</span>];
+  AD<span style="color:#666">&lt;</span><span style="color:#b00040">double</span><span style="color:#666">&gt;</span> cte0 <span style="color:#666">=</span> vars[cte_start <span style="color:#666">+</span> t <span style="color:#666">-</span> <span style="color:#666">1</span>];
+  AD<span style="color:#666">&lt;</span><span style="color:#b00040">double</span><span style="color:#666">&gt;</span> epsi0 <span style="color:#666">=</span> vars[epsi_start <span style="color:#666">+</span> t <span style="color:#666">-</span> <span style="color:#666">1</span>];
+
+  <span style="color:#408080;font-style:italic">// Only consider the actuation at time t.
+</span><span style="color:#408080;font-style:italic"></span>  AD<span style="color:#666">&lt;</span><span style="color:#b00040">double</span><span style="color:#666">&gt;</span> delta0 <span style="color:#666">=</span> vars[delta_start <span style="color:#666">+</span> t <span style="color:#666">-</span> <span style="color:#666">1</span>];
+  AD<span style="color:#666">&lt;</span><span style="color:#b00040">double</span><span style="color:#666">&gt;</span> a0 <span style="color:#666">=</span> vars[a_start <span style="color:#666">+</span> t <span style="color:#666">-</span> <span style="color:#666">1</span>];
+
+  AD<span style="color:#666">&lt;</span><span style="color:#b00040">double</span><span style="color:#666">&gt;</span> f0 <span style="color:#666">=</span> coeffs[<span style="color:#666">0</span>] <span style="color:#666">+</span> coeffs[<span style="color:#666">1</span>]<span style="color:#666">*</span>x0 <span style="color:#666">+</span> coeffs[<span style="color:#666">2</span>]<span style="color:#666">*</span>x0<span style="color:#666">*</span>x0 <span style="color:#666">+</span> coeffs[<span style="color:#666">3</span>]<span style="color:#666">*</span>x0<span style="color:#666">*</span>x0<span style="color:#666">*</span>x0;
+  AD<span style="color:#666">&lt;</span><span style="color:#b00040">double</span><span style="color:#666">&gt;</span> psides0 <span style="color:#666">=</span> CppAD<span style="color:#666">:</span><span style="color:#666">:</span>atan(<span style="color:#666">3</span><span style="color:#666">*</span>coeffs[<span style="color:#666">3</span>]<span style="color:#666">*</span>x0<span style="color:#666">*</span>x0 <span style="color:#666">+</span> <span style="color:#666">2</span><span style="color:#666">*</span>coeffs[<span style="color:#666">2</span>]<span style="color:#666">*</span>x0 <span style="color:#666">+</span> coeffs[<span style="color:#666">1</span>]);
+  <span style="color:#408080;font-style:italic">/* AD&lt;double&gt; f0 = coeffs[0] + coeffs[1] * x0; */</span>
+  <span style="color:#408080;font-style:italic">/* AD&lt;double&gt; psides0 = CppAD::atan(coeffs[1]); */</span>
+
+  <span style="color:#408080;font-style:italic">// Here&#39;s `x` to get you started.
+</span><span style="color:#408080;font-style:italic"></span>  <span style="color:#408080;font-style:italic">// The idea here is to constraint this value to be 0.
+</span><span style="color:#408080;font-style:italic"></span>  fg[<span style="color:#666">1</span> <span style="color:#666">+</span> x_start <span style="color:#666">+</span> t] <span style="color:#666">=</span> x1 <span style="color:#666">-</span> (x0 <span style="color:#666">+</span> v0 <span style="color:#666">*</span> CppAD<span style="color:#666">:</span><span style="color:#666">:</span>cos(psi0) <span style="color:#666">*</span> dt);
+  fg[<span style="color:#666">1</span> <span style="color:#666">+</span> y_start <span style="color:#666">+</span> t] <span style="color:#666">=</span> y1 <span style="color:#666">-</span> (y0 <span style="color:#666">+</span> v0 <span style="color:#666">*</span> CppAD<span style="color:#666">:</span><span style="color:#666">:</span>sin(psi0) <span style="color:#666">*</span> dt);
+  fg[<span style="color:#666">1</span> <span style="color:#666">+</span> psi_start <span style="color:#666">+</span> t] <span style="color:#666">=</span> psi1 <span style="color:#666">-</span> (psi0 <span style="color:#666">-</span> v0 <span style="color:#666">*</span> delta0 <span style="color:#666">/</span> Lf <span style="color:#666">*</span> dt);
+  fg[<span style="color:#666">1</span> <span style="color:#666">+</span> v_start <span style="color:#666">+</span> t] <span style="color:#666">=</span> v1 <span style="color:#666">-</span> (v0 <span style="color:#666">+</span> a0 <span style="color:#666">*</span> dt);
+  fg[<span style="color:#666">1</span> <span style="color:#666">+</span> cte_start <span style="color:#666">+</span> t] <span style="color:#666">=</span> cte1 <span style="color:#666">-</span> ((f0 <span style="color:#666">-</span> y0) <span style="color:#666">+</span> (v0 <span style="color:#666">*</span> CppAD<span style="color:#666">:</span><span style="color:#666">:</span>sin(epsi0) <span style="color:#666">*</span> dt));
+  fg[<span style="color:#666">1</span> <span style="color:#666">+</span> epsi_start <span style="color:#666">+</span> t] <span style="color:#666">=</span> epsi1 <span style="color:#666">-</span> ((psi0 <span style="color:#666">-</span> psides0) <span style="color:#666">-</span> v0 <span style="color:#666">*</span> delta0 <span style="color:#666">/</span> Lf <span style="color:#666">*</span> dt);
+}
+</code></pre></div>
+<h4 id="优化器">优化器</h4>
+
+<p><strong>Ipopt</strong> (Interior Point OPTimizer, pronounced eye-pea-Opt) is a software package for large-scale nonlinear optimization.
+It is designed to find (local) solutions of mathematical optimization problems.
+Ipopt is the tool we'll be using to optimize the control inputs.</p>
+
+<p><strong>CppAD</strong> (C++ Algorithmic Differentiation Package) is a library we'll use for automatic differentiation. By using CppAD we don't have to manually compute derivatives, which is tedious and prone to error.</p>
+
+
+
+  
+
+  
+    <br>
+    <strong>Previous:</strong> <a href="/rotation/">Rotation</a>
+  
+  
+  
+    <div id="utter-container">
+    <script src="https://utteranc.es/client.js"
+        repo= 'nuhuo08/blog-comments'
+        issue-term= "pathname"
+        theme= 'github-light'
+        crossorigin= "anonymous"
+        async>
+    </script> 
+    </div>
+
+  
+
+
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="usa-footer usa-footer--slim" role="contentinfo">
+      
+      <div class="usa-footer__secondary-section" id="footer-main">
+        <div class="grid-container">
+          <div class="grid-row grid-gap">
+            <div class="grid-col-12 text-center">
+              
+              
+                Made with <a href="https://gohugo.io/">Hugo</a> • Content in <a href="https://github.com/nuhuo08/uswds-hugo-theme">GitHub</a>
+                <br>
+                Last deployed on 2020-02-12
+              
+
+              
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    
+    <script src="/js/uswds.min.fcd9b25a27c51de427f4c618dee88490c2ff0a792a573531e316730d07df3f3d.js"></script>
+
+  </body>
+</html>
