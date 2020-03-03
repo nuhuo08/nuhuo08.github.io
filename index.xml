@@ -83,7 +83,7 @@ The Kalman Filter algorithm will go through the following steps:
 其他配置 git config命令实际上就是在修改仓库根目录下的.git/config文件。
 配置git提交记录里的用户名和邮箱：
 git config user.name &amp;#34;UserName&amp;#34; git config user.email &amp;#34;Example@email.com&amp;#34; Windows盘上的文件在Ubuntu下的文件模式发生了变化，导致git status时显示所有文件都有更改。 若要忽略文件模式的变化：
-git config core.filemode true 当加上--global命令是，修改的是全局git配置，即~/.gitconfig
+git config core.filemode false 当加上--global命令是，修改的是全局git配置，即~/.gitconfig
 git config --global user.name &amp;#34;UserName&amp;#34; 重要命令 Branch git checkout -b develop git branch -d develop tag git tag git tag v1.4-lw git push origin v1.4-lw git push origin --tags git tag -d v1.4-lw git push origin --delete &amp;lt;tagname&amp;gt; git checkout v1.</description>
     </item>
     
@@ -250,11 +250,11 @@ AddResidualBlock problem.AddResidualBlock(costfunction, lossfunction, x1, x2 ...
       <pubDate>Sun, 05 Jan 2020 08:00:00 +0800</pubDate>
       
       <guid>https://nuhuo08.github.io/vins-mono/</guid>
-      <description>代码流程图    动态方程 预积分公式推导 \(b_k^a\)和\(b_k^g\)作为随机游走噪声，在推导\(k \sim k+1\)时认为是常数！不像\(w\)和\(a\)，要添加\(n_k^g\)和\(n_k^a\)噪声进去
-\[ \omega=\frac{1}{2}( (\omega^{b_k}+n_k^g-b_k^g) + (\omega^{b_{k+1}}+n_{k+1}^g-b_k^g) ) \\[2mm] q_{b_ib_{k+1}}=q_{b_ib_k}\otimes\begin{bmatrix}1 \\ \frac{1}{2}\omega\delta{t}\end{bmatrix} \\[2mm] a=\frac{1}{2}( q_{b_ib_k}(a^{b_k}+n_k^a-b_k^a) + q_{b_ib_{k+1}}(a^{b_{k+1}}+n_{k+1}^a-b_k^a) ) \\[2mm] \beta_{b_ib_{k+1}}=\beta_{b_ib_k}+a\delta{t} \\[2mm] \alpha_{b_ib_{k+1}}=\alpha_{b_ib_k}+\beta_{b_ib_k}\delta{t}+\frac{1}{2}a\delta{t}^2 \\[2mm] b_{k+1}^a=b_k^a+n_{b_k^a}\delta{t} \\[2mm] b_{k+1}^g=b_k^g+n_{b_k^g}\delta{t} \\[2mm] \]
+      <description>代码流程图    预积分的协方差 预积分值可以作为一种观测量，约束两个时刻状态间的关系。为了确定预积分值的精度（协方差），需要求解出其递推关系。
+预积分公式推导 \(b_k^a\)和\(b_k^g\)作为随机游走噪声，在推导\(k \sim k+1\)时认为是常数！不像\(w\)和\(a\)，要添加\(n_k^g\)和\(n_k^a\)噪声进去
+\[ \begin{aligned} \omega&amp;=\frac{1}{2}( (\omega^{b_k}+n_k^g-b_k^g) + (\omega^{b_{k+1}}+n_{k+1}^g-b_k^g) ) \\[2mm] q_{b_ib_{k+1}}&amp;=q_{b_ib_k}\otimes\begin{bmatrix}1 \\ \frac{1}{2}\omega\delta{t}\end{bmatrix} \\[2mm] a&amp;=\frac{1}{2}( q_{b_ib_k}(a^{b_k}+n_k^a-b_k^a) + q_{b_ib_{k+1}}(a^{b_{k+1}}+n_{k+1}^a-b_k^a) ) \\[2mm] \beta_{b_ib_{k+1}}&amp;=\beta_{b_ib_k}+a\delta{t} \\[2mm] \alpha_{b_ib_{k+1}}&amp;=\alpha_{b_ib_k}+\beta_{b_ib_k}\delta{t}+\frac{1}{2}a\delta{t}^2 \\[2mm] b_{k+1}^a&amp;=b_k^a+n_{b_k^a}\delta{t} \\[2mm] b_{k+1}^g&amp;=b_k^g+n_{b_k^g}\delta{t} \\[2mm] \end{aligned} \]
 写成矩阵形式：
-\[ \begin{bmatrix}\alpha_{b_ib_{k+1}} \\ \theta_{b_ib_{k+1}} \\ \beta_{b_ib_{k+1}} \\ b_{k+1}^a \\ b_{k+1}^g\end{bmatrix} =F*\begin{bmatrix}\alpha_{b_ib_{k}} \\ \theta_{b_ib_{k}} \\ \beta_{b_ib_{k}} \\ b_{k}^a \\ b_{k}^g\end{bmatrix} +G*\begin{bmatrix}n_k^a \\ n_k^g \\ n_{k+1}^a \\ n_{k+1}^g \\ n_{k}^a \\ n_{k}^g \end{bmatrix} \]
-\[ F=\begin{bmatrix}I &amp;f_{12} &amp;I\delta{t} &amp;-\frac{1}{4}(q_{b_ib_k}+q_{b_ib_{k+1}})\delta{t}^2 &amp;f_{15}\\ 0 &amp;I-[\omega]_{\times} &amp;0 &amp;0 &amp;-I\delta{t}\\ 0 &amp;f_{32} &amp;I &amp;-\frac{1}{2}(q_{b_ib_k}+q_{b_ib_{k+1}})\delta{t} &amp;f_{35}\\ 0 &amp;0 &amp;0 &amp;I &amp;0\\ 0 &amp;0 &amp;0 &amp;0 &amp;I \end{bmatrix} \\[2mm] G=\begin{bmatrix}\frac{1}{4}q_{b_ib_k}\delta{t}^2 &amp;g_{12} &amp;\frac{1}{4}q_{b_ib_{k+1}}\delta{t}^2 &amp;g_{14} &amp;0 &amp;0 \\ 0 &amp;\frac{1}{2}I\delta{t} &amp;0 &amp;\frac{1}{2}I\delta{t} &amp;0 &amp;0\\ \frac{1}{2}q_{b_ib_k}\delta{t} &amp;g_{32} &amp;\frac{1}{2}q_{b_ib_{k+1}}\delta{t} &amp;g_{34} &amp;0 &amp;0\\ 0 &amp;0 &amp;0 &amp;0 &amp;I\delta{t} &amp;0\\ 0 &amp;0 &amp;0 &amp;0 &amp;0 &amp;I\delta{t}\end{bmatrix} \\[2mm] f_{12}=-\frac{1}{4}( R_{b_ib_k}[a^{b_k}-b_k^a]_\times\delta{t}^2 + R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times(I-[\omega]_\times\delta{t})\delta{t}^2) \\[2mm] f_{32}=-\frac{1}{2}( R_{b_ib_k}[a^{b_k}-b_k^a]_\times\delta{t} + R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times(I-[\omega]_\times\delta{t})\delta{t}) \\[2mm] f_{15}=-\frac{1}{4}(R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times\delta{t}^2)(-\delta{t}) \\[2mm] f_{35}=-\frac{1}{2}(R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times\delta{t})(-\delta{t}) \\[2mm] g_{12}=g_{14}=-\frac{1}{4}(R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times\delta{t}^2)(\frac{1}{2}\delta{t}) \\[2mm] g_{32}=g_{34}=-\frac{1}{2}(R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times\delta{t})(\frac{1}{2}\delta{t}) \]</description>
+\[ \begin{bmatrix}\alpha_{b_ib_{k+1}} \\ \theta_{b_ib_{k+1}} \\ \beta_{b_ib_{k+1}} \\ b_{k+1}^a \\ b_{k+1}^g\end{bmatrix} =F*\begin{bmatrix}\alpha_{b_ib_{k}} \\ \theta_{b_ib_{k}} \\ \beta_{b_ib_{k}} \\ b_{k}^a \\ b_{k}^g\end{bmatrix} +G*\begin{bmatrix}n_k^a \\ n_k^g \\ n_{k+1}^a \\ n_{k+1}^g \\ n_{k}^a \\ n_{k}^g \end{bmatrix} \]</description>
     </item>
     
     <item>

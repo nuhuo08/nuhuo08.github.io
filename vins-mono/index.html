@@ -154,8 +154,8 @@
       
       
       
-      <a href="#%e5%8a%a8%e6%80%81%e6%96%b9%e7%a8%8b">
-        动态方程
+      <a href="#%e9%a2%84%e7%a7%af%e5%88%86%e7%9a%84%e5%8d%8f%e6%96%b9%e5%b7%ae">
+        预积分的协方差
       </a>
     </li>
     
@@ -232,20 +232,24 @@
 </div>
 
 
-<h2 id="动态方程">动态方程 <a aria-label="header link for 动态方程" href="#动态方程" class="header-link">#</a></h2>
+<h2 id="预积分的协方差">预积分的协方差 <a aria-label="header link for 预积分的协方差" href="#预积分的协方差" class="header-link">#</a></h2>
+
+<p>预积分值可以作为一种观测量，约束两个时刻状态间的关系。为了确定预积分值的精度（协方差），需要求解出其递推关系。</p>
 
 <h3 id="预积分公式推导">预积分公式推导</h3>
 
 <p><span  class="math">\(b_k^a\)</span>和<span  class="math">\(b_k^g\)</span>作为随机游走噪声，在推导<span  class="math">\(k \sim k+1\)</span>时认为是常数！不像<span  class="math">\(w\)</span>和<span  class="math">\(a\)</span>，要添加<span  class="math">\(n_k^g\)</span>和<span  class="math">\(n_k^a\)</span>噪声进去</p>
 
 <p><span  class="math">\[
-\omega=\frac{1}{2}( (\omega^{b_k}+n_k^g-b_k^g) + (\omega^{b_{k+1}}+n_{k+1}^g-b_k^g) ) \\[2mm]
-q_{b_ib_{k+1}}=q_{b_ib_k}\otimes\begin{bmatrix}1 \\ \frac{1}{2}\omega\delta{t}\end{bmatrix} \\[2mm]
-a=\frac{1}{2}( q_{b_ib_k}(a^{b_k}+n_k^a-b_k^a) + q_{b_ib_{k+1}}(a^{b_{k+1}}+n_{k+1}^a-b_k^a) ) \\[2mm]
-\beta_{b_ib_{k+1}}=\beta_{b_ib_k}+a\delta{t} \\[2mm]
-\alpha_{b_ib_{k+1}}=\alpha_{b_ib_k}+\beta_{b_ib_k}\delta{t}+\frac{1}{2}a\delta{t}^2 \\[2mm]
-b_{k+1}^a=b_k^a+n_{b_k^a}\delta{t} \\[2mm]
-b_{k+1}^g=b_k^g+n_{b_k^g}\delta{t} \\[2mm]
+\begin{aligned}
+\omega&=\frac{1}{2}( (\omega^{b_k}+n_k^g-b_k^g) + (\omega^{b_{k+1}}+n_{k+1}^g-b_k^g) ) \\[2mm]
+q_{b_ib_{k+1}}&=q_{b_ib_k}\otimes\begin{bmatrix}1 \\ \frac{1}{2}\omega\delta{t}\end{bmatrix} \\[2mm]
+a&=\frac{1}{2}( q_{b_ib_k}(a^{b_k}+n_k^a-b_k^a) + q_{b_ib_{k+1}}(a^{b_{k+1}}+n_{k+1}^a-b_k^a) ) \\[2mm]
+\beta_{b_ib_{k+1}}&=\beta_{b_ib_k}+a\delta{t} \\[2mm]
+\alpha_{b_ib_{k+1}}&=\alpha_{b_ib_k}+\beta_{b_ib_k}\delta{t}+\frac{1}{2}a\delta{t}^2 \\[2mm]
+b_{k+1}^a&=b_k^a+n_{b_k^a}\delta{t} \\[2mm]
+b_{k+1}^g&=b_k^g+n_{b_k^g}\delta{t} \\[2mm]
+\end{aligned}
 \]</span></p>
 
 <p>写成矩阵形式：</p>
@@ -257,23 +261,25 @@ b_{k+1}^g=b_k^g+n_{b_k^g}\delta{t} \\[2mm]
 \]</span></p>
 
 <p><span  class="math">\[
-F=\begin{bmatrix}I &f_{12} &I\delta{t} &-\frac{1}{4}(q_{b_ib_k}+q_{b_ib_{k+1}})\delta{t}^2 &f_{15}\\
+\begin{aligned}
+F&=\begin{bmatrix}I &f_{12} &I\delta{t} &-\frac{1}{4}(q_{b_ib_k}+q_{b_ib_{k+1}})\delta{t}^2 &f_{15}\\
 0 &I-[\omega]_{\times} &0 &0 &-I\delta{t}\\
 0 &f_{32} &I &-\frac{1}{2}(q_{b_ib_k}+q_{b_ib_{k+1}})\delta{t} &f_{35}\\
 0 &0 &0 &I &0\\
 0 &0 &0 &0 &I
 \end{bmatrix} \\[2mm]
-G=\begin{bmatrix}\frac{1}{4}q_{b_ib_k}\delta{t}^2 &g_{12} &\frac{1}{4}q_{b_ib_{k+1}}\delta{t}^2 &g_{14} &0 &0 \\
+G&=\begin{bmatrix}\frac{1}{4}q_{b_ib_k}\delta{t}^2 &g_{12} &\frac{1}{4}q_{b_ib_{k+1}}\delta{t}^2 &g_{14} &0 &0 \\
 0 &\frac{1}{2}I\delta{t} &0 &\frac{1}{2}I\delta{t} &0 &0\\
 \frac{1}{2}q_{b_ib_k}\delta{t} &g_{32} &\frac{1}{2}q_{b_ib_{k+1}}\delta{t} &g_{34} &0 &0\\
 0 &0 &0 &0 &I\delta{t} &0\\
 0 &0 &0 &0 &0 &I\delta{t}\end{bmatrix} \\[2mm]
-f_{12}=-\frac{1}{4}( R_{b_ib_k}[a^{b_k}-b_k^a]_\times\delta{t}^2 + R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times(I-[\omega]_\times\delta{t})\delta{t}^2) \\[2mm]
-f_{32}=-\frac{1}{2}( R_{b_ib_k}[a^{b_k}-b_k^a]_\times\delta{t} + R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times(I-[\omega]_\times\delta{t})\delta{t}) \\[2mm]
-f_{15}=-\frac{1}{4}(R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times\delta{t}^2)(-\delta{t}) \\[2mm]
-f_{35}=-\frac{1}{2}(R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times\delta{t})(-\delta{t}) \\[2mm]
-g_{12}=g_{14}=-\frac{1}{4}(R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times\delta{t}^2)(\frac{1}{2}\delta{t}) \\[2mm]
-g_{32}=g_{34}=-\frac{1}{2}(R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times\delta{t})(\frac{1}{2}\delta{t})
+f_{12}&=-\frac{1}{4}( R_{b_ib_k}[a^{b_k}-b_k^a]_\times\delta{t}^2 + R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times(I-[\omega]_\times\delta{t})\delta{t}^2) \\[2mm]
+f_{32}&=-\frac{1}{2}( R_{b_ib_k}[a^{b_k}-b_k^a]_\times\delta{t} + R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times(I-[\omega]_\times\delta{t})\delta{t}) \\[2mm]
+f_{15}&=-\frac{1}{4}(R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times\delta{t}^2)(-\delta{t}) \\[2mm]
+f_{35}&=-\frac{1}{2}(R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times\delta{t})(-\delta{t}) \\[2mm]
+g_{12}&=g_{14}=-\frac{1}{4}(R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times\delta{t}^2)(\frac{1}{2}\delta{t}) \\[2mm]
+g_{32}&=g_{34}=-\frac{1}{2}(R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times\delta{t})(\frac{1}{2}\delta{t})
+\end{aligned}
 \]</span></p>
 
 <h3 id="终极大矩阵">终极大矩阵</h3>
@@ -281,42 +287,50 @@ g_{32}=g_{34}=-\frac{1}{2}(R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times\delta{t})(\f
 <p>将所有值带进去并展开，得到原始等式</p>
 
 <p><span  class="math">\[
-q_{b_ib_{k+1}}=q_{b_ib_k}\otimes\begin{bmatrix}1 \\ \frac{1}{2}\{\frac{1}{2}( (\omega^{b_k}+n_k^g-b_k^g) + (\omega^{b_{k+1}}+n_{k+1}^g-b_k^g) )\}\delta{t}\end{bmatrix} \\[2mm]
-\beta_{b_ib_{k+1}}=\beta_{b_ib_k}+\{\frac{1}{2}( q_{b_ib_k}(a^{b_k}+n_k^a-b_k^a) + \{q_{b_ib_k}\otimes\begin{bmatrix}1 \\ \frac{1}{2}\{\frac{1}{2}( (\omega^{b_k}+n_k^g-b_k^g) + (\omega^{b_{k+1}}+n_{k+1}^g-b_k^g) )\}\delta{t}\end{bmatrix}\}(a^{b_{k+1}}+n_{k+1}^a-b_k^a) )\}\delta{t} \\[2mm]
-\alpha_{b_ib_{k+1}}=\alpha_{b_ib_k}+\beta_{b_ib_k}\delta{t}+\frac{1}{2}\{\frac{1}{2}( q_{b_ib_k}(a^{b_k}+n_k^a-b_k^a) + \{q_{b_ib_k}\otimes\begin{bmatrix}1 \\ \frac{1}{2}\{\frac{1}{2}( (\omega^{b_k}+n_k^g-b_k^g) + (\omega^{b_{k+1}}+n_{k+1}^g-b_k^g) )\}\delta{t}\end{bmatrix}\}(a^{b_{k+1}}+n_{k+1}^a-b_k^a) )\}\delta{t}^2 \\[2mm]
-b_{k+1}^a=b_k^a+n_{b_k^a}\delta{t} \\[2mm]
-b_{k+1}^g=b_k^g+n_{b_k^g}\delta{t}
+\begin{aligned}
+q_{b_ib_{k+1}}&=q_{b_ib_k}\otimes\begin{bmatrix}1 \\ \frac{1}{2}\{\frac{1}{2}( (\omega^{b_k}+n_k^g-b_k^g) + (\omega^{b_{k+1}}+n_{k+1}^g-b_k^g) )\}\delta{t}\end{bmatrix} \\[2mm]
+\beta_{b_ib_{k+1}}&=\beta_{b_ib_k}+\{\frac{1}{2}( q_{b_ib_k}(a^{b_k}+n_k^a-b_k^a) + \{q_{b_ib_k}\otimes\begin{bmatrix}1 \\ \frac{1}{2}\{\frac{1}{2}( (\omega^{b_k}+n_k^g-b_k^g) + (\omega^{b_{k+1}}+n_{k+1}^g-b_k^g) )\}\delta{t}\end{bmatrix}\}(a^{b_{k+1}}+n_{k+1}^a-b_k^a) )\}\delta{t} \\[2mm]
+\alpha_{b_ib_{k+1}}&=\alpha_{b_ib_k}+\beta_{b_ib_k}\delta{t}+\frac{1}{2}\{\frac{1}{2}( q_{b_ib_k}(a^{b_k}+n_k^a-b_k^a) + \{q_{b_ib_k}\otimes\begin{bmatrix}1 \\ \frac{1}{2}\{\frac{1}{2}( (\omega^{b_k}+n_k^g-b_k^g) + (\omega^{b_{k+1}}+n_{k+1}^g-b_k^g) )\}\delta{t}\end{bmatrix}\}(a^{b_{k+1}}+n_{k+1}^a-b_k^a) )\}\delta{t}^2 \\[2mm]
+b_{k+1}^a&=b_k^a+n_{b_k^a}\delta{t} \\[2mm]
+b_{k+1}^g&=b_k^g+n_{b_k^g}\delta{t}
+\end{aligned}
 \]</span></p>
 
 <p>矩阵形式</p>
 
 <p><span  class="math">\[
+\begin{aligned}
 \begin{bmatrix}\alpha_{b_ib_{k+1}} \\ \theta_{b_ib_{k+1}} \\ \beta_{b_ib_{k+1}} \\ b_{k+1}^a \\ b_{k+1}^g\end{bmatrix}
-=\begin{bmatrix}I &-\frac{1}{4}( R_{b_ib_k}[a^{b_k}-b_k^a]_\times\delta{t}^2 + R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times(I-[\omega]_\times\delta{t})\delta{t}^2) &I\delta{t} &-\frac{1}{4}(q_{b_ib_k}+q_{b_ib_{k+1}})\delta{t}^2 &-\frac{1}{4}(R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times\delta{t}^2)(-\delta{t})\\
+&=\begin{bmatrix}I &-\frac{1}{4}( R_{b_ib_k}[a^{b_k}-b_k^a]_\times\delta{t}^2 + R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times(I-[\omega]_\times\delta{t})\delta{t}^2) &I\delta{t} &-\frac{1}{4}(q_{b_ib_k}+q_{b_ib_{k+1}})\delta{t}^2 &-\frac{1}{4}(R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times\delta{t}^2)(-\delta{t})\\
 0 &I-[\omega]_{\times} &0 &0 &-I\delta{t}\\
 0 &-\frac{1}{2}( R_{b_ib_k}[a^{b_k}-b_k^a]_\times\delta{t} + R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times(I-[\omega]_\times\delta{t})\delta{t}) &I &-\frac{1}{2}(q_{b_ib_k}+q_{b_ib_{k+1}})\delta{t} &-\frac{1}{2}(R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times\delta{t})(-\delta{t})\\
 0 &0 &0 &I &0\\
 0 &0 &0 &0 &I
 \end{bmatrix}
 *\begin{bmatrix}\alpha_{b_ib_{k}} \\ \theta_{b_ib_{k}} \\ \beta_{b_ib_{k}} \\ b_{k}^a \\ b_{k}^g\end{bmatrix}\\
-+\begin{bmatrix}\frac{1}{4}q_{b_ib_k}\delta{t}^2 &-\frac{1}{4}(R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times\delta{t}^2)(\frac{1}{2}\delta{t}) &\frac{1}{4}q_{b_ib_{k+1}}\delta{t}^2 &-\frac{1}{4}(R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times\delta{t}^2)(\frac{1}{2}\delta{t}) &0 &0 \\
+&+\begin{bmatrix}\frac{1}{4}q_{b_ib_k}\delta{t}^2 &-\frac{1}{4}(R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times\delta{t}^2)(\frac{1}{2}\delta{t}) &\frac{1}{4}q_{b_ib_{k+1}}\delta{t}^2 &-\frac{1}{4}(R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times\delta{t}^2)(\frac{1}{2}\delta{t}) &0 &0 \\
 0 &\frac{1}{2}I\delta{t} &0 &\frac{1}{2}I\delta{t} &0 &0\\
 \frac{1}{2}q_{b_ib_k}\delta{t} &-\frac{1}{2}(R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times\delta{t})(\frac{1}{2}\delta{t}) &\frac{1}{2}q_{b_ib_{k+1}}\delta{t} &-\frac{1}{2}(R_{b_ib_{k+1}}[a^{b_{k+1}}-b_k^a]_\times\delta{t})(\frac{1}{2}\delta{t}) &0 &0\\
 0 &0 &0 &0 &I\delta{t} &0\\
 0 &0 &0 &0 &0 &I\delta{t}\end{bmatrix}
 *\begin{bmatrix}n_k^a \\ n_k^g \\ n_{k+1}^a \\ n_{k+1}^g \\ n_{k}^a \\ n_{k}^g \end{bmatrix}
+\end{aligned}
 \]</span></p>
 
 <h2 id="观测方程">观测方程 <a aria-label="header link for 观测方程" href="#观测方程" class="header-link">#</a></h2>
+
+<p>观测方程，也就是状态量中的某种约束关系。一旦数学表达式列出来，求解就会顺其自然。</p>
 
 <h3 id="相机">相机</h3>
 
 <p>观测方程：</p>
 
 <p><span  class="math">\[
-P_{w_l}=R_{b_i}^w(R_c^b\frac{1}{\lambda_l}\pi_c^{-1}(\begin{bmatrix}\mu_l^{c_i}\\\nu_l^{c_i}\end{bmatrix})+p_c^b)+p_{b_i}^w \\[2mm]
-P_{w_l}=R_{b_j}^w(R_c^bP_l^{c_j}+p_c^b)+p_{b_j}^w \\[2mm]
-P_l^{c_j}=R_b^c\{R_w^{b_j}[R_{b_i}^w(R_c^b\frac{1}{\lambda_l}\overline{P}_l^{c_i}+p_c^b)+p_{b_i}^w-p_{b_j}^w]-p_c^b\}
+\begin{aligned}
+P_{w_l}&=R_{b_i}^w(R_c^b\frac{1}{\lambda_l}\pi_c^{-1}(\begin{bmatrix}\mu_l^{c_i}\\\nu_l^{c_i}\end{bmatrix})+p_c^b)+p_{b_i}^w \\[2mm]
+P_{w_l}&=R_{b_j}^w(R_c^bP_l^{c_j}+p_c^b)+p_{b_j}^w \\[2mm]
+P_l^{c_j}&=R_b^c\{R_w^{b_j}[R_{b_i}^w(R_c^b\frac{1}{\lambda_l}\overline{P}_l^{c_i}+p_c^b)+p_{b_i}^w-p_{b_j}^w]-p_c^b\}
+\end{aligned}
 \]</span></p>
 
 <p>转换成矩阵形式：</p>
@@ -373,6 +387,80 @@ p_{b_{k+1}}^w \\ q_{b_{k+1}}^w \\ v_{b_{k+1}}^w \\ b_{a_{k+1}} \\ b_{\omega_{k+1
 
 <h2 id="在线标定">在线标定 <a aria-label="header link for 在线标定" href="#在线标定" class="header-link">#</a></h2>
 
+<h3 id="相机与imu外参标定">相机与IMU外参标定</h3>
+
+<p>利用对极几何原理，估算出连续两帧图像之间的旋转矩阵<span  class="math">\(R\)</span>，根据手眼标定公式：</p>
+
+<p><span  class="math">\[
+q_{b_k b_{k+1}} \otimes q_{bc} = q_{bc} \otimes q_{c_k c_{k+1}} \\[2mm]
+\left([q_{b_k b_{k+1}}]_L - [q_{c_k c_{k+1}}]_R\right)q_{bc}=Q^k_{k+1} \cdot q_{bc} = 0
+\]</span></p>
+
+<p>对应于CalibrationExRotation()函数，即可估算出相机与IMU外参。</p>
+
+<p><strong>想法</strong>：
+这一步估算出来的外参精度应该并不高，因为两帧间的旋转矩阵精度不高，且会受到陀螺仪bias的影响。
+这一部分误差将会被吸收到下一步的bias估计值中。</p>
+
+<h3 id="bias估计">Bias估计</h3>
+
+<p>为了更精细的标定bias，需要采用SFM的方法：</p>
+
+<ol>
+<li>relativePose 找到视察足够大的两帧，求解位姿</li>
+<li>SolveFrameByPnP 求解每帧图片的位姿</li>
+<li>triangulateTwoFrames 三角化地图点</li>
+<li>triangulatePoint 三角化剩余点</li>
+<li>Ceres 优化点和位姿</li>
+</ol>
+
+<p>求解出所有图像帧的位姿，进行Bias估计：</p>
+
+<p><span  class="math">\[
+\arg \min_{\delta b_g} \sum_{k \in B} \| 2 \lfloor q_{c_0 b_{k+1}}^{-1} \otimes q_{c_0 b_k} \otimes q_{b_k b_{k+1}} \rfloor_{xyz} \|^2 \\[2mm]
+q_{b_k b_{k+1}} \approx \hat{q}_{b_k b_{k+1}} \otimes \begin{bmatrix} 1 \\ \frac{1}{2}J^q_{b_g} \delta b_g \end{bmatrix}
+\]</span></p>
+
+<h3 id="pvq参数优化">PVQ参数优化</h3>
+
+<p>P: 图像与IMU的位置对齐，仅缺少一个尺度s<br>
+V: 每帧图像时刻对应的IMU的速度<br>
+Q: 外参已对齐，缺少初始的绝对姿态，即初始重力的方向</p>
+
+<p>预积分公式重温：</p>
+
+<p><span  class="math">\[
+\begin{aligned}
+p_{wb_j}&=p_{wb_i}+v_i^w\Delta t - \frac{1}{2}g^w\Delta t^2 + q_{wb_i}\int\int_{t\in[i,j]}(q_{b_i b_t}a^{b_t})\delta t^2 \\[2mm]
+v_j^w&=v_i^w - g^w\Delta t + q_{wb_i}\int_{t\in[i,j]}(q_{b_i b_t}a^{b_t})\delta t \\[2mm]
+q_{wb_j}&=q_{wb_i}\int_{t\in[i,j]}q_{b_i b_t}\otimes\begin{bmatrix}0 \\ \frac{1}{2}w^{b_t} \end{bmatrix} \delta t
+\end{aligned}
+\]</span></p>
+
+<p>其中位置、速度的预积分中，包含了我们需要估计的所有参数。
+以位置、速度的预积分作为观测值，列出如下方程：</p>
+
+<p><span  class="math">\[
+\begin{aligned}
+\begin{bmatrix} \alpha_{b_i b_j} \\ \beta_{b_i b_j} \end{bmatrix}=
+\begin{bmatrix} q_{b_i w}(p_{w b_j} - p_{w b_i} -v_i^w\Delta t + \frac{1}{2} g^w \Delta t^2) \\
+q_{b_i w}(v_j^w - v_i^w + g^w \Delta t) \end{bmatrix}=
+H \cdot \begin{bmatrix} v_k^{b_k} \\ v_{k+1}^{b_{k+1}} \\ g^{c_0} \\ s\end{bmatrix} + n
+\end{aligned}
+\]</span></p>
+
+<p>即可进行最小二乘求解了。</p>
+
+<h3 id="优化绝对位姿">优化绝对位姿</h3>
+
+<p>对重力方向进行如下建模：</p>
+
+<p><span  class="math">\[
+\hat g^{c_0} = \|g\| \cdot \hat{\bar{g}}^{c_0} + w_1 \vec{b_1} + w_2 \vec{b_2}
+\]</span></p>
+
+<p>重新进行优化，可以得到更精确的重力向量方向，即初始状态的绝对位姿。</p>
+
 <h2 id="求解">求解 <a aria-label="header link for 求解" href="#求解" class="header-link">#</a></h2>
 
 <h3 id="使方程满秩可求解">使方程满秩可求解</h3>
@@ -413,10 +501,14 @@ p_{b_{k+1}}^w \\ q_{b_{k+1}}^w \\ v_{b_{k+1}}^w \\ b_{a_{k+1}} \\ b_{\omega_{k+1
 
 <h3 id="更新先验残差">更新先验残差</h3>
 
+<p>舒尔补之后的状态量的雅克比不再更新，当状态更新时，残差值需要同步更新。</p>
+
 <p><span  class="math">\[
-b_p^{'}=b_p+\frac{\partial{b_p}}{\partial{x_p}}\delta{x_p}\\
-=b_p+\frac{\partial{(-J^T\Sigma^{-1}r)}}{\partial{x_p}}\delta{x_p}\\
-=b_p-\Lambda_p\delta{x_p}
+\begin{aligned}
+b_p^{'}&=b_p+\frac{\partial{b_p}}{\partial{x_p}}\delta{x_p}\\
+&=b_p+\frac{\partial{(-J^T\Sigma^{-1}r)}}{\partial{x_p}}\delta{x_p}\\
+&=b_p-\Lambda_p\delta{x_p}
+\end{aligned}
 \]</span></p>
 
 <h2 id="ceres在vinsmono中的使用">Ceres在VINS-MONO中的使用 <a aria-label="header link for Ceres在VINS-MONO中的使用" href="#ceres在vinsmono中的使用" class="header-link">#</a></h2>
@@ -465,7 +557,7 @@ b_p^{'}=b_p+\frac{\partial{b_p}}{\partial{x_p}}\delta{x_p}\\
               
                 Made with <a href="https://gohugo.io/">Hugo</a> • Content in <a href="https://github.com/nuhuo08/uswds-hugo-theme">GitHub</a>
                 <br>
-                Last deployed on 2020-02-13
+                Last deployed on 2020-03-03
               
 
               

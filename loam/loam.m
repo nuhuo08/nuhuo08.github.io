@@ -9,6 +9,25 @@ Rz(data) = [cos(data) -sin(data) 0; sin(data) cos(data) 0; 0 0 1];
 
 %%
 
+syms r o x;
+
+Rnb=Rz(x)*Rx(o)*Ry(r);
+Rbn=Ry(-r)*Rx(-o)*Rz(-x);
+
+%%
+
+syms r p y;
+
+R=Rz(y)*Rx(p)*Ry(r);
+
+q0=sqrt(1+R(1,1)+R(2,2)+R(3,3))/2
+q1=(R(3,2)-R(2,3))/4/q0
+q2=(R(1,3)-R(3,1))/4/q0
+q3=(R(2,1)-R(1,2))/4/q0
+
+
+%%
+
 % Optimization equation
 syms s;
 syms rx ry rz;
