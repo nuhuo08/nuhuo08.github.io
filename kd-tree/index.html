@@ -49,9 +49,9 @@
     
     
 
-    <link rel="canonical" href="https://nuhuo08.github.io/slam-for-dummies/">
+    <link rel="canonical" href="https://nuhuo08.github.io/kd-tree/">
     <meta name="generator" content="Hugo 0.62.2" />
-    <title>SLAM for Dummies | XiaoWu</title>
+    <title>Kd Tree | XiaoWu</title>
 
     
     <link rel="stylesheet" href="/css/uswds.min.c480a9b2a1fc1e7e564e62752462b22cd5f508a047f0340cb3725722f627fb1d.css">
@@ -100,20 +100,17 @@
         <div class="grid-row grid-gap">
           <div class="tablet:grid-col usa-prose">
             
-  <h1>SLAM for Dummies</h1>
+  <h1>Kd Tree</h1>
   
   <p class="text-gray-50">
     
     
     
-    <strong>Published: </strong>2020-01-07
+    <strong>Published: </strong>2020-03-13
 
     
     
       
-      
-        | <strong>Lastmod: </strong>2020-01-27
-
       
     
     
@@ -134,8 +131,8 @@
       
       
       
-      <a href="#%e8%a7%82%e6%b5%8b%e6%96%b9%e7%a8%8b">
-        观测方程
+      <a href="#%e5%bb%ba%e7%ab%8bkdtree">
+        建立KD-Tree
       </a>
     </li>
     
@@ -144,8 +141,8 @@
       
       
       
-      <a href="#%e5%8a%a8%e6%80%81%e6%96%b9%e7%a8%8b">
-        动态方程
+      <a href="#%e6%9f%a5%e6%89%be%e5%85%83%e7%b4%a0">
+        查找元素
       </a>
     </li>
     
@@ -154,8 +151,8 @@
       
       
       
-      <a href="#%e6%96%b0%e5%a2%9e%e8%b7%af%e6%a0%87%e7%82%b9%e7%9a%84%e5%8d%8f%e6%96%b9%e5%b7%ae%e7%9f%a9%e9%98%b5%e5%a2%9e%e5%b9%bf">
-        新增路标点的协方差矩阵增广
+      <a href="#%e4%bd%bf%e7%94%a8%e8%8c%83%e4%be%8b">
+        使用范例
       </a>
     </li>
     
@@ -167,68 +164,64 @@
   
   
 
-<p>TO BE CONTINUED</p>
+<h2 id="建立kdtree">建立KD-Tree <a aria-label="header link for 建立KD-Tree" href="#建立kdtree" class="header-link">#</a></h2>
 
-<p><a href="https://zhuanlan.zhihu.com/p/32937247">https://zhuanlan.zhihu.com/p/32937247</a></p>
+<ol>
+<li>选取方差最大的特征作为分割特征；</li>
+<li>选择该特征的中位数作为分割点；</li>
+<li>将数据集中该特征小于中位数的传递给根节点的左节点，大于中位数的传递给根节点的右节点；</li>
+<li>递归执行步骤1-3，直到所有数据都被建立到KD Tree的节点上为止。</li>
+</ol>
 
-<h2 id="观测方程">观测方程 <a aria-label="header link for 观测方程" href="#观测方程" class="header-link">#</a></h2>
 
-<p><span  class="math">\[
-\underbrace{\begin{pmatrix} r_1 \\ \theta_1 \\ r_2 \\ \theta_2 \\ \vdots \\ r_n \\ \theta_n \end{pmatrix}}_Z
-= \underbrace{\begin{bmatrix} A_1 &B_1 &C_1 &-A_1 &-B_1 \\
-D_1 &E_1 &F_1 &-D_1 &-E_1 \\
-A_2 &B_2 &C_2 & & &-A_2 &-B_2 \\
-D_2 &E_2 &F_2 & & &-D_2 &-E_2 \\
- &\vdots & & & & & & \ddots \\
-A_n &B_n &C_n & & & & & &-A_n &-B_n \\
-D_n &E_n &F_n & & & & & &-D_n &-E_n \\
-\end{bmatrix}}_H
-\underbrace{\begin{pmatrix} x_r \\ y_r \\ \theta_r \\ x_1 \\ y_1 \\ x_2 \\ y_2 \\ \vdots \\ x_n \\ y_n \end{pmatrix}}_X \\[2mm]
-R = \begin{pmatrix} r_c & \\ &r_d \end{pmatrix}
-\]</span></p>
 
-<h2 id="动态方程">动态方程 <a aria-label="header link for 动态方程" href="#动态方程" class="header-link">#</a></h2>
 
-<p><span  class="math">\[
-\underbrace{\begin{pmatrix} x_r \\ y_r \\ \theta_r \end{pmatrix}}_{X_{k+1}}
-= \underbrace{\begin{bmatrix} 1 & &-\Delta y \\ &1 &\Delta x \\ & &1\end{bmatrix}}_A
-\underbrace{\begin{pmatrix} x_r \\ y_r \\ \theta_r \end{pmatrix}}_{X_k} \\[2mm]
-Q = \begin{pmatrix} c\Delta x^2 \\ & c\Delta y^2 \\ & &c\Delta t^2\end{pmatrix}
-\]</span></p>
 
-<h2 id="新增路标点的协方差矩阵增广">新增路标点的协方差矩阵增广 <a aria-label="header link for 新增路标点的协方差矩阵增广" href="#新增路标点的协方差矩阵增广" class="header-link">#</a></h2>
 
-<h3 id="landmark-wrt-robot-state">landmark wrt. robot state</h3>
 
-<p><span  class="math">\[
-J_{xr} = \begin{bmatrix} 1 & &-\Delta y \\ &1 &\Delta x\end{bmatrix}
-\]</span></p>
 
-<h3 id="landmark-wrt-range-bearing">landmark wrt. [range, bearing]</h3>
-
-<p><span  class="math">\[
-J_z = \begin{bmatrix} \cos(\theta + \Delta \theta) &-\Delta t \cdot \sin(\theta + \Delta \theta) \\
- \sin(\theta + \Delta \theta) &\Delta t \cdot \cos(\theta + \Delta \theta) \end{bmatrix}
-\]</span></p>
-
-<h3 id="covariance">covariance</h3>
-
-<p><span  class="math">\[
-P^{r \ {N+1}} = P^{rr}J_{xr}^T \\[2mm]
-P^{i \ {N+1}} = P^{ri}J_{xr}^T \\[2mm]
-P^{{N+1} \ {N+1}} = J_{xr}PJ_{xr}^T + J_zRJ_z^T
-\]</span></p>
 
 
 
   
-    <br>
-    <strong>Next:</strong> <a href="/gmapping/">GMapping</a>
+
+
+<div class="usa-image-block">
+  <a href="/kd-tree/kd-tree.png">
+    <img src="/kd-tree/kd-tree_hudf56e5730f58197a31a97eb213becafd_14538_600x0_resize_box_2.png" alt="KD Tree">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<h2 id="查找元素">查找元素 <a aria-label="header link for 查找元素" href="#查找元素" class="header-link">#</a></h2>
+
+<ol>
+<li>从根节点开始，根据目标在分割特征中是否小于或大于当前节点，向左或向右移动；</li>
+<li>一旦算法到达叶节点，它就将节点点保存为“当前最佳”；</li>
+<li>回溯，即从叶节点再返回到根节点；</li>
+<li>如果当前节点比当前最佳节点更接近，那么它就成为当前最好的；</li>
+<li>如果目标距离当前节点的父节点所在的将数据集分割为两份的超平面的距离更接近，说明当前节点的兄弟节点所在的子树有可能包含更近的点。
+因此需要对这个兄弟节点递归执行1-4步。</li>
+</ol>
+
+<h2 id="使用范例">使用范例 <a aria-label="header link for 使用范例" href="#使用范例" class="header-link">#</a></h2>
+
+<p>AMCL 定位中，会使用大量的粒子描述状态的统计信息。为了防止最优粒子频繁切换带来的定位结果抖动，需要对粒子进行分组。
+将临近的粒子分为一组，就需要使用KD-Tree进行查找。请参考 <a href="../amcl/#粒子聚类">粒子聚类</a>。</p>
+
+<p>建立KD-Tree时，不一定要选择方差最大的特征作为分割特征，也不一定要选择该特征的中位数作为分割点。
+进行这两个步骤的统计可能会消耗大量的计算，因此实际实现中，也可以随机选择某个数作为分割点。</p>
+
+
+
   
 
   
     <br>
-    <strong>Previous:</strong> <a href="/non-linear/">非线性优化</a>
+    <strong>Previous:</strong> <a href="/ransac/">RANSAC</a>
   
   
   
