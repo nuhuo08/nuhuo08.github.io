@@ -134,6 +134,16 @@
       
       
       
+      <a href="#%e5%89%8d%e7%ab%af%e8%b7%9f%e8%b8%aa">
+        前端跟踪
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
       <a href="#qr%e5%88%86%e8%a7%a3">
         QR分解
       </a>
@@ -206,6 +216,15 @@
   
   
   
+
+<h2 id="前端跟踪">前端跟踪 <a aria-label="header link for 前端跟踪" href="#前端跟踪" class="header-link">#</a></h2>
+
+<ol>
+<li>根据IMU给出的旋转量，假设相机发生了纯旋转，估算下一帧特征点的位置；</li>
+<li>使用LK光流法，进一步优化特征点的位置；</li>
+<li>判断是否为纯旋转。若不是纯旋转，则使用RANSAC方法，随机选2个点，估算出最优的平移量；</li>
+<li>将图像分成网格，每个网格最多4个特征点，保证特征点均匀分布。</li>
+</ol>
 
 <h2 id="qr分解">QR分解 <a aria-label="header link for QR分解" href="#qr分解" class="header-link">#</a></h2>
 
@@ -386,7 +405,7 @@ r_n &= Q_1^Tr_o = T_H \tilde{X} + n_n
               
                 Made with <a href="https://gohugo.io/">Hugo</a> • Content in <a href="https://github.com/nuhuo08/uswds-hugo-theme">GitHub</a>
                 <br>
-                Last deployed on 2020-03-13
+                Last deployed on 2020-03-15
               
 
               
