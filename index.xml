@@ -6,10 +6,21 @@
     <description>Recent content on XiaoWu</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 13 Mar 2020 11:53:57 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 15 Mar 2020 13:33:44 +0800</lastBuildDate>
     
 	<atom:link href="https://nuhuo08.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>move_base 模块</title>
+      <link>https://nuhuo08.github.io/move_base/</link>
+      <pubDate>Sun, 15 Mar 2020 13:33:44 +0800</pubDate>
+      
+      <guid>https://nuhuo08.github.io/move_base/</guid>
+      <description>整体模块     odometry source: 里程计用来提供高频率的概略初始位姿； sensor sources: 机器人或无人车中，包含大量可用于定位的传感器：相机、激光、毫米波雷达等； map_server: 用激光SLAM手段，如 LOAM、GMapping 建立高精度地图； amcl: 结合传感器与高精度地图，实现 蒙特卡洛定位。  规划和控制     Global Planner
+ global_planner: 可用来取代过时的navfn。 使用A*或Dijkstra算法进行全局路径规划。 carrot_planner: 简单的测试算法。  Local Planner
+ base_local_planner: 实现Dynamic Window Approach(DWA) and Trajectory Rollout两种算法。其中DWA算法被dwa_local_planner取代。 eband_local_planner: Implements the Elastic Band method on the SE2 manifold teb_local_planner: Implements the Timed-Elastic-Band method for online trajectory optimization mpc_local_planner: Provides several model predictive control approaches embedded in the SE2 manifold  Recovery Behavior</description>
+    </item>
     
     <item>
       <title>Kd Tree</title>

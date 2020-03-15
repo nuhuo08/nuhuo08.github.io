@@ -49,9 +49,9 @@
     
     
 
-    <link rel="canonical" href="https://nuhuo08.github.io/ransac/">
+    <link rel="canonical" href="https://nuhuo08.github.io/move_base/">
     <meta name="generator" content="Hugo 0.62.2" />
-    <title>RANSAC | XiaoWu</title>
+    <title>move_base 模块 | XiaoWu</title>
 
     
     <link rel="stylesheet" href="/css/uswds.min.c480a9b2a1fc1e7e564e62752462b22cd5f508a047f0340cb3725722f627fb1d.css">
@@ -100,20 +100,17 @@
         <div class="grid-row grid-gap">
           <div class="tablet:grid-col usa-prose">
             
-  <h1>RANSAC</h1>
+  <h1>move_base 模块</h1>
   
   <p class="text-gray-50">
     
     
     
-    <strong>Published: </strong>2020-03-10
+    <strong>Published: </strong>2020-03-15
 
     
     
       
-      
-        | <strong>Lastmod: </strong>2020-03-15
-
       
     
     
@@ -134,8 +131,8 @@
       
       
       
-      <a href="#%e7%ae%97%e6%b3%95%e5%9f%ba%e6%9c%ac%e6%80%9d%e6%83%b3%e5%92%8c%e6%b5%81%e7%a8%8b">
-        算法基本思想和流程
+      <a href="#%e6%95%b4%e4%bd%93%e6%a8%a1%e5%9d%97">
+        整体模块
       </a>
     </li>
     
@@ -144,8 +141,8 @@
       
       
       
-      <a href="#%e7%ae%97%e6%b3%95%e8%be%93%e5%85%a5">
-        算法输入
+      <a href="#%e8%a7%84%e5%88%92%e5%92%8c%e6%8e%a7%e5%88%b6">
+        规划和控制
       </a>
     </li>
     
@@ -154,18 +151,8 @@
       
       
       
-      <a href="#%e8%bf%ad%e4%bb%a3%e6%ac%a1%e6%95%b0%e6%8e%a8%e5%af%bc">
-        迭代次数推导
-      </a>
-    </li>
-    
-    <li>
-      
-      
-      
-      
-      <a href="#%e4%be%8b%e5%ad%90">
-        例子
+      <a href="#%e5%85%b6%e4%bb%96">
+        其他
       </a>
     </li>
     
@@ -177,33 +164,7 @@
   
   
 
-<p>在MSCKF的前端跟踪中，会使用RANSAC方法估计最优的平移量，可参考 <a href="../msckf/#前端跟踪">MSCKF前端跟踪</a>。</p>
-
-<h2 id="算法基本思想和流程">算法基本思想和流程 <a aria-label="header link for 算法基本思想和流程" href="#算法基本思想和流程" class="header-link">#</a></h2>
-
-<p>RANSAC是通过反复选择数据集去估计出模型，一直迭代到估计出认为比较好的模型。<br>
-具体的实现步骤可以分为以下几步：</p>
-
-<ol>
-<li>选择出可以估计出模型的最小数据集；(对于直线拟合来说就是两个点，对于计算Homography矩阵就是4个点)</li>
-<li>使用这个数据集来计算出数据模型；</li>
-<li>将所有数据带入这个模型，计算出“内点”的数目；(累加在一定误差范围内的适合当前迭代推出模型的数据)</li>
-<li>比较当前模型和之前推出的最好的模型的“内点“的数量，记录最大“内点”数的模型参数和“内点”数；</li>
-<li>重复1-4步，直到迭代结束或者当前模型已经足够好了(“内点数目大于一定数量”)。</li>
-</ol>
-
-<h2 id="算法输入">算法输入 <a aria-label="header link for 算法输入" href="#算法输入" class="header-link">#</a></h2>
-
-<ol>
-<li>判断样本是否满足模型的误差容忍度t。t可以看作为对内点噪声均方差的假设，对于不同的输入数据需采用人工干预的方式预设合适的门限，且该参数对RANSAC性能有很大的影响；</li>
-<li>随机抽取样本集S的次数。该参数直接影响余集SC中样本参与模型参数的检验次数，从而影响算法的效率，因为大部分随机抽样都受到外点的影响；</li>
-<li>表征得到正确模型时，一致集S*的大小N。为了确保得到表征数据集P的正确模型，一般要求一致集足够大；另外，足够多的一致样本使得重新估计的模型参数更精确。</li>
-<li>算法的迭代次数k。</li>
-<li>适应于数据的模型model。</li>
-<li>随机在样本抽样的数目n。</li>
-</ol>
-
-<h2 id="迭代次数推导">迭代次数推导 <a aria-label="header link for 迭代次数推导" href="#迭代次数推导" class="header-link">#</a></h2>
+<h2 id="整体模块">整体模块 <a aria-label="header link for 整体模块" href="#整体模块" class="header-link">#</a></h2>
 
 
 
@@ -219,8 +180,8 @@
 
 
 <div class="usa-image-block">
-  <a href="/ransac/recursive_steps.png">
-    <img src="/ransac/recursive_steps.png" alt="Recursive Steps">
+  <a href="/move_base/move_base.png">
+    <img src="/move_base/move_base.png" alt="Move Base">
   </a>
   <div class="usa-image-text-block">
     <p class="usa-image-text text-gray-50"></p>
@@ -228,7 +189,14 @@
 </div>
 
 
-<h2 id="例子">例子 <a aria-label="header link for 例子" href="#例子" class="header-link">#</a></h2>
+<ol>
+<li>odometry source: <a href="../odometry">里程计</a>用来提供高频率的概略初始位姿；</li>
+<li>sensor sources: 机器人或无人车中，包含大量可用于定位的传感器：<a href="../camera">相机</a>、激光、毫米波雷达等；</li>
+<li>map_server: 用激光SLAM手段，如 <a href="../loam">LOAM</a>、<a href="../gmapping">GMapping</a> 建立高精度地图；</li>
+<li>amcl: 结合传感器与高精度地图，实现 <a href="../amcl">蒙特卡洛定位</a>。</li>
+</ol>
+
+<h2 id="规划和控制">规划和控制 <a aria-label="header link for 规划和控制" href="#规划和控制" class="header-link">#</a></h2>
 
 
 
@@ -244,8 +212,8 @@
 
 
 <div class="usa-image-block">
-  <a href="/ransac/ransac_example.png">
-    <img src="/ransac/ransac_example.png" alt="RANSAC Example">
+  <a href="/move_base/nav_core.png">
+    <img src="/move_base/nav_core_hu15cf8dba4720329db62c83339a209d97_179471_600x0_resize_box_2.png" alt="Nav Core">
   </a>
   <div class="usa-image-text-block">
     <p class="usa-image-text text-gray-50"></p>
@@ -253,16 +221,50 @@
 </div>
 
 
+<ol>
+<li><p>Global Planner</p>
 
+<ul>
+<li><a href="http://wiki.ros.org/global_planner">global_planner</a>: 可用来取代过时的<a href="http://wiki.ros.org/navfn">navfn</a>。
+使用A*或Dijkstra算法进行全局路径规划。</li>
+<li><a href="http://wiki.ros.org/carrot_planner">carrot_planner</a>: 简单的测试算法。</li>
+</ul></li>
+
+<li><p>Local Planner</p>
+
+<ul>
+<li><a href="http://wiki.ros.org/base_local_planner">base_local_planner</a>: 实现Dynamic Window Approach(DWA)
+and Trajectory Rollout两种算法。其中DWA算法被<a href="http://wiki.ros.org/dwa_local_planner">dwa_local_planner</a>取代。</li>
+<li><a href="http://wiki.ros.org/eband_local_planner">eband_local_planner</a>: Implements the Elastic Band method on the SE2 manifold</li>
+<li><a href="http://wiki.ros.org/teb_local_planner">teb_local_planner</a>: Implements the Timed-Elastic-Band method for online trajectory optimization</li>
+<li><a href="http://wiki.ros.org/mpc_local_planner">mpc_local_planner</a>: Provides several model predictive control approaches embedded in the SE2 manifold</li>
+</ul></li>
+
+<li><p>Recovery Behavior</p>
+
+<ul>
+<li><a href="http://wiki.ros.org/clear_costmap_recovery">clear_costmap_recovery</a>: A recovery behavior that reverts the costmaps used by move_base
+to the static map outside of a user-specified range</li>
+<li><a href="http://wiki.ros.org/rotate_recovery">rotate_recovery</a>: A recovery behavior that perfroms a 360 degree rotation
+of the robot to attempt to clear out space.</li>
+</ul></li>
+</ol>
+
+<h2 id="其他">其他 <a aria-label="header link for 其他" href="#其他" class="header-link">#</a></h2>
+
+<ol>
+<li><p>Cost Map</p></li>
+
+<li><p>Robot Pose EKF</p></li>
+</ol>
+
+
+
+  
 
   
     <br>
-    <strong>Next:</strong> <a href="/kd-tree/">Kd Tree</a>
-  
-
-  
-    <br>
-    <strong>Previous:</strong> <a href="/large_scale_mapping/">大比例尺地形图测绘</a>
+    <strong>Previous:</strong> <a href="/kd-tree/">Kd Tree</a>
   
   
   
