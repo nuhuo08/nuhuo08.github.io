@@ -6,10 +6,27 @@
     <description>Recent content on XiaoWu</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 15 Mar 2020 13:33:44 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 15 Mar 2020 19:48:40 +0800</lastBuildDate>
     
 	<atom:link href="https://nuhuo08.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>IMU标定与解算</title>
+      <link>https://nuhuo08.github.io/imu/</link>
+      <pubDate>Sun, 15 Mar 2020 19:48:40 +0800</pubDate>
+      
+      <guid>https://nuhuo08.github.io/imu/</guid>
+      <description>误差种类 \[ a^{B}=T^{a}K^{a}(a^{S}+b^{a}) \\[2mm] w^{B}=T^{g}K^{g}(w^{S}+b^{g}) \]
+加速度和陀螺仪包含如下3种误差：
+ 偏置
+ 比例误差
+  \[ K^{a}= \begin{bmatrix} s^{a}_{x} &amp; 0&amp;0 \\ 0 &amp;s^{a}_{x} &amp;0 \\ 0&amp; 0&amp;s^{a}_{x} \end{bmatrix} K^{g}= \begin{bmatrix} s^{g}_{x} &amp; 0&amp;0 \\ 0 &amp;s^{g}_{x} &amp;0 \\ 0&amp; 0&amp;s^{g}_{x} \end{bmatrix} \]
+轴向误差  建立一个正交坐标轴，x轴与加速度计的x轴重合，y轴在加速度计的xy平面上。
+\[ T^{a}=\begin{bmatrix} 1 &amp; -\alpha_{yz} &amp; \alpha_{zy} \\ 0 &amp; 1 &amp; -\alpha_{zx} \\ 0 &amp; 0 &amp; 1 \end{bmatrix} \]
+陀螺仪坐标轴与正交坐标轴之间的转换关系为：
+\[ T^g=\begin{bmatrix} 1 &amp; -\gamma_{yz} &amp; \gamma_{zy} \\ \gamma_{xz} &amp; 1 &amp; -\gamma{zx} \\ \gamma_{xy} &amp; \gamma_{yx} &amp; 1 \end{bmatrix} \]</description>
+    </item>
     
     <item>
       <title>move_base 模块</title>
