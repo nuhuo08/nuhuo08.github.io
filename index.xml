@@ -6,10 +6,25 @@
     <description>Recent content on XiaoWu</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 15 Mar 2020 19:48:40 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 16 Mar 2020 12:14:29 +0800</lastBuildDate>
     
 	<atom:link href="https://nuhuo08.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Odometry</title>
+      <link>https://nuhuo08.github.io/odometry/</link>
+      <pubDate>Mon, 16 Mar 2020 12:14:29 +0800</pubDate>
+      
+      <guid>https://nuhuo08.github.io/odometry/</guid>
+      <description>里程计定位方法 差速模型 \[ ds=\frac{s_L + s_R}{2} \\[2mm] d\theta=\frac{s_L - s_R}{L} \]
+转弯半径模型 \[ ds=\frac{s_L + s_R}{2} \\[2mm] d\theta=\frac{ds}{R} \]
+两种方法比较     差速模型 转弯半径模型     标定过程 简单 复杂   计算精度 角度分辨率低，容易跳变抖动 分辨率高   稳定性 打滑或撞到限位器时，效果很差 受影响相对较小    验证方法  运动已知距离，比较算法输出的距离与实际距离的差异 运动已知角度，如90°，360°等，比较算法输出的角度与实际角度的差异  标定方法 采集的数据：
+ 逆时针三圈，保证开始与结束时候车辆的方向大致相同。 顺时针三圈，保证开始与结束时候车辆的方向大致相同。 沿直线运动一段距离，用皮尺测量长度。重复3次  物理距离标定  结合顺时针、逆时针的数据，可以得到左后轮、右后轮之间的物理距离比例 结合直线的数据，得到左后轮、右后轮对应的真实的物理距离  差速模型标定 以角度作为代价函数，保证顺时针、逆时针的数据得到的角度值约为\(6\pi\)，从而估算高精度的左后轮、右后轮之间的距离\(L\)。
+转弯半径模型标定 当车辆沿直线行驶时，转弯半径为无穷大，此时的方向盘角度不一定为0°，需要记录此时的方向盘角度。
+标定场手工标定 每隔30°，标定转弯半径
+自相关方法自动标定  参数的形式</description>
+    </item>
     
     <item>
       <title>IMU标定与解算</title>
