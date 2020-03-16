@@ -6,10 +6,28 @@
     <description>Recent content on XiaoWu</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 16 Mar 2020 12:14:29 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 16 Mar 2020 21:24:47 +0800</lastBuildDate>
     
 	<atom:link href="https://nuhuo08.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Camera</title>
+      <link>https://nuhuo08.github.io/camera/</link>
+      <pubDate>Mon, 16 Mar 2020 21:24:47 +0800</pubDate>
+      
+      <guid>https://nuhuo08.github.io/camera/</guid>
+      <description>针孔相机畸变校正 畸变模型 世界坐标到相机坐标：
+\[ \begin{bmatrix} x\\ y\\ z\end{bmatrix} =R\begin{bmatrix} X\\ Y\\ Z\end{bmatrix}+t \]
+相机坐标到归一化平面坐标：
+\[ x&#39;=x/z \\[2mm] y&#39;=y/z \\[2mm] r^2 = x&#39;^2 + y&#39;^2 \]
+畸变校正：
+\[ x&#39;&#39;=x&#39;\frac{1+k_1r^2+k_2r^4+k_3r^6}{1+k_4r^2+k_5r^4+k_6r^6}+2p_1x&#39;y&#39;+p_2(r^2+2x&#39;^2) \\[2mm] y&#39;&#39;=y&#39;\frac{1+k_1r^2+k_2r^4+k_3r^6}{1+k_4r^2+k_5r^4+k_6r^6}+p_1(r^2+2y&#39;^2)+2p_2x&#39;y&#39; \\[2mm] \]
+转化到像素坐标：
+\[ u=f_x*x&#39;&#39;+c_x \\[2mm] v=f_y*y&#39;&#39;+c_y \]
+校正方法 使用棋盘格进行图像校正：
+ Find corners in chessboard  I used cv2.findChessboardCorners() to find all the corners, which are the feature points of these images for camera calibration. The pixel position of each of these corners is stored in imgpoints variable.</description>
+    </item>
     
     <item>
       <title>Odometry</title>
@@ -217,10 +235,10 @@ waypoint_updater    生成前面一段需要跟踪的路径点，且增加了速
 waypoint_follower 采用pure pursuit算法，计算出车辆需要输出的线速度和角速度，以geometry_msgs::TwistStamped消息发送出去。
 twist_controller    使用PID控制器，通过brake/throttle控制车辆的加减速度，使之达到期望的线速度。
 使用YawController控制器，计算打方向盘的角度。
-TODO: 增加Control跳转链接
+控制的原理可参考 Control。
 其他 该项目没有涉及路径规划、位置确定、障碍物跟踪模块。
 Planning 实际自动驾驶中，汽车跟踪的轨迹预先是不知道的，所以不会有Waypoint Loader模块。 需要根据用户的需求，做出正确的路径规划。
- 类似于导航软件，根据用户指定的目的地，输出一条全局路径规划。 在跟踪全局路径时，需要有局部路径规划，控制车辆轨迹的平滑稳定。  TODO: 增加Path Planning跳转链接
+ 类似于导航软件，根据用户指定的目的地，输出一条全局路径规划。 在跟踪全局路径时，需要有局部路径规划，控制车辆轨迹的平滑稳定。  路径规划的原理可参考这两篇博客：Path Planning，ROS 路径规划
 Positioning 实际车辆在运行过程中，不会精确知道自己的位姿。定位所涉及的方法有：
  GPS/INS Odometry Visual/Lidar SLAM HD Map Matching  障碍物跟踪 融合多传感器的感知结果，预测与追踪障碍物的轨迹。</description>
     </item>
