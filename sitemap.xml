@@ -4,18 +4,23 @@
   
   <url>
     <loc>https://nuhuo08.github.io/</loc>
-    <lastmod>2020-03-16T21:24:47+08:00</lastmod>
+    <lastmod>2020-03-17T10:47:50+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://nuhuo08.github.io/blog/</loc>
-    <lastmod>2020-03-16T21:24:47+08:00</lastmod>
+    <lastmod>2020-03-17T10:47:50+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nuhuo08.github.io/opencv-image-processing/</loc>
+    <lastmod>2020-03-17T10:47:50+08:00</lastmod>
   </url>
   
   <url>
     <loc>https://nuhuo08.github.io/camera/</loc>
-    <lastmod>2020-03-16T21:24:47+08:00</lastmod>
+    <lastmod>2020-03-16T21:57:43+08:00</lastmod>
   </url>
   
   <url>
@@ -85,7 +90,7 @@
   
   <url>
     <loc>https://nuhuo08.github.io/ros-integration/</loc>
-    <lastmod>2020-02-05T21:54:39+08:00</lastmod>
+    <lastmod>2020-03-16T21:57:43+08:00</lastmod>
   </url>
   
   <url>

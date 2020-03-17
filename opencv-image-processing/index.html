@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+	<script>
+		renderMathInElement(document.body,
+			{
+				delimiters: [
+					{left: "$$", right: "$$", display: true},
+					{left: "$", right: "$", display: false},
+				]
+			}
+		);
+
+		var inlineMathArray = document.querySelectorAll("script[type='math/tex']");
+		for (var i = 0; i < inlineMathArray.length; i++) {
+			var inlineMath = inlineMathArray[i];
+			var tex = inlineMath.innerText || inlineMath.textContent;
+			var replaced = document.createElement("span");
+			replaced.innerHTML = katex.renderToString(tex, {displayMode: false});
+			inlineMath.parentNode.replaceChild(replaced, inlineMath);
+		}
+
+		var displayMathArray = document.querySelectorAll("script[type='math/tex; mode=display']");
+		for (var i = 0; i < displayMathArray.length; i++) {
+			var displayMath = displayMathArray[i];
+			var tex = displayMath.innerHTML;
+			var replaced = document.createElement("span");
+			replaced.innerHTML = katex.renderToString(tex.replace(/%.*/g, ''), {displayMode: true});
+			displayMath.parentNode.replaceChild(replaced, displayMath);
+		}
+	</script>
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+
+    <link rel="canonical" href="https://nuhuo08.github.io/opencv-image-processing/">
+    <meta name="generator" content="Hugo 0.62.2" />
+    <title>Opencv 图像处理 | XiaoWu</title>
+
+    
+    <link rel="stylesheet" href="/css/uswds.min.c480a9b2a1fc1e7e564e62752462b22cd5f508a047f0340cb3725722f627fb1d.css">
+    
+    
+    <link rel="stylesheet" href="/css/custom.0a518097f5500782b25662ab2af4088600eefcc3d2d8828ce721e5e5fee436b5.min.css">
+  </head>
+  <body>
+    <a class="usa-skipnav" href="#main-content">Skip to main content</a>
+
+    <header class="usa-header usa-header--basic" role="banner">
+      <div class="usa-nav-container">
+        <div class="usa-navbar">
+          <div class="usa-logo" id="basic-mega-logo">
+            <em class="usa-logo__text">
+              <a href="/" title="Home" aria-label="Home">XiaoWu</a>
+            </em>
+          </div>
+          <button class="usa-menu-btn">Menu</button>
+        </div>
+
+        <nav role="navigation" class="usa-nav">
+          <button class="usa-nav__close">
+            <img src="/img/close.svg" alt="close" />
+          </button>
+          <ul class="usa-nav__primary usa-accordion">
+            
+            
+              
+              
+              
+              
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link " href="/">
+                  <span>Home</span>
+                </a>
+              </li>
+            
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="usa-section" id="main-content">
+      <div class="grid-container">
+        <div class="grid-row grid-gap">
+          <div class="tablet:grid-col usa-prose">
+            
+  <h1>Opencv 图像处理</h1>
+  
+  <p class="text-gray-50">
+    
+    
+    
+    <strong>Published: </strong>2020-03-17
+
+    
+    
+      
+      
+    
+    
+    
+    
+    </span>
+  </p>
+  
+  
+    
+
+<div class="toc">
+  <strong>Table of contents</strong>
+  <ol>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#finding-lane-lines">
+        Finding Lane Lines
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#advanced-lane-finding">
+        Advanced Lane Finding
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#vehicle-detection-and-tracking">
+        Vehicle Detection and Tracking
+      </a>
+    </li>
+    
+  </ol>
+</div>
+
+
+  
+  
+  
+
+<h2 id="finding-lane-lines">Finding Lane Lines <a aria-label="header link for Finding Lane Lines" href="#finding-lane-lines" class="header-link">#</a></h2>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#408080;font-style:italic">#importing some useful packages</span>
+<span style="color:#008000;font-weight:bold">import</span> <span style="color:#00f;font-weight:bold">matplotlib.pyplot</span> <span style="color:#008000;font-weight:bold">as</span> <span style="color:#00f;font-weight:bold">plt</span>
+<span style="color:#008000;font-weight:bold">import</span> <span style="color:#00f;font-weight:bold">matplotlib.image</span> <span style="color:#008000;font-weight:bold">as</span> <span style="color:#00f;font-weight:bold">mpimg</span>
+<span style="color:#008000;font-weight:bold">import</span> <span style="color:#00f;font-weight:bold">numpy</span> <span style="color:#008000;font-weight:bold">as</span> <span style="color:#00f;font-weight:bold">np</span>
+<span style="color:#008000;font-weight:bold">import</span> <span style="color:#00f;font-weight:bold">cv2</span>
+<span style="color:#666">%</span>matplotlib inline</code></pre></div>
+<p>在原图像中找到车道线，需要进行5步操作：</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#408080;font-style:italic">#reading in an image</span>
+image <span style="color:#666">=</span> mpimg<span style="color:#666">.</span>imread(<span style="color:#ba2121"></span><span style="color:#ba2121">&#39;</span><span style="color:#ba2121">test_images/solidWhiteRight.jpg</span><span style="color:#ba2121">&#39;</span>)
+
+<span style="color:#408080;font-style:italic"># if you wanted to show a single color channel image called &#39;gray&#39;,</span>
+<span style="color:#408080;font-style:italic"># for example, call as plt.imshow(gray, cmap=&#39;gray&#39;)</span>
+plt<span style="color:#666">.</span>imshow(image)</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/opencv-image-processing/find-lane-lines/0_originalImage.jpg">
+    <img src="/opencv-image-processing/find-lane-lines/0_originalImage_hu75db043f46ff6b06650d1b503298bcfd_50222_600x0_resize_q90_box.jpg" alt="Original Image">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<ol>
+<li>converted the images to grayscale.</li>
+</ol>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">cv2<span style="color:#666">.</span>cvtColor(img, cv2<span style="color:#666">.</span>COLOR_RGB2GRAY)
+<span style="color:#408080;font-style:italic"># Or use BGR2GRAY if you read an image with cv2.imread()</span></code></pre></div>
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/opencv-image-processing/find-lane-lines/1_grayscale.jpg">
+    <img src="/opencv-image-processing/find-lane-lines/1_grayscale_hu7a0ab3fb101f0b15a86a63acf9136616_218363_600x0_resize_q90_box.jpg" alt="Grayscale Image">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<ol start="2">
+<li>In order to eliminate the efffect of random noise, Gaussian blur method is applied to the image.
+The image is a little blurry after the operation, but it's benificial for the next step.</li>
+</ol>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">cv2<span style="color:#666">.</span>GaussianBlur(img, (kernel_size, kernel_size), <span style="color:#666">0</span>)</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/opencv-image-processing/find-lane-lines/2_gaussianBlur.jpg">
+    <img src="/opencv-image-processing/find-lane-lines/2_gaussianBlur_hu7270d335ec6f31bcd7861b718d8669d9_194298_600x0_resize_q90_box.jpg" alt="Gaussian Blur">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<ol start="3">
+<li>Then, the canny algorithm is used for edge detection.
+Pixels with large gradients are likely to be lane lines as the color changes rapidly.</li>
+</ol>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">cv2<span style="color:#666">.</span>Canny(img, low_threshold, high_threshold)</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/opencv-image-processing/find-lane-lines/3_canny.jpg">
+    <img src="/opencv-image-processing/find-lane-lines/3_canny_huf38fe3e72783956782173799cbdb2e99_10492_600x0_resize_q90_box.jpg" alt="Canny">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<ol start="4">
+<li>Crop the Image. Lane lines are always right in front of the car, so only a small portion of the image needs to be processed.</li>
+</ol>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#408080;font-style:italic">#filling pixels inside the polygon defined by &#34;vertices&#34; with the fill color    </span>
+cv2<span style="color:#666">.</span>fillPoly(mask, vertices, ignore_mask_color)
+<span style="color:#408080;font-style:italic">#returning the image only where mask pixels are nonzero</span>
+masked_image <span style="color:#666">=</span> cv2<span style="color:#666">.</span>bitwise_and(img, mask)</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/opencv-image-processing/find-lane-lines/4_cropImage.jpg">
+    <img src="/opencv-image-processing/find-lane-lines/4_cropImage_hucd34f0bf0783e0ea55db8f47c99b1bdd_4568_600x0_resize_q90_box.jpg" alt="Crop Image">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<ol start="5">
+<li>Hough transformation is really useful for line detection.</li>
+</ol>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">lines <span style="color:#666">=</span> cv2<span style="color:#666">.</span>HoughLinesP(img, rho, theta, threshold, np<span style="color:#666">.</span>array([]), minLineLength<span style="color:#666">=</span>min_line_len, maxLineGap<span style="color:#666">=</span>max_line_gap)</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/opencv-image-processing/find-lane-lines/5_detectLine.jpg">
+    <img src="/opencv-image-processing/find-lane-lines/5_detectLine_hue89a0739d262b360037e6b501c54516d_4682_600x0_resize_q90_box.jpg" alt="Detect Lines">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<p>when the detected lines are overlayed on the original image, we can see that the lane lines are detected sucessfully.</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">cv2<span style="color:#666">.</span>addWeighted(initial_img, <span style="">α</span>, img, <span style="">β</span>, <span style="">γ</span>)</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/opencv-image-processing/find-lane-lines/6_overlayImage.jpg">
+    <img src="/opencv-image-processing/find-lane-lines/6_overlayImage_huc67e7b1c95881d711d8a872c931b5027_348293_600x0_resize_q90_box.jpg" alt="Overlay Image">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<h2 id="advanced-lane-finding">Advanced Lane Finding <a aria-label="header link for Advanced Lane Finding" href="#advanced-lane-finding" class="header-link">#</a></h2>
+
+<p>高级车道线检测需要在俯视图上进行，分为如下步骤：</p>
+
+<ol>
+<li><p><a href="../camera">图像校正</a></p></li>
+
+<li><p>Use color transforms and gradients to create a thresholded binary image.</p></li>
+</ol>
+
+<p>I used a combination of color and gradient thresholds to generate a binary image.</p>
+
+<p>R and G channels are used as they are helpful to find yellow lane lines, which is quite common in the real world.
+When image is converted to HLS channel, white and yellow lane lines are quite distinctie, and the influence of shadows can be significantly reduced.</p>
+
+<p>Sobel gradient and gradient direction thresholds are also used, since the gradients varies most along x axis, and the lane lines are often vertical to the car.</p>
+
+<p>Here are some examples of test images when converted to binary image. The lane lines are preserved while most useless information is filtered out.</p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/opencv-image-processing/advanced-lane-finding/4-grayscale_image.png">
+    <img src="/opencv-image-processing/advanced-lane-finding/4-grayscale_image.png" alt="Grayscale Image">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<ol start="3">
+<li>Performed a perspective transform.</li>
+</ol>
+
+<p><code>cv2.getPerspectiveTransform()</code> function takes as inputs source (<code>src</code>) and destination (<code>dst</code>) points and is used to calculate perspective transform matrix.
+Note that source points are chosen along the straight lane line to form a rectangle.</p>
+
+<p><code>cv2.warpPerspective()</code> function is used to rectify binary image.</p>
+
+<p>I chose the hardcode the source and destination points as follows:</p>
+
+<table>
+<thead>
+<tr>
+<th align="center">Source</th>
+<th align="center">Destination</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td align="center">570, 470</td>
+<td align="center">420, 1</td>
+</tr>
+
+<tr>
+<td align="center">722, 470</td>
+<td align="center">920, 1</td>
+</tr>
+
+<tr>
+<td align="center">1110, 720</td>
+<td align="center">920, 720</td>
+</tr>
+
+<tr>
+<td align="center">220, 720</td>
+<td align="center">420, 720</td>
+</tr>
+</tbody>
+</table>
+
+<p>I verified that my perspective transform was working as expected by drawing the <code>src</code> and <code>dst</code> points onto a test image and its warped counterpart to verify that the lines appear parallel in the warped image.</p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/opencv-image-processing/advanced-lane-finding/5-unwarp_image.png">
+    <img src="/opencv-image-processing/advanced-lane-finding/5-unwarp_image.png" alt="Unwarp Image">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<ol start="4">
+<li>Identified lane-line pixels and fit their positions with a polynomial.</li>
+</ol>
+
+<p>I first take a histogram along all the columns of the images, and the two highest peaks in the histogram are treated as starting point of the lane lines.</p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/opencv-image-processing/advanced-lane-finding/6-search_from_scratch.png">
+    <img src="/opencv-image-processing/advanced-lane-finding/6-search_from_scratch.png" alt="Search from scratch">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<p>Then I used sliding windows to find all the possbile pixels in lane lines, and fit my lane lines with a 2nd order polynomial kinda like this:</p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/opencv-image-processing/advanced-lane-finding/7-search_from_previous.png">
+    <img src="/opencv-image-processing/advanced-lane-finding/7-search_from_previous.png" alt="search from previous">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<p>The position of lane lines shall not change much within seconds,
+so the polynomial derived from the previous image can be used as a starting point for the following image.
+Searching the lane lines along the previous polynomial can be much more efficient.</p>
+
+<ol start="5">
+<li>Calculat the radius of curvature of the lane and the position of the vehicle with respect to center.</li>
+</ol>
+
+<p>Firstly, we need to convert our calculation result from pixel world to real world.</p>
+
+<p>Then, we can derive the real distance and curvature of the lane lines with a pre-defined formular.</p>
+
+<p>I did this in the function <code>curve_offset()</code>.</p>
+
+<ol start="6">
+<li>Plotted back down onto the road such that the lane area is identified clearly.</li>
+</ol>
+
+<p><code>draw_lane()</code> function is used to plot lane area back down onto the road, while <code>draw_text()</code> function is used to visualize numerical estimation of lane curvature and vehicle position.</p>
+
+<p>Here is an example of my result on a test image:</p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/opencv-image-processing/advanced-lane-finding/8-plot_back.png">
+    <img src="/opencv-image-processing/advanced-lane-finding/8-plot_back.png" alt="Plot back">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<h2 id="vehicle-detection-and-tracking">Vehicle Detection and Tracking <a aria-label="header link for Vehicle Detection and Tracking" href="#vehicle-detection-and-tracking" class="header-link">#</a></h2>
+
+<ul>
+<li>Extract binned color, histograms of color, and Histogram of Oriented Gradients (HOG) features on a labeled training set of images.</li>
+<li>Normalize features and randomize a selection for training and testing.</li>
+<li>Train a Linear SVM classifier</li>
+<li>Implement a sliding-window technique and a HOG Sub-sampling technique. Then use the trained classifier to search for vehicles in images.</li>
+<li>Run the pipeline on a video stream (start with the test_video.mp4 and later implement on full project_video.mp4) and create a heat map of recurring detections frame by frame to reject outliers and follow detected vehicles.</li>
+<li>Estimate a bounding box for vehicles detected.</li>
+</ul>
+
+<h3 id="data-visualization">Data Visualization</h3>
+
+<p>In order to distinguish vehicles from non-vehicles, we need to collect as many data sets as possible.
+Udacity has provided us 8792 images of vehicles and 8968 images of non-vehicles. Here are some examples:</p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/opencv-image-processing/vehicle-detection-tracking/1-data-visualization.png">
+    <img src="/opencv-image-processing/vehicle-detection-tracking/1-data-visualization.png" alt="Data Visualization">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<h3 id="feature-extraction">Feature Extraction</h3>
+
+<p>Since vehicles are significantly different with non-vehicles both in their shapes and colors, several kinds of features including binned color, histograms of color, and HOG are extracted from the datasets.</p>
+
+<h4 id="binned-color-features">Binned Color Features</h4>
+
+<p>I used <code>cv2.resize()</code> function to resize the image from 64<em>64 to 32</em>32 to reduce the number of features. While others may resize the image to 16*16, I think it looks so blurry that even human can hardly recognize the vehicle. Here is an example of binned color features:</p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/opencv-image-processing/vehicle-detection-tracking/2-binned-color.png">
+    <img src="/opencv-image-processing/vehicle-detection-tracking/2-binned-color.png" alt="Binned Color">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<h4 id="histogram-of-color-features">Histogram of Color Features</h4>
+
+<p>Histogram of color is also a good way to represent the property of an image and can be easily implemented with the function <code>np.histogram</code>. Here is an example:</p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/opencv-image-processing/vehicle-detection-tracking/3-histogram-of-color.png">
+    <img src="/opencv-image-processing/vehicle-detection-tracking/3-histogram-of-color.png" alt="Histogram of Color">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<h4 id="histogram-of-oriented-gradients-hog-features">Histogram of Oriented Gradients (HOG) Features</h4>
+
+<p>I grabbed the first images from each of the two classes and displayed them to get a feel for what the <code>skimage.hog()</code> output looks like. Here is an example using the <code>YCrCb</code> color space and HOG parameters of <code>orientations=9</code>, <code>pixels_per_cell=(8, 8)</code> and <code>cells_per_block=(2, 2)</code>:</p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/opencv-image-processing/vehicle-detection-tracking/4-HOG.png">
+    <img src="/opencv-image-processing/vehicle-detection-tracking/4-HOG.png" alt="HOG">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<h3 id="train-svm-classifier">Train SVM Classifier</h3>
+
+<h4 id="combine-and-normalize-features">Combine and Normalize Features</h4>
+
+<p>I decided to extract all the features mentioned above and used <code>np.concatenate()</code> to combine them to a feature vector. As the magnitude of these features vary from each other, we should normalize the features and randomize a selection for training and testing.</p>
+
+<h4 id="train-and-test-the-classifier">Train and Test the Classifier</h4>
+
+<p>I trained a linear SVM using the training dataset and achieve an accuracy of 99.94% with the testing dataset. Although other kernals like <code>rbf</code> may achieve even higher accuracy, it will cost much more time to train and to make prediction.</p>
+
+<p>The classifier trained using <code>rgb</code> color space behaves very bad when there are shadows on the road, while <code>YCrCb</code> works much better under such challenging situations. Note that when an image is coverted to other color space, the range of values may change. So <code>bins_range</code> parameter should be taken care of when extracting histogram of color features.</p>
+
+<h3 id="vehicle-detection-in-image">Vehicle Detection in Image</h3>
+
+<h4 id="sliding-window-search">Sliding Window Search</h4>
+
+<p>I decided to search the lower half of the image since vehicles shall never appear in the sky. And the further the vehicle, the smaller it looks like. So I also used 3 different scales of sliding window to search vehicles in the image.</p>
+
+<p>Ultimately I searched on three scales using YCrCb 3-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result.  Here are some example images:</p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/opencv-image-processing/vehicle-detection-tracking/5-sliding-window.png">
+    <img src="/opencv-image-processing/vehicle-detection-tracking/5-sliding-window.png" alt="Sliding Window">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<h4 id="hog-subsampling-window-search">HOG Sub-sampling Window Search</h4>
+
+<p>Too much sliding windows can slow down the performance of the algorithm significantly. To improve the efficiency of the overall system, I decided to use the HOG sub-sampling window search method, which can speed up the image processing procedure and obtain as good result as the original sliding window. Here is the result:</p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/opencv-image-processing/vehicle-detection-tracking/6-HOG-sub-sampling-window.png">
+    <img src="/opencv-image-processing/vehicle-detection-tracking/6-HOG-sub-sampling-window.png" alt="HOG Sub-Sampling Window">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<h3 id="video-implementation">Video Implementation</h3>
+
+<h4 id="final-video-output">Final video output</h4>
+
+<p>My pipeline can perform reasonably well on the entire project video (somewhat wobbly or unstable bounding boxes are ok as long as you are identifying the vehicles most of the time with minimal false positives.)</p>
+
+<h4 id="filter-for-false-positives-and-combining-overlapping-bounding-boxes">Filter for false positives and combining overlapping bounding boxes</h4>
+
+<p>I recorded the positions of positive detections in each frame of the video.  From the positive detections I created a heatmap and then thresholded that map to identify vehicle positions.  I then used <code>scipy.ndimage.measurements.label()</code> to identify individual blobs in the heatmap.  I then assumed each blob corresponded to a vehicle.  I constructed bounding boxes to cover the area of each blob detected.</p>
+
+<p>Here's an example result showing the heatmap from one frame of video, the result of <code>scipy.ndimage.measurements.label()</code> and the bounding boxes then overlaid on the last frame of video:</p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/opencv-image-processing/vehicle-detection-tracking/8-heat-map.png">
+    <img src="/opencv-image-processing/vehicle-detection-tracking/8-heat-map.png" alt="Heat Map">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+
+
+  
+
+  
+    <br>
+    <strong>Previous:</strong> <a href="/camera/">相机校正</a>
+  
+  
+  
+    <div id="utter-container">
+    <script src="https://utteranc.es/client.js"
+        repo= 'nuhuo08/blog-comments'
+        issue-term= "pathname"
+        theme= 'github-light'
+        crossorigin= "anonymous"
+        async>
+    </script> 
+    </div>
+
+  
+
+
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="usa-footer usa-footer--slim" role="contentinfo">
+      
+      <div class="usa-footer__secondary-section" id="footer-main">
+        <div class="grid-container">
+          <div class="grid-row grid-gap">
+            <div class="grid-col-12 text-center">
+              
+              
+                Made with <a href="https://gohugo.io/">Hugo</a> • Content in <a href="https://github.com/nuhuo08/uswds-hugo-theme">GitHub</a>
+                <br>
+                Last deployed on 2020-03-17
+              
+
+              
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    
+    <script src="/js/uswds.min.fcd9b25a27c51de427f4c618dee88490c2ff0a792a573531e316730d07df3f3d.js"></script>
+
+  </body>
+</html>
