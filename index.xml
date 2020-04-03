@@ -6,10 +6,37 @@
     <description>Recent content on XiaoWu</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 17 Mar 2020 10:47:50 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 03 Apr 2020 11:29:23 +0800</lastBuildDate>
     
 	<atom:link href="https://nuhuo08.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>车载移动测量系统</title>
+      <link>https://nuhuo08.github.io/vehicle-borne_mobile_mapping/</link>
+      <pubDate>Fri, 03 Apr 2020 11:29:23 +0800</pubDate>
+      
+      <guid>https://nuhuo08.github.io/vehicle-borne_mobile_mapping/</guid>
+      <description>武汉大学测绘学院陈长军老师的博士论文：车载移动测量系统集成关键技术研究， 详细介绍了高精度地图采集车中的多项关键技术，具有很高的参考意义。
+高精度地图需要转换到WGS-84世界系中，需要建立世界系下的控制点，参考大比例尺地形图测绘。
+组合定位定姿 GPS/IMU的解算方法，可参考GPS/INS组合导航。
+立体相机High-Resolution Stereo Camera (HRSC) 相对标定：在室内高精度控制场，范围633m，点位精度0.2mm，标定主点、等效焦距、畸变系数，得到单个相机的位置和姿态
+   绝对标定：室外控制场，确定立体相机与惯导之间的相对关系
+   激光扫描仪3D LiDAR Scanner 三维标定场：寻找同名点，转到惯导坐标系下
+   2D LiDAR Scanner 道路面数据：自定义坐标系
+全景影像与激光点云Panoramic Image &amp;amp; Laser Point Clouds 内标定：平面棋盘格标定法，参考针孔相机畸变校正。
+高精度配准：系统静止，LiDAR采用3D扫描模式？？进行
+   </description>
+    </item>
+    
+    <item>
+      <title>Deep Learning</title>
+      <link>https://nuhuo08.github.io/deep-learning/</link>
+      <pubDate>Thu, 19 Mar 2020 21:44:52 +0800</pubDate>
+      
+      <guid>https://nuhuo08.github.io/deep-learning/</guid>
+      <description>神经网络基本模块 交通标识符分类 行为克隆 语义分割 </description>
+    </item>
     
     <item>
       <title>Opencv 图像处理</title>

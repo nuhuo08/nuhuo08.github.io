@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+	<script>
+		renderMathInElement(document.body,
+			{
+				delimiters: [
+					{left: "$$", right: "$$", display: true},
+					{left: "$", right: "$", display: false},
+				]
+			}
+		);
+
+		var inlineMathArray = document.querySelectorAll("script[type='math/tex']");
+		for (var i = 0; i < inlineMathArray.length; i++) {
+			var inlineMath = inlineMathArray[i];
+			var tex = inlineMath.innerText || inlineMath.textContent;
+			var replaced = document.createElement("span");
+			replaced.innerHTML = katex.renderToString(tex, {displayMode: false});
+			inlineMath.parentNode.replaceChild(replaced, inlineMath);
+		}
+
+		var displayMathArray = document.querySelectorAll("script[type='math/tex; mode=display']");
+		for (var i = 0; i < displayMathArray.length; i++) {
+			var displayMath = displayMathArray[i];
+			var tex = displayMath.innerHTML;
+			var replaced = document.createElement("span");
+			replaced.innerHTML = katex.renderToString(tex.replace(/%.*/g, ''), {displayMode: true});
+			displayMath.parentNode.replaceChild(replaced, displayMath);
+		}
+	</script>
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+
+    <link rel="canonical" href="https://nuhuo08.github.io/vehicle-borne_mobile_mapping/">
+    <meta name="generator" content="Hugo 0.62.2" />
+    <title>车载移动测量系统 | XiaoWu</title>
+
+    
+    <link rel="stylesheet" href="/css/uswds.min.c480a9b2a1fc1e7e564e62752462b22cd5f508a047f0340cb3725722f627fb1d.css">
+    
+    
+    <link rel="stylesheet" href="/css/custom.0a518097f5500782b25662ab2af4088600eefcc3d2d8828ce721e5e5fee436b5.min.css">
+  </head>
+  <body>
+    <a class="usa-skipnav" href="#main-content">Skip to main content</a>
+
+    <header class="usa-header usa-header--basic" role="banner">
+      <div class="usa-nav-container">
+        <div class="usa-navbar">
+          <div class="usa-logo" id="basic-mega-logo">
+            <em class="usa-logo__text">
+              <a href="/" title="Home" aria-label="Home">XiaoWu</a>
+            </em>
+          </div>
+          <button class="usa-menu-btn">Menu</button>
+        </div>
+
+        <nav role="navigation" class="usa-nav">
+          <button class="usa-nav__close">
+            <img src="/img/close.svg" alt="close" />
+          </button>
+          <ul class="usa-nav__primary usa-accordion">
+            
+            
+              
+              
+              
+              
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link " href="/">
+                  <span>Home</span>
+                </a>
+              </li>
+            
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="usa-section" id="main-content">
+      <div class="grid-container">
+        <div class="grid-row grid-gap">
+          <div class="tablet:grid-col usa-prose">
+            
+  <h1>车载移动测量系统</h1>
+  
+  <p class="text-gray-50">
+    
+    
+    
+    <strong>Published: </strong>2020-04-03
+
+    
+    
+      
+      
+    
+    
+    
+    
+    </span>
+  </p>
+  
+  
+    
+
+<div class="toc">
+  <strong>Table of contents</strong>
+  <ol>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e7%bb%84%e5%90%88%e5%ae%9a%e4%bd%8d%e5%ae%9a%e5%a7%bf">
+        组合定位定姿
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e7%ab%8b%e4%bd%93%e7%9b%b8%e6%9c%bahighresolution-stereo-camera-hrsc">
+        立体相机High-Resolution Stereo Camera (HRSC)
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e6%bf%80%e5%85%89%e6%89%ab%e6%8f%8f%e4%bb%aa3d-lidar-scanner">
+        激光扫描仪3D LiDAR Scanner
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#2d-lidar-scanner">
+        2D LiDAR Scanner
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e5%85%a8%e6%99%af%e5%bd%b1%e5%83%8f%e4%b8%8e%e6%bf%80%e5%85%89%e7%82%b9%e4%ba%91panoramic-image--laser-point-clouds">
+        全景影像与激光点云Panoramic Image &amp; Laser Point Clouds
+      </a>
+    </li>
+    
+  </ol>
+</div>
+
+
+  
+  
+  
+
+<p>武汉大学测绘学院陈长军老师的博士论文：<a href="Mobile_Mapping_System_Integration.pdf">车载移动测量系统集成关键技术研究</a>，
+详细介绍了高精度地图采集车中的多项关键技术，具有很高的参考意义。</p>
+
+<p>高精度地图需要转换到WGS-84世界系中，需要建立世界系下的控制点，参考<a href="../large_scale_mapping/">大比例尺地形图测绘</a>。</p>
+
+<h2 id="组合定位定姿">组合定位定姿 <a aria-label="header link for 组合定位定姿" href="#组合定位定姿" class="header-link">#</a></h2>
+
+<p>GPS/IMU的解算方法，可参考<a href="../gps-ins/">GPS/INS组合导航</a>。</p>
+
+<h2 id="立体相机highresolution-stereo-camera-hrsc">立体相机High-Resolution Stereo Camera (HRSC) <a aria-label="header link for 立体相机High-Resolution Stereo Camera (HRSC)" href="#立体相机highresolution-stereo-camera-hrsc" class="header-link">#</a></h2>
+
+<p>相对标定：在室内高精度控制场，范围6<em>3</em>3m，点位精度0.2mm，标定主点、等效焦距、畸变系数，得到单个相机的位置和姿态</p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/vehicle-borne_mobile_mapping/stereo-relative.png">
+    <img src="/vehicle-borne_mobile_mapping/stereo-relative_hu6718792b8390e3c2f3b1713f51258d8d_354302_600x0_resize_box_2.png" alt="Stereo Relative Calibration">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<p>绝对标定：室外控制场，确定立体相机与惯导之间的相对关系</p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/vehicle-borne_mobile_mapping/stereo-absolute.png">
+    <img src="/vehicle-borne_mobile_mapping/stereo-absolute_hu963fd6059086b6a6fdda2d1bdea56043_265465_600x0_resize_box_2.png" alt="Stereo Absolute Calibration">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<h2 id="激光扫描仪3d-lidar-scanner">激光扫描仪3D LiDAR Scanner <a aria-label="header link for 激光扫描仪3D LiDAR Scanner" href="#激光扫描仪3d-lidar-scanner" class="header-link">#</a></h2>
+
+<p>三维标定场：寻找同名点，转到惯导坐标系下</p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/vehicle-borne_mobile_mapping/lidar-control-points.png">
+    <img src="/vehicle-borne_mobile_mapping/lidar-control-points_hufad34e6f62c82b6b2c85be6d813d06f6_599133_600x0_resize_box_2.png" alt="Lidar Control Points">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<h2 id="2d-lidar-scanner">2D LiDAR Scanner <a aria-label="header link for 2D LiDAR Scanner" href="#2d-lidar-scanner" class="header-link">#</a></h2>
+
+<p>道路面数据：自定义坐标系</p>
+
+<h2 id="全景影像与激光点云panoramic-image--laser-point-clouds">全景影像与激光点云Panoramic Image &amp; Laser Point Clouds <a aria-label="header link for 全景影像与激光点云Panoramic Image &amp; Laser Point Clouds" href="#全景影像与激光点云panoramic-image--laser-point-clouds" class="header-link">#</a></h2>
+
+<p>内标定：平面棋盘格标定法，参考<a href="../camera/#针孔相机畸变校正">针孔相机畸变校正</a>。</p>
+
+<p>高精度配准：系统静止，LiDAR采用3D扫描模式？？进行</p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/vehicle-borne_mobile_mapping/camera-lidar.png">
+    <img src="/vehicle-borne_mobile_mapping/camera-lidar.png" alt="Cameara Lidar Registration">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+
+
+  
+
+  
+    <br>
+    <strong>Previous:</strong> <a href="/deep-learning/">Deep Learning</a>
+  
+  
+  
+    <div id="utter-container">
+    <script src="https://utteranc.es/client.js"
+        repo= 'nuhuo08/blog-comments'
+        issue-term= "pathname"
+        theme= 'github-light'
+        crossorigin= "anonymous"
+        async>
+    </script> 
+    </div>
+
+  
+
+
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="usa-footer usa-footer--slim" role="contentinfo">
+      
+      <div class="usa-footer__secondary-section" id="footer-main">
+        <div class="grid-container">
+          <div class="grid-row grid-gap">
+            <div class="grid-col-12 text-center">
+              
+              
+                Made with <a href="https://gohugo.io/">Hugo</a> • Content in <a href="https://github.com/nuhuo08/uswds-hugo-theme">GitHub</a>
+                <br>
+                Last deployed on 2020-04-03
+              
+
+              
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    
+    <script src="/js/uswds.min.fcd9b25a27c51de427f4c618dee88490c2ff0a792a573531e316730d07df3f3d.js"></script>
+
+  </body>
+</html>
