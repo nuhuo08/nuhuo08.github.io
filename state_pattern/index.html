@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+	<script>
+		renderMathInElement(document.body,
+			{
+				delimiters: [
+					{left: "$$", right: "$$", display: true},
+					{left: "$", right: "$", display: false},
+				]
+			}
+		);
+
+		var inlineMathArray = document.querySelectorAll("script[type='math/tex']");
+		for (var i = 0; i < inlineMathArray.length; i++) {
+			var inlineMath = inlineMathArray[i];
+			var tex = inlineMath.innerText || inlineMath.textContent;
+			var replaced = document.createElement("span");
+			replaced.innerHTML = katex.renderToString(tex, {displayMode: false});
+			inlineMath.parentNode.replaceChild(replaced, inlineMath);
+		}
+
+		var displayMathArray = document.querySelectorAll("script[type='math/tex; mode=display']");
+		for (var i = 0; i < displayMathArray.length; i++) {
+			var displayMath = displayMathArray[i];
+			var tex = displayMath.innerHTML;
+			var replaced = document.createElement("span");
+			replaced.innerHTML = katex.renderToString(tex.replace(/%.*/g, ''), {displayMode: true});
+			displayMath.parentNode.replaceChild(replaced, displayMath);
+		}
+	</script>
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+
+    <link rel="canonical" href="https://nuhuo08.github.io/state_pattern/">
+    <meta name="generator" content="Hugo 0.62.2" />
+    <title>状态模式 | XiaoWu</title>
+
+    
+    <link rel="stylesheet" href="/css/uswds.min.c480a9b2a1fc1e7e564e62752462b22cd5f508a047f0340cb3725722f627fb1d.css">
+    
+    
+    <link rel="stylesheet" href="/css/custom.0a518097f5500782b25662ab2af4088600eefcc3d2d8828ce721e5e5fee436b5.min.css">
+  </head>
+  <body>
+    <a class="usa-skipnav" href="#main-content">Skip to main content</a>
+
+    <header class="usa-header usa-header--basic" role="banner">
+      <div class="usa-nav-container">
+        <div class="usa-navbar">
+          <div class="usa-logo" id="basic-mega-logo">
+            <em class="usa-logo__text">
+              <a href="/" title="Home" aria-label="Home">XiaoWu</a>
+            </em>
+          </div>
+          <button class="usa-menu-btn">Menu</button>
+        </div>
+
+        <nav role="navigation" class="usa-nav">
+          <button class="usa-nav__close">
+            <img src="/img/close.svg" alt="close" />
+          </button>
+          <ul class="usa-nav__primary usa-accordion">
+            
+            
+              
+              
+              
+              
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link " href="/">
+                  <span>Home</span>
+                </a>
+              </li>
+            
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="usa-section" id="main-content">
+      <div class="grid-container">
+        <div class="grid-row grid-gap">
+          <div class="tablet:grid-col usa-prose">
+            
+  <h1>状态模式</h1>
+  
+  <p class="text-gray-50">
+    
+    
+    
+    <strong>Published: </strong>2020-11-18
+
+    
+    
+      
+      
+    
+    
+    
+    
+    </span>
+  </p>
+  
+  
+    
+
+<div class="toc">
+  <strong>Table of contents</strong>
+  <ol>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e4%bd%bf%e7%94%a8%e5%9c%ba%e6%99%af">
+        使用场景
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e6%8a%bd%e8%b1%a1%e7%8a%b6%e6%80%81%e7%b1%bb">
+        抽象状态类
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e5%85%b7%e4%bd%93%e7%8a%b6%e6%80%81%e5%ad%90%e7%b1%bb">
+        具体状态子类
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e5%9c%ba%e6%99%af%e7%b1%bb">
+        场景类
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#reference">
+        Reference
+      </a>
+    </li>
+    
+  </ol>
+</div>
+
+
+  
+  
+  
+
+<h2 id="使用场景">使用场景 <a aria-label="header link for 使用场景" href="#使用场景" class="header-link">#</a></h2>
+
+<p>状态是一种行为设计模式， 让你能在一个对象的内部状态变化时改变其行为。</p>
+
+<p>该模式将与状态相关的行为抽取到独立的状态类中， 让原对象将工作委派给这些类的实例， 而不是自行进行处理。</p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/state_pattern/state.jpeg">
+    <img src="/state_pattern/state.jpeg" alt="state">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<h2 id="抽象状态类">抽象状态类 <a aria-label="header link for 抽象状态类" href="#抽象状态类" class="header-link">#</a></h2>
+
+<p>定义所有需要实现的接口。</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#008000;font-weight:bold">class</span> <span style="color:#00f;font-weight:bold">State</span> {
+ <span style="color:#008000;font-weight:bold">public</span><span style="color:#666">:</span>
+  <span style="color:#008000;font-weight:bold">virtual</span> <span style="color:#666">~</span>State() {}
+  <span style="color:#008000;font-weight:bold">virtual</span> <span style="color:#b00040">void</span> <span style="color:#00f">insertQuarter</span>() <span style="color:#666">=</span> <span style="color:#666">0</span>;
+  <span style="color:#008000;font-weight:bold">virtual</span> <span style="color:#b00040">void</span> <span style="color:#00f">ejectQuarter</span>() <span style="color:#666">=</span> <span style="color:#666">0</span>;
+  <span style="color:#008000;font-weight:bold">virtual</span> <span style="color:#b00040">void</span> <span style="color:#00f">turnCrank</span>() <span style="color:#666">=</span> <span style="color:#666">0</span>;
+  <span style="color:#008000;font-weight:bold">virtual</span> <span style="color:#b00040">void</span> <span style="color:#00f">dispense</span>() <span style="color:#666">=</span> <span style="color:#666">0</span>;
+  <span style="color:#008000;font-weight:bold">virtual</span> string <span style="color:#00f">toString</span>() <span style="color:#666">=</span> <span style="color:#666">0</span>;
+};
+</code></pre></div>
+<h2 id="具体状态子类">具体状态子类 <a aria-label="header link for 具体状态子类" href="#具体状态子类" class="header-link">#</a></h2>
+
+<p>具体状态子类：</p>
+
+<ul>
+<li>包含场景类，在合适阶段，切换场景类里的状态；</li>
+<li>实现此状态可以完成的功能。</li>
+</ul>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#008000;font-weight:bold">class</span> <span style="color:#00f;font-weight:bold">NoQuarterState</span> <span style="color:#666">:</span> <span style="color:#008000;font-weight:bold">public</span> State {
+ <span style="color:#008000;font-weight:bold">public</span><span style="color:#666">:</span>
+  <span style="color:#008000;font-weight:bold">explicit</span> NoQuarterState(GumballMachine <span style="color:#666">*</span>gumball_machine);
+  <span style="color:#008000;font-weight:bold">virtual</span> <span style="color:#666">~</span>NoQuarterState();
+  <span style="color:#008000;font-weight:bold">virtual</span> <span style="color:#b00040">void</span> <span style="color:#00f">insertQuarter</span>();
+  <span style="color:#008000;font-weight:bold">virtual</span> <span style="color:#b00040">void</span> <span style="color:#00f">ejectQuarter</span>();
+  <span style="color:#008000;font-weight:bold">virtual</span> <span style="color:#b00040">void</span> <span style="color:#00f">turnCrank</span>();
+  <span style="color:#008000;font-weight:bold">virtual</span> <span style="color:#b00040">void</span> <span style="color:#00f">dispense</span>();
+  <span style="color:#008000;font-weight:bold">virtual</span> string <span style="color:#00f">toString</span>();
+ <span style="color:#008000;font-weight:bold">private</span><span style="color:#666">:</span>
+  GumballMachine <span style="color:#666">*</span>gumball_machine_;
+};
+
+<span style="color:#b00040">void</span> NoQuarterState<span style="color:#666">:</span><span style="color:#666">:</span>insertQuarter() {
+  cout <span style="color:#666">&lt;</span><span style="color:#666">&lt;</span> <span style="color:#ba2121"></span><span style="color:#ba2121">&#34;</span><span style="color:#ba2121">You inserted a quarter</span><span style="color:#ba2121">&#34;</span> <span style="color:#666">&lt;</span><span style="color:#666">&lt;</span> endl;
+  gumball_machine_<span style="color:#666">-</span><span style="color:#666">&gt;</span>setState(gumball_machine_<span style="color:#666">-</span><span style="color:#666">&gt;</span>has_quarter_state());
+}
+
+<span style="color:#b00040">void</span> NoQuarterState<span style="color:#666">:</span><span style="color:#666">:</span>ejectQuarter() {
+  cout <span style="color:#666">&lt;</span><span style="color:#666">&lt;</span> <span style="color:#ba2121"></span><span style="color:#ba2121">&#34;</span><span style="color:#ba2121">You haven&#39;t inserted a quarter</span><span style="color:#ba2121">&#34;</span> <span style="color:#666">&lt;</span><span style="color:#666">&lt;</span> endl;
+}
+
+<span style="color:#b00040">void</span> NoQuarterState<span style="color:#666">:</span><span style="color:#666">:</span>turnCrank() {
+  cout <span style="color:#666">&lt;</span><span style="color:#666">&lt;</span> <span style="color:#ba2121"></span><span style="color:#ba2121">&#34;</span><span style="color:#ba2121">You turned, but there&#39;s no quarter</span><span style="color:#ba2121">&#34;</span> <span style="color:#666">&lt;</span><span style="color:#666">&lt;</span> endl;
+}
+
+<span style="color:#b00040">void</span> NoQuarterState<span style="color:#666">:</span><span style="color:#666">:</span>dispense() {
+  cout <span style="color:#666">&lt;</span><span style="color:#666">&lt;</span> <span style="color:#ba2121"></span><span style="color:#ba2121">&#34;</span><span style="color:#ba2121">You need to pay first</span><span style="color:#ba2121">&#34;</span> <span style="color:#666">&lt;</span><span style="color:#666">&lt;</span> endl;
+}
+
+string NoQuarterState<span style="color:#666">:</span><span style="color:#666">:</span>toString() {
+  <span style="color:#008000;font-weight:bold">return</span> <span style="color:#ba2121"></span><span style="color:#ba2121">&#34;</span><span style="color:#ba2121">waiting for quarter</span><span style="color:#ba2121">&#34;</span>;
+}
+</code></pre></div>
+<h2 id="场景类">场景类 <a aria-label="header link for 场景类" href="#场景类" class="header-link">#</a></h2>
+
+<p>场景类中：</p>
+
+<ul>
+<li>包含所有的状态子类；</li>
+<li>包含一个抽象状态类，指向某一个具体的状态子类。</li>
+</ul>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp">GumballMachine<span style="color:#666">:</span><span style="color:#666">:</span>GumballMachine(<span style="color:#b00040">int</span> number_gumballs) <span style="color:#666">:</span> count_(number_gumballs), state_(sold_out_state_) {
+
+  sold_out_state_    <span style="color:#666">=</span> <span style="color:#008000;font-weight:bold">new</span> SoldOutState(<span style="color:#008000;font-weight:bold">this</span>);
+  no_quarter_state_  <span style="color:#666">=</span> <span style="color:#008000;font-weight:bold">new</span> NoQuarterState(<span style="color:#008000;font-weight:bold">this</span>);
+  has_quarter_state_ <span style="color:#666">=</span> <span style="color:#008000;font-weight:bold">new</span> HasQuarterState(<span style="color:#008000;font-weight:bold">this</span>);
+  sold_state_        <span style="color:#666">=</span> <span style="color:#008000;font-weight:bold">new</span> SoldState(<span style="color:#008000;font-weight:bold">this</span>);
+
+  <span style="color:#008000;font-weight:bold">if</span> (count_ <span style="color:#666">&gt;</span> <span style="color:#666">0</span>) {
+    state_ <span style="color:#666">=</span> no_quarter_state_;
+  }
+}
+
+<span style="color:#b00040">void</span> GumballMachine<span style="color:#666">:</span><span style="color:#666">:</span>insertQuarter() {
+  state_<span style="color:#666">-</span><span style="color:#666">&gt;</span>insertQuarter();
+}
+
+<span style="color:#b00040">void</span> GumballMachine<span style="color:#666">:</span><span style="color:#666">:</span>ejectQuarter() {
+  state_<span style="color:#666">-</span><span style="color:#666">&gt;</span>ejectQuarter();
+}
+
+<span style="color:#b00040">void</span> GumballMachine<span style="color:#666">:</span><span style="color:#666">:</span>turnCrank() {
+  state_<span style="color:#666">-</span><span style="color:#666">&gt;</span>turnCrank();
+  state_<span style="color:#666">-</span><span style="color:#666">&gt;</span>dispense();
+}
+
+<span style="color:#b00040">void</span> GumballMachine<span style="color:#666">:</span><span style="color:#666">:</span>releaseBall() {
+  cout <span style="color:#666">&lt;</span><span style="color:#666">&lt;</span> <span style="color:#ba2121"></span><span style="color:#ba2121">&#34;</span><span style="color:#ba2121">A gumball comes rolling out the slot...</span><span style="color:#ba2121">&#34;</span> <span style="color:#666">&lt;</span><span style="color:#666">&lt;</span> endl;
+  <span style="color:#008000;font-weight:bold">if</span> (count_ <span style="color:#666">!</span><span style="color:#666">=</span> <span style="color:#666">0</span>) {
+    count_<span style="color:#666">-</span><span style="color:#666">-</span>;
+  }
+}
+
+<span style="color:#b00040">void</span> GumballMachine<span style="color:#666">:</span><span style="color:#666">:</span>refill(<span style="color:#b00040">int</span> count) {
+  count_ <span style="color:#666">=</span> count;
+  state_ <span style="color:#666">=</span> no_quarter_state_;
+}
+</code></pre></div>
+<h2 id="reference">Reference <a aria-label="header link for Reference" href="#reference" class="header-link">#</a></h2>
+
+<p><a href="http://dreamrunner.org/blog/2014/05/04/%E6%B5%85%E8%B0%88%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F13/">http://dreamrunner.org/blog/2014/05/04/%E6%B5%85%E8%B0%88%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F13/</a></p>
+
+<p><a href="https://www.jianshu.com/p/dc59262dc646">https://www.jianshu.com/p/dc59262dc646</a></p>
+
+
+
+  
+    <br>
+    <strong>Next:</strong> <a href="/singleton_pattern/">单例模式</a>
+  
+
+  
+    <br>
+    <strong>Previous:</strong> <a href="/stl/">STL体系结构与内核分析</a>
+  
+  
+  
+    <div id="utter-container">
+    <script src="https://utteranc.es/client.js"
+        repo= 'nuhuo08/blog-comments'
+        issue-term= "pathname"
+        theme= 'github-light'
+        crossorigin= "anonymous"
+        async>
+    </script> 
+    </div>
+
+  
+
+
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="usa-footer usa-footer--slim" role="contentinfo">
+      
+      <div class="usa-footer__secondary-section" id="footer-main">
+        <div class="grid-container">
+          <div class="grid-row grid-gap">
+            <div class="grid-col-12 text-center">
+              
+              
+                Made with <a href="https://gohugo.io/">Hugo</a> • Content in <a href="https://github.com/nuhuo08/uswds-hugo-theme">GitHub</a>
+                <br>
+                Last deployed on 2020-11-28
+              
+
+              
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    
+    <script src="/js/uswds.min.fcd9b25a27c51de427f4c618dee88490c2ff0a792a573531e316730d07df3f3d.js"></script>
+
+  </body>
+</html>

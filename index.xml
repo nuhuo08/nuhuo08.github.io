@@ -6,10 +6,157 @@
     <description>Recent content on XiaoWu</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 03 Apr 2020 11:29:23 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 28 Nov 2020 21:36:04 +0800</lastBuildDate>
     
 	<atom:link href="https://nuhuo08.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Slam_fundamental</title>
+      <link>https://nuhuo08.github.io/slam_fundamental/</link>
+      <pubDate>Sat, 28 Nov 2020 21:36:04 +0800</pubDate>
+      
+      <guid>https://nuhuo08.github.io/slam_fundamental/</guid>
+      <description> PnP 光流法 最小二乘推导 带约束条件的优化 卡尔曼滤波 拉格朗日乘子法  </description>
+    </item>
+    
+    <item>
+      <title>Operating_system</title>
+      <link>https://nuhuo08.github.io/operating_system/</link>
+      <pubDate>Sat, 28 Nov 2020 21:26:26 +0800</pubDate>
+      
+      <guid>https://nuhuo08.github.io/operating_system/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Algorithm</title>
+      <link>https://nuhuo08.github.io/algorithm/</link>
+      <pubDate>Sat, 28 Nov 2020 21:25:22 +0800</pubDate>
+      
+      <guid>https://nuhuo08.github.io/algorithm/</guid>
+      <description> 快排及其变体 查找第K大的数 链表逆序 2D已排序数组查找元素 字符串最小编辑距离  </description>
+    </item>
+    
+    <item>
+      <title>Complementary_filter</title>
+      <link>https://nuhuo08.github.io/complementary_filter/</link>
+      <pubDate>Thu, 19 Nov 2020 20:24:03 +0800</pubDate>
+      
+      <guid>https://nuhuo08.github.io/complementary_filter/</guid>
+      <description>https://sites.google.com/site/myimuestimationexperience/filters/complementary-filter
+https://zhuanlan.zhihu.com/p/66962045</description>
+    </item>
+    
+    <item>
+      <title>有趣的人</title>
+      <link>https://nuhuo08.github.io/interesting_soul/</link>
+      <pubDate>Thu, 19 Nov 2020 17:15:27 +0800</pubDate>
+      
+      <guid>https://nuhuo08.github.io/interesting_soul/</guid>
+      <description>https://densecollections.top/posts/Summaryofthisyear-1/
+https://pluskid.org/
+https://freemind.pluskid.org/misc/2019-summary/</description>
+    </item>
+    
+    <item>
+      <title>观察者模式</title>
+      <link>https://nuhuo08.github.io/observer_pattern/</link>
+      <pubDate>Thu, 19 Nov 2020 14:31:45 +0800</pubDate>
+      
+      <guid>https://nuhuo08.github.io/observer_pattern/</guid>
+      <description>使用场景    目标对象的接口 class Subject { public: virtual ~Subject() {} virtual void registerObserver(Observer *o) = 0; virtual void removeObserver(Observer *o) = 0; virtual void notifyObservers() = 0; };  具体的目标对象 class WeatherData : public Subject { public: WeatherData(); virtual ~WeatherData(); virtual void registerObserver(Observer *o); virtual void removeObserver(Observer *o); virtual void notifyObservers(); void measurementsChanged(); void setMeasurements(float temperature, float humidity, float pressure); float temperature(); float humidity(); float pressure(); private: std::vector&amp;lt;Observer*&amp;gt; *observers_; float temperature_; float humidity_; float pressure_; }; void WeatherData::notifyObservers() { int i; for (i = 0; i &amp;lt; observers_-&amp;gt;size(); ++i) { Observer* observer = (*observers_)[i]; observer-&amp;gt;update(temperature_, humidity_, pressure_); } } void WeatherData::measurementsChanged() { notifyObservers(); } void WeatherData::setMeasurements(float temperature, float humidity, float pressure) { temperature_ = temperature; humidity_ = humidity; pressure_ = pressure; measurementsChanged(); }  观察者更新接口 class Observer { public: virtual ~Observer() {} virtual void update(float temp, float humdity, float pressure) = 0; };  观察者显示接口 class DisplayElement { public: virtual ~DisplayElement() {} virtual void display() = 0; };  具体的观察者 class StatisticsDisplay : public Observer, public DisplayElement { public: explicit StatisticsDisplay(Subject *weather_data); ~StatisticsDisplay(); virtual void update(float temp, float humidity, float pressure); virtual void display(); private: float max_temp_; float min_temp_; float temp_sum_; int num_readings_; Subject *weather_data_; DISALLOW_COPY_AND_ASSIGN(StatisticsDisplay); }; StatisticsDisplay::StatisticsDisplay(Subject *weather_data) : weather_data_(weather_data), max_temp_(0.</description>
+    </item>
+    
+    <item>
+      <title>单例模式</title>
+      <link>https://nuhuo08.github.io/singleton_pattern/</link>
+      <pubDate>Wed, 18 Nov 2020 20:33:14 +0800</pubDate>
+      
+      <guid>https://nuhuo08.github.io/singleton_pattern/</guid>
+      <description>头文件  构造函数私有化，不能被new 不能clonable和assignable 通过一个静态函数访问单例  /** * The Singleton class defines the `GetInstance` method that serves as an * alternative to constructor and lets clients access the same instance of this * class over and over. */ class Singleton { /** * The Singleton&amp;#39;s constructor/destructor should always be private to * prevent direct construction/desctruction calls with the `new`/`delete` * operator. */ private: static Singleton * pinstance_; static std::mutex mutex_; protected: Singleton(const std::string value): value_(value) { } ~Singleton() {} std::string value_; public: /** * Singletons should not be cloneable.</description>
+    </item>
+    
+    <item>
+      <title>状态模式</title>
+      <link>https://nuhuo08.github.io/state_pattern/</link>
+      <pubDate>Wed, 18 Nov 2020 16:18:22 +0800</pubDate>
+      
+      <guid>https://nuhuo08.github.io/state_pattern/</guid>
+      <description>使用场景 状态是一种行为设计模式， 让你能在一个对象的内部状态变化时改变其行为。
+该模式将与状态相关的行为抽取到独立的状态类中， 让原对象将工作委派给这些类的实例， 而不是自行进行处理。
+   抽象状态类 定义所有需要实现的接口。
+class State { public: virtual ~State() {} virtual void insertQuarter() = 0; virtual void ejectQuarter() = 0; virtual void turnCrank() = 0; virtual void dispense() = 0; virtual string toString() = 0; };  具体状态子类 具体状态子类：
+ 包含场景类，在合适阶段，切换场景类里的状态； 实现此状态可以完成的功能。  class NoQuarterState : public State { public: explicit NoQuarterState(GumballMachine *gumball_machine); virtual ~NoQuarterState(); virtual void insertQuarter(); virtual void ejectQuarter(); virtual void turnCrank(); virtual void dispense(); virtual string toString(); private: GumballMachine *gumball_machine_; }; void NoQuarterState::insertQuarter() { cout &amp;lt;&amp;lt; &amp;#34;You inserted a quarter&amp;#34; &amp;lt;&amp;lt; endl; gumball_machine_-&amp;gt;setState(gumball_machine_-&amp;gt;has_quarter_state()); } void NoQuarterState::ejectQuarter() { cout &amp;lt;&amp;lt; &amp;#34;You haven&amp;#39;t inserted a quarter&amp;#34; &amp;lt;&amp;lt; endl; } void NoQuarterState::turnCrank() { cout &amp;lt;&amp;lt; &amp;#34;You turned, but there&amp;#39;s no quarter&amp;#34; &amp;lt;&amp;lt; endl; } void NoQuarterState::dispense() { cout &amp;lt;&amp;lt; &amp;#34;You need to pay first&amp;#34; &amp;lt;&amp;lt; endl; } string NoQuarterState::toString() { return &amp;#34;waiting for quarter&amp;#34;; }  场景类 场景类中：</description>
+    </item>
+    
+    <item>
+      <title>STL体系结构与内核分析</title>
+      <link>https://nuhuo08.github.io/stl/</link>
+      <pubDate>Tue, 17 Nov 2020 22:36:47 +0800</pubDate>
+      
+      <guid>https://nuhuo08.github.io/stl/</guid>
+      <description>STL体系结构与内核分析
+STL总结</description>
+    </item>
+    
+    <item>
+      <title>设计模式</title>
+      <link>https://nuhuo08.github.io/design_pattern/</link>
+      <pubDate>Tue, 17 Nov 2020 22:35:05 +0800</pubDate>
+      
+      <guid>https://nuhuo08.github.io/design_pattern/</guid>
+      <description>UML     车的类图结构为abstract，表示车是一个抽象类； 它有两个继承类：小汽车和自行车；它们之间的关系为实现关系，使用带空心箭头的虚线表示； 小汽车为与SUV之间也是继承关系，它们之间的关系为泛化关系，使用带空心箭头的实线表示； 小汽车与发动机之间是组合关系，使用带实心箭头的实线表示； 学生与班级之间是聚合关系，使用带空心箭头的实线表示； 学生与身份证之间为关联关系，使用一根实线表示； 学生上学需要用到自行车，与自行车是一种依赖关系，使用带箭头的虚线表示；  https://design-patterns.readthedocs.io/zh_CN/latest/read_uml.html
+https://www.cnblogs.com/shindo/p/5579191.html
+设计模式 单例模式
+观察者模式
+状态模式
+工厂模式
+参考资料 https://refactoringguru.cn/design-patterns/cpp
+http://dreamrunner.org/blog/categories/design-pattern/</description>
+    </item>
+    
+    <item>
+      <title>C&#43;&#43;特性</title>
+      <link>https://nuhuo08.github.io/cpp_property/</link>
+      <pubDate>Tue, 17 Nov 2020 22:14:40 +0800</pubDate>
+      
+      <guid>https://nuhuo08.github.io/cpp_property/</guid>
+      <description>视 C++ 为一个语言联邦（C、Object-Oriented C++、Template C++、STL） C++ Primer
+虚函数与纯虚函数 纯虚函数：面向接口编程
+虚函数：面向??编程
+类的大小 #include &amp;lt;iostream&amp;gt;using namespace std; class basic{ public: static int a; char b[10]; int c; static void fun1(){cout&amp;lt;&amp;lt;&amp;#34;fun1&amp;#34;&amp;lt;&amp;lt;endl;} void fun2(){cout&amp;lt;&amp;lt;&amp;#34;fun2&amp;#34;&amp;lt;&amp;lt;endl;} virtual void fun3(){cout&amp;lt;&amp;lt;&amp;#34;fun3&amp;#34;&amp;lt;&amp;lt;endl;} virtual void fun4(){cout&amp;lt;&amp;lt;&amp;#34;fun4&amp;#34;&amp;lt;&amp;lt;endl;} }; int basic::a=1;   不要在头文件定义(初始化静态数据成员)，大多数情况下会引起重复定义错误。
+  数据成员：静态、非静态 函数成员：静态、非静态、虚函数  如果一个类中存在虚函数，编译器会做以下三件事
+ 为该类分配一个虚函数表，它存有虚函数在执行器的地址 在该类中安插一个虚指针，指向该类的虚表 将每一个虚函数的入口地址存放在虚函数表中相应的slot  64位系统8字节对其，a不占此类内存，b占10个字节，c4个字节，虚指针一个地址字节8字节，故为24
+空类的大小为1：标准禁止对象大小为 0，因为两个不同的对象需要不同的地址表示。
+面向对象编程  封装 继承 多态  如何只启动一个APP Reference https://github.com/huihut/interview</description>
+    </item>
+    
+    <item>
+      <title>富爸爸穷爸爸</title>
+      <link>https://nuhuo08.github.io/rich_dad_poor_dad/</link>
+      <pubDate>Sun, 15 Nov 2020 23:32:22 +0800</pubDate>
+      
+      <guid>https://nuhuo08.github.io/rich_dad_poor_dad/</guid>
+      <description>起源 大学本科就听说过《富爸爸穷爸爸》、《牛奶可乐经济学》等经济学科普读物，却从来没有拜读过。
+今天看空白女侠的知乎回答，推荐了这本书，晚上在Kindle读了起来。
+内容概略 由“老鼠赛跑”这个游戏引出来，大多数人的人生都是在挣扎着收支平衡，却连最基本的理财知识都不知道。
+作者从富爸爸身上学到了6门课。
+ 富人不为钱工作  富爸爸每小时30美分的报酬，要求他每周6工作三小时。直到作者受不了了，不想干了，或者要求涨薪，才开始对他进行教育。
+大多数人按部就班的工作，为钱而工作，却不明白工作到底是为了什么。
+接下来一段时间不给报酬的工作。然后再进行了教育。
+报酬逐渐提升到5美元1小时，让作者心情激荡。这就是普通人的缺陷：恐惧和贪婪。因为恐惧没钱而去工作，有钱以后去实现自己的欲望和贪婪。这是被感情控制了自己的行为，而没有真正跳脱出来进行深入的思考。 应该学会控制恐惧和欲望。让感情跟随你的思想，从而实现三思而后行。
+用脑子思考，无代价的工作，会看到别人看不见的东西，因为大多数人在寻求金钱和安定。在这个过程中，作者发现了开小图书馆并收取门票的商机。
+掌握财务知识  最重要的不是你挣了多少钱，而是要看你能留下多少钱，以及留住了多久。必须要掌握财务知识。
+要明白资产和负债的区别，并且尽可能的购买资产。
+不要相信“我们必须这么做，因为其他人都这么做”。掌握了足够的财务知识，就能够把握投资机会。否则，你将1.为别人工作；2.为政府工作；3.为银行工作。
+净资产通常包括那些非现金资产；财富则衡量你的钱正在挣多少钱，以及你的财务生存能力。
+关注自己的事业 麦当劳创始人其实是投资房地产的。
+为了财务安全，人们需要关注自己的事业。你的事也围绕着的是你的资产，而不是你的收入。
+对成年人而言，把支出维持在低水平，减少借款和勤劳的工作会帮你打下一个稳固的资产基础。 不需要我到场就可以正常运作的业务。我拥有它们，但由别人经营和管理； 股票 债券 共同基金 产生收入的房地产 票据（结局） 专利权如音乐、手稿、专利 任何其他有价值、可产生收入或可能增值并且有很好的流通市场的东西  比如，我喜欢小公司的股票，并1年内脱手；房地产投资策略则是从小买卖开始并一点点做大，条件允许的话尽量晚一些脱手，通常7年以上。
+富人们最后才买奢侈品：先建立他们的资产，然后才用资产所产生的收入购买奢侈品。
+税收的历史和公司的力量  </description>
+    </item>
     
     <item>
       <title>车载移动测量系统</title>

@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+	<script>
+		renderMathInElement(document.body,
+			{
+				delimiters: [
+					{left: "$$", right: "$$", display: true},
+					{left: "$", right: "$", display: false},
+				]
+			}
+		);
+
+		var inlineMathArray = document.querySelectorAll("script[type='math/tex']");
+		for (var i = 0; i < inlineMathArray.length; i++) {
+			var inlineMath = inlineMathArray[i];
+			var tex = inlineMath.innerText || inlineMath.textContent;
+			var replaced = document.createElement("span");
+			replaced.innerHTML = katex.renderToString(tex, {displayMode: false});
+			inlineMath.parentNode.replaceChild(replaced, inlineMath);
+		}
+
+		var displayMathArray = document.querySelectorAll("script[type='math/tex; mode=display']");
+		for (var i = 0; i < displayMathArray.length; i++) {
+			var displayMath = displayMathArray[i];
+			var tex = displayMath.innerHTML;
+			var replaced = document.createElement("span");
+			replaced.innerHTML = katex.renderToString(tex.replace(/%.*/g, ''), {displayMode: true});
+			displayMath.parentNode.replaceChild(replaced, displayMath);
+		}
+	</script>
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+
+    <link rel="canonical" href="https://nuhuo08.github.io/singleton_pattern/">
+    <meta name="generator" content="Hugo 0.62.2" />
+    <title>单例模式 | XiaoWu</title>
+
+    
+    <link rel="stylesheet" href="/css/uswds.min.c480a9b2a1fc1e7e564e62752462b22cd5f508a047f0340cb3725722f627fb1d.css">
+    
+    
+    <link rel="stylesheet" href="/css/custom.0a518097f5500782b25662ab2af4088600eefcc3d2d8828ce721e5e5fee436b5.min.css">
+  </head>
+  <body>
+    <a class="usa-skipnav" href="#main-content">Skip to main content</a>
+
+    <header class="usa-header usa-header--basic" role="banner">
+      <div class="usa-nav-container">
+        <div class="usa-navbar">
+          <div class="usa-logo" id="basic-mega-logo">
+            <em class="usa-logo__text">
+              <a href="/" title="Home" aria-label="Home">XiaoWu</a>
+            </em>
+          </div>
+          <button class="usa-menu-btn">Menu</button>
+        </div>
+
+        <nav role="navigation" class="usa-nav">
+          <button class="usa-nav__close">
+            <img src="/img/close.svg" alt="close" />
+          </button>
+          <ul class="usa-nav__primary usa-accordion">
+            
+            
+              
+              
+              
+              
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link " href="/">
+                  <span>Home</span>
+                </a>
+              </li>
+            
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="usa-section" id="main-content">
+      <div class="grid-container">
+        <div class="grid-row grid-gap">
+          <div class="tablet:grid-col usa-prose">
+            
+  <h1>单例模式</h1>
+  
+  <p class="text-gray-50">
+    
+    
+    
+    <strong>Published: </strong>2020-11-18
+
+    
+    
+      
+      
+    
+    
+    
+    
+    </span>
+  </p>
+  
+  
+    
+
+<div class="toc">
+  <strong>Table of contents</strong>
+  <ol>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e5%a4%b4%e6%96%87%e4%bb%b6">
+        头文件
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#cpp%e6%96%87%e4%bb%b6">
+        cpp文件
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e6%b5%8b%e8%af%95%e4%bb%a3%e7%a0%81">
+        测试代码
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#reference">
+        Reference
+      </a>
+    </li>
+    
+  </ol>
+</div>
+
+
+  
+  
+  
+
+<h2 id="头文件">头文件 <a aria-label="header link for 头文件" href="#头文件" class="header-link">#</a></h2>
+
+<ul>
+<li>构造函数私有化，不能被new</li>
+<li>不能clonable和assignable</li>
+<li>通过一个静态函数访问单例</li>
+</ul>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#408080;font-style:italic">/**
+</span><span style="color:#408080;font-style:italic"> * The Singleton class defines the `GetInstance` method that serves as an
+</span><span style="color:#408080;font-style:italic"> * alternative to constructor and lets clients access the same instance of this
+</span><span style="color:#408080;font-style:italic"> * class over and over.
+</span><span style="color:#408080;font-style:italic"> */</span>
+<span style="color:#008000;font-weight:bold">class</span> <span style="color:#00f;font-weight:bold">Singleton</span>
+{
+
+    <span style="color:#408080;font-style:italic">/**
+</span><span style="color:#408080;font-style:italic">     * The Singleton&#39;s constructor/destructor should always be private to
+</span><span style="color:#408080;font-style:italic">     * prevent direct construction/desctruction calls with the `new`/`delete`
+</span><span style="color:#408080;font-style:italic">     * operator.
+</span><span style="color:#408080;font-style:italic">     */</span>
+<span style="color:#008000;font-weight:bold">private</span><span style="color:#666">:</span>
+    <span style="color:#008000;font-weight:bold">static</span> Singleton <span style="color:#666">*</span> pinstance_;
+    <span style="color:#008000;font-weight:bold">static</span> std<span style="color:#666">:</span><span style="color:#666">:</span>mutex mutex_;
+
+<span style="color:#008000;font-weight:bold">protected</span><span style="color:#666">:</span>
+    Singleton(<span style="color:#008000;font-weight:bold">const</span> std<span style="color:#666">:</span><span style="color:#666">:</span>string value)<span style="color:#666">:</span> value_(value)
+    {
+    }
+    <span style="color:#666">~</span>Singleton() {}
+    std<span style="color:#666">:</span><span style="color:#666">:</span>string value_;
+
+<span style="color:#008000;font-weight:bold">public</span><span style="color:#666">:</span>
+    <span style="color:#408080;font-style:italic">/**
+</span><span style="color:#408080;font-style:italic">     * Singletons should not be cloneable.
+</span><span style="color:#408080;font-style:italic">     */</span>
+    Singleton(Singleton <span style="color:#666">&amp;</span>other) <span style="color:#666">=</span> <span style="color:#008000;font-weight:bold">delete</span>;
+    <span style="color:#408080;font-style:italic">/**
+</span><span style="color:#408080;font-style:italic">     * Singletons should not be assignable.
+</span><span style="color:#408080;font-style:italic">     */</span>
+    <span style="color:#b00040">void</span> <span style="color:#008000;font-weight:bold">operator</span><span style="color:#666">=</span>(<span style="color:#008000;font-weight:bold">const</span> Singleton <span style="color:#666">&amp;</span>) <span style="color:#666">=</span> <span style="color:#008000;font-weight:bold">delete</span>;
+    <span style="color:#408080;font-style:italic">/**
+</span><span style="color:#408080;font-style:italic">     * This is the static method that controls the access to the singleton
+</span><span style="color:#408080;font-style:italic">     * instance. On the first run, it creates a singleton object and places it
+</span><span style="color:#408080;font-style:italic">     * into the static field. On subsequent runs, it returns the client existing
+</span><span style="color:#408080;font-style:italic">     * object stored in the static field.
+</span><span style="color:#408080;font-style:italic">     */</span>
+
+    <span style="color:#008000;font-weight:bold">static</span> Singleton <span style="color:#666">*</span><span style="color:#00f">GetInstance</span>(<span style="color:#008000;font-weight:bold">const</span> std<span style="color:#666">:</span><span style="color:#666">:</span>string<span style="color:#666">&amp;</span> value);
+    <span style="color:#408080;font-style:italic">/**
+</span><span style="color:#408080;font-style:italic">     * Finally, any singleton should define some business logic, which can be
+</span><span style="color:#408080;font-style:italic">     * executed on its instance.
+</span><span style="color:#408080;font-style:italic">     */</span>
+    <span style="color:#b00040">void</span> <span style="color:#00f">SomeBusinessLogic</span>()
+    {
+        <span style="color:#408080;font-style:italic">// ...
+</span><span style="color:#408080;font-style:italic"></span>    }
+    
+    std<span style="color:#666">:</span><span style="color:#666">:</span>string value() <span style="color:#008000;font-weight:bold">const</span>{
+        <span style="color:#008000;font-weight:bold">return</span> value_;
+    } 
+};
+</code></pre></div>
+<h2 id="cpp文件">cpp文件 <a aria-label="header link for cpp文件" href="#cpp文件" class="header-link">#</a></h2>
+
+<p>为了线程安全，需要在访问时加锁。</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#408080;font-style:italic">/**
+</span><span style="color:#408080;font-style:italic"> * Static methods should be defined outside the class.
+</span><span style="color:#408080;font-style:italic"> */</span>
+
+Singleton<span style="color:#666">*</span> Singleton<span style="color:#666">:</span><span style="color:#666">:</span>pinstance_{<span style="color:#008000;font-weight:bold">nullptr</span>};
+std<span style="color:#666">:</span><span style="color:#666">:</span>mutex Singleton<span style="color:#666">:</span><span style="color:#666">:</span>mutex_;
+
+<span style="color:#408080;font-style:italic">/**
+</span><span style="color:#408080;font-style:italic"> * The first time we call GetInstance we will lock the storage location
+</span><span style="color:#408080;font-style:italic"> *      and then we make sure again that the variable is null and then we
+</span><span style="color:#408080;font-style:italic"> *      set the value. RU:
+</span><span style="color:#408080;font-style:italic"> */</span>
+Singleton <span style="color:#666">*</span>Singleton<span style="color:#666">:</span><span style="color:#666">:</span>GetInstance(<span style="color:#008000;font-weight:bold">const</span> std<span style="color:#666">:</span><span style="color:#666">:</span>string<span style="color:#666">&amp;</span> value)
+{
+    std<span style="color:#666">:</span><span style="color:#666">:</span>lock_guard<span style="color:#666">&lt;</span>std<span style="color:#666">:</span><span style="color:#666">:</span>mutex<span style="color:#666">&gt;</span> lock(mutex_);
+    <span style="color:#008000;font-weight:bold">if</span> (pinstance_ <span style="color:#666">=</span><span style="color:#666">=</span> <span style="color:#008000;font-weight:bold">nullptr</span>)
+    {
+        pinstance_ <span style="color:#666">=</span> <span style="color:#008000;font-weight:bold">new</span> Singleton(value);
+    }
+    <span style="color:#008000;font-weight:bold">return</span> pinstance_;
+}
+</code></pre></div>
+<h2 id="测试代码">测试代码 <a aria-label="header link for 测试代码" href="#测试代码" class="header-link">#</a></h2>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#b00040">void</span> <span style="color:#00f">ThreadFoo</span>(){
+    <span style="color:#408080;font-style:italic">// Following code emulates slow initialization.
+</span><span style="color:#408080;font-style:italic"></span>    std<span style="color:#666">:</span><span style="color:#666">:</span>this_thread<span style="color:#666">:</span><span style="color:#666">:</span>sleep_for(std<span style="color:#666">:</span><span style="color:#666">:</span>chrono<span style="color:#666">:</span><span style="color:#666">:</span>milliseconds(<span style="color:#666">1000</span>));
+    Singleton<span style="color:#666">*</span> singleton <span style="color:#666">=</span> Singleton<span style="color:#666">:</span><span style="color:#666">:</span>GetInstance(<span style="color:#ba2121"></span><span style="color:#ba2121">&#34;</span><span style="color:#ba2121">FOO</span><span style="color:#ba2121">&#34;</span>);
+    std<span style="color:#666">:</span><span style="color:#666">:</span>cout <span style="color:#666">&lt;</span><span style="color:#666">&lt;</span> singleton<span style="color:#666">-</span><span style="color:#666">&gt;</span>value() <span style="color:#666">&lt;</span><span style="color:#666">&lt;</span> <span style="color:#ba2121"></span><span style="color:#ba2121">&#34;</span><span style="color:#b62;font-weight:bold">\n</span><span style="color:#ba2121">&#34;</span>;
+}
+
+<span style="color:#b00040">void</span> <span style="color:#00f">ThreadBar</span>(){
+    <span style="color:#408080;font-style:italic">// Following code emulates slow initialization.
+</span><span style="color:#408080;font-style:italic"></span>    std<span style="color:#666">:</span><span style="color:#666">:</span>this_thread<span style="color:#666">:</span><span style="color:#666">:</span>sleep_for(std<span style="color:#666">:</span><span style="color:#666">:</span>chrono<span style="color:#666">:</span><span style="color:#666">:</span>milliseconds(<span style="color:#666">1000</span>));
+    Singleton<span style="color:#666">*</span> singleton <span style="color:#666">=</span> Singleton<span style="color:#666">:</span><span style="color:#666">:</span>GetInstance(<span style="color:#ba2121"></span><span style="color:#ba2121">&#34;</span><span style="color:#ba2121">BAR</span><span style="color:#ba2121">&#34;</span>);
+    std<span style="color:#666">:</span><span style="color:#666">:</span>cout <span style="color:#666">&lt;</span><span style="color:#666">&lt;</span> singleton<span style="color:#666">-</span><span style="color:#666">&gt;</span>value() <span style="color:#666">&lt;</span><span style="color:#666">&lt;</span> <span style="color:#ba2121"></span><span style="color:#ba2121">&#34;</span><span style="color:#b62;font-weight:bold">\n</span><span style="color:#ba2121">&#34;</span>;
+}
+
+<span style="color:#b00040">int</span> <span style="color:#00f">main</span>()
+{   
+    std<span style="color:#666">:</span><span style="color:#666">:</span>cout <span style="color:#666">&lt;</span><span style="color:#666">&lt;</span><span style="color:#ba2121"></span><span style="color:#ba2121">&#34;</span><span style="color:#ba2121">If you see the same value, then singleton was reused (yay!</span><span style="color:#b62;font-weight:bold">\n</span><span style="color:#ba2121">&#34;</span> <span style="color:#666">&lt;</span><span style="color:#666">&lt;</span>
+                <span style="color:#ba2121"></span><span style="color:#ba2121">&#34;</span><span style="color:#ba2121">If you see different values, then 2 singletons were created (booo!!)</span><span style="color:#b62;font-weight:bold">\n</span><span style="color:#b62;font-weight:bold">\n</span><span style="color:#ba2121">&#34;</span> <span style="color:#666">&lt;</span><span style="color:#666">&lt;</span>
+                <span style="color:#ba2121"></span><span style="color:#ba2121">&#34;</span><span style="color:#ba2121">RESULT:</span><span style="color:#b62;font-weight:bold">\n</span><span style="color:#ba2121">&#34;</span>;   
+    std<span style="color:#666">:</span><span style="color:#666">:</span><span style="color:#008000;font-weight:bold">thread</span> t1(ThreadFoo);
+    std<span style="color:#666">:</span><span style="color:#666">:</span><span style="color:#008000;font-weight:bold">thread</span> t2(ThreadBar);
+    t1.join();
+    t2.join();
+    
+    <span style="color:#008000;font-weight:bold">return</span> <span style="color:#666">0</span>;
+}
+</code></pre></div>
+<h2 id="reference">Reference <a aria-label="header link for Reference" href="#reference" class="header-link">#</a></h2>
+
+<p><a href="https://refactoringguru.cn/design-patterns/singleton/cpp/example#example-1">https://refactoringguru.cn/design-patterns/singleton/cpp/example#example-1</a></p>
+
+
+
+  
+    <br>
+    <strong>Next:</strong> <a href="/observer_pattern/">观察者模式</a>
+  
+
+  
+    <br>
+    <strong>Previous:</strong> <a href="/state_pattern/">状态模式</a>
+  
+  
+  
+    <div id="utter-container">
+    <script src="https://utteranc.es/client.js"
+        repo= 'nuhuo08/blog-comments'
+        issue-term= "pathname"
+        theme= 'github-light'
+        crossorigin= "anonymous"
+        async>
+    </script> 
+    </div>
+
+  
+
+
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="usa-footer usa-footer--slim" role="contentinfo">
+      
+      <div class="usa-footer__secondary-section" id="footer-main">
+        <div class="grid-container">
+          <div class="grid-row grid-gap">
+            <div class="grid-col-12 text-center">
+              
+              
+                Made with <a href="https://gohugo.io/">Hugo</a> • Content in <a href="https://github.com/nuhuo08/uswds-hugo-theme">GitHub</a>
+                <br>
+                Last deployed on 2020-11-28
+              
+
+              
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    
+    <script src="/js/uswds.min.fcd9b25a27c51de427f4c618dee88490c2ff0a792a573531e316730d07df3f3d.js"></script>
+
+  </body>
+</html>

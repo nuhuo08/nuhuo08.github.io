@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+	<script>
+		renderMathInElement(document.body,
+			{
+				delimiters: [
+					{left: "$$", right: "$$", display: true},
+					{left: "$", right: "$", display: false},
+				]
+			}
+		);
+
+		var inlineMathArray = document.querySelectorAll("script[type='math/tex']");
+		for (var i = 0; i < inlineMathArray.length; i++) {
+			var inlineMath = inlineMathArray[i];
+			var tex = inlineMath.innerText || inlineMath.textContent;
+			var replaced = document.createElement("span");
+			replaced.innerHTML = katex.renderToString(tex, {displayMode: false});
+			inlineMath.parentNode.replaceChild(replaced, inlineMath);
+		}
+
+		var displayMathArray = document.querySelectorAll("script[type='math/tex; mode=display']");
+		for (var i = 0; i < displayMathArray.length; i++) {
+			var displayMath = displayMathArray[i];
+			var tex = displayMath.innerHTML;
+			var replaced = document.createElement("span");
+			replaced.innerHTML = katex.renderToString(tex.replace(/%.*/g, ''), {displayMode: true});
+			displayMath.parentNode.replaceChild(replaced, displayMath);
+		}
+	</script>
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+
+    <link rel="canonical" href="https://nuhuo08.github.io/observer_pattern/">
+    <meta name="generator" content="Hugo 0.62.2" />
+    <title>观察者模式 | XiaoWu</title>
+
+    
+    <link rel="stylesheet" href="/css/uswds.min.c480a9b2a1fc1e7e564e62752462b22cd5f508a047f0340cb3725722f627fb1d.css">
+    
+    
+    <link rel="stylesheet" href="/css/custom.0a518097f5500782b25662ab2af4088600eefcc3d2d8828ce721e5e5fee436b5.min.css">
+  </head>
+  <body>
+    <a class="usa-skipnav" href="#main-content">Skip to main content</a>
+
+    <header class="usa-header usa-header--basic" role="banner">
+      <div class="usa-nav-container">
+        <div class="usa-navbar">
+          <div class="usa-logo" id="basic-mega-logo">
+            <em class="usa-logo__text">
+              <a href="/" title="Home" aria-label="Home">XiaoWu</a>
+            </em>
+          </div>
+          <button class="usa-menu-btn">Menu</button>
+        </div>
+
+        <nav role="navigation" class="usa-nav">
+          <button class="usa-nav__close">
+            <img src="/img/close.svg" alt="close" />
+          </button>
+          <ul class="usa-nav__primary usa-accordion">
+            
+            
+              
+              
+              
+              
+              <li class="usa-nav__primary-item">
+                <a class="usa-nav__link " href="/">
+                  <span>Home</span>
+                </a>
+              </li>
+            
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="usa-section" id="main-content">
+      <div class="grid-container">
+        <div class="grid-row grid-gap">
+          <div class="tablet:grid-col usa-prose">
+            
+  <h1>观察者模式</h1>
+  
+  <p class="text-gray-50">
+    
+    
+    
+    <strong>Published: </strong>2020-11-19
+
+    
+    
+      
+      
+    
+    
+    
+    
+    </span>
+  </p>
+  
+  
+    
+
+<div class="toc">
+  <strong>Table of contents</strong>
+  <ol>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e4%bd%bf%e7%94%a8%e5%9c%ba%e6%99%af">
+        使用场景
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e7%9b%ae%e6%a0%87%e5%af%b9%e8%b1%a1%e7%9a%84%e6%8e%a5%e5%8f%a3">
+        目标对象的接口
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e5%85%b7%e4%bd%93%e7%9a%84%e7%9b%ae%e6%a0%87%e5%af%b9%e8%b1%a1">
+        具体的目标对象
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e8%a7%82%e5%af%9f%e8%80%85%e6%9b%b4%e6%96%b0%e6%8e%a5%e5%8f%a3">
+        观察者更新接口
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e8%a7%82%e5%af%9f%e8%80%85%e6%98%be%e7%a4%ba%e6%8e%a5%e5%8f%a3">
+        观察者显示接口
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e5%85%b7%e4%bd%93%e7%9a%84%e8%a7%82%e5%af%9f%e8%80%85">
+        具体的观察者
+      </a>
+    </li>
+    
+    <li>
+      
+      
+      
+      
+      <a href="#%e6%b5%8b%e8%af%95">
+        测试
+      </a>
+    </li>
+    
+  </ol>
+</div>
+
+
+  
+  
+  
+
+<h2 id="使用场景">使用场景 <a aria-label="header link for 使用场景" href="#使用场景" class="header-link">#</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<div class="usa-image-block">
+  <a href="/observer_pattern/observer.jpeg">
+    <img src="/observer_pattern/observer.jpeg" alt="observer">
+  </a>
+  <div class="usa-image-text-block">
+    <p class="usa-image-text text-gray-50"></p>
+  </div>
+</div>
+
+
+<h2 id="目标对象的接口">目标对象的接口 <a aria-label="header link for 目标对象的接口" href="#目标对象的接口" class="header-link">#</a></h2>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#008000;font-weight:bold">class</span> <span style="color:#00f;font-weight:bold">Subject</span> {
+ <span style="color:#008000;font-weight:bold">public</span><span style="color:#666">:</span>
+  <span style="color:#008000;font-weight:bold">virtual</span> <span style="color:#666">~</span>Subject() {}
+  <span style="color:#008000;font-weight:bold">virtual</span> <span style="color:#b00040">void</span> <span style="color:#00f">registerObserver</span>(Observer <span style="color:#666">*</span>o) <span style="color:#666">=</span> <span style="color:#666">0</span>;
+  <span style="color:#008000;font-weight:bold">virtual</span> <span style="color:#b00040">void</span> <span style="color:#00f">removeObserver</span>(Observer <span style="color:#666">*</span>o) <span style="color:#666">=</span> <span style="color:#666">0</span>;
+  <span style="color:#008000;font-weight:bold">virtual</span> <span style="color:#b00040">void</span> <span style="color:#00f">notifyObservers</span>() <span style="color:#666">=</span> <span style="color:#666">0</span>;
+};
+</code></pre></div>
+<h2 id="具体的目标对象">具体的目标对象 <a aria-label="header link for 具体的目标对象" href="#具体的目标对象" class="header-link">#</a></h2>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#008000;font-weight:bold">class</span> <span style="color:#00f;font-weight:bold">WeatherData</span> <span style="color:#666">:</span> <span style="color:#008000;font-weight:bold">public</span> Subject {
+ <span style="color:#008000;font-weight:bold">public</span><span style="color:#666">:</span>
+  WeatherData();
+  <span style="color:#008000;font-weight:bold">virtual</span> <span style="color:#666">~</span>WeatherData();
+  <span style="color:#008000;font-weight:bold">virtual</span> <span style="color:#b00040">void</span> <span style="color:#00f">registerObserver</span>(Observer <span style="color:#666">*</span>o);
+  <span style="color:#008000;font-weight:bold">virtual</span> <span style="color:#b00040">void</span> <span style="color:#00f">removeObserver</span>(Observer <span style="color:#666">*</span>o);
+  <span style="color:#008000;font-weight:bold">virtual</span> <span style="color:#b00040">void</span> <span style="color:#00f">notifyObservers</span>();
+  <span style="color:#b00040">void</span> <span style="color:#00f">measurementsChanged</span>();
+  <span style="color:#b00040">void</span> <span style="color:#00f">setMeasurements</span>(<span style="color:#b00040">float</span> temperature, <span style="color:#b00040">float</span> humidity, <span style="color:#b00040">float</span> pressure);
+  <span style="color:#b00040">float</span> <span style="color:#00f">temperature</span>();
+  <span style="color:#b00040">float</span> <span style="color:#00f">humidity</span>();
+  <span style="color:#b00040">float</span> <span style="color:#00f">pressure</span>();
+ <span style="color:#008000;font-weight:bold">private</span><span style="color:#666">:</span>
+  std<span style="color:#666">:</span><span style="color:#666">:</span>vector<span style="color:#666">&lt;</span>Observer<span style="color:#666">*</span><span style="color:#666">&gt;</span> <span style="color:#666">*</span>observers_;
+  <span style="color:#b00040">float</span> temperature_;
+  <span style="color:#b00040">float</span> humidity_;
+  <span style="color:#b00040">float</span> pressure_;
+};
+</code></pre></div><div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#b00040">void</span> WeatherData<span style="color:#666">:</span><span style="color:#666">:</span>notifyObservers() {
+  <span style="color:#b00040">int</span> i;
+  <span style="color:#008000;font-weight:bold">for</span> (i <span style="color:#666">=</span> <span style="color:#666">0</span>; i <span style="color:#666">&lt;</span> observers_<span style="color:#666">-</span><span style="color:#666">&gt;</span>size(); <span style="color:#666">+</span><span style="color:#666">+</span>i) {
+    Observer<span style="color:#666">*</span> observer <span style="color:#666">=</span> (<span style="color:#666">*</span>observers_)[i];
+    observer<span style="color:#666">-</span><span style="color:#666">&gt;</span>update(temperature_, humidity_, pressure_);
+  }
+}
+
+<span style="color:#b00040">void</span> WeatherData<span style="color:#666">:</span><span style="color:#666">:</span>measurementsChanged() {
+  notifyObservers();
+}
+
+<span style="color:#b00040">void</span> WeatherData<span style="color:#666">:</span><span style="color:#666">:</span>setMeasurements(<span style="color:#b00040">float</span> temperature, <span style="color:#b00040">float</span> humidity,
+                                  <span style="color:#b00040">float</span> pressure) {
+  temperature_ <span style="color:#666">=</span> temperature;
+  humidity_ <span style="color:#666">=</span> humidity;
+  pressure_ <span style="color:#666">=</span> pressure;
+  measurementsChanged();
+}
+</code></pre></div>
+<h2 id="观察者更新接口">观察者更新接口 <a aria-label="header link for 观察者更新接口" href="#观察者更新接口" class="header-link">#</a></h2>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#008000;font-weight:bold">class</span> <span style="color:#00f;font-weight:bold">Observer</span> {
+ <span style="color:#008000;font-weight:bold">public</span><span style="color:#666">:</span>
+  <span style="color:#008000;font-weight:bold">virtual</span> <span style="color:#666">~</span>Observer() {}
+  <span style="color:#008000;font-weight:bold">virtual</span> <span style="color:#b00040">void</span> <span style="color:#00f">update</span>(<span style="color:#b00040">float</span> temp, <span style="color:#b00040">float</span> humdity, <span style="color:#b00040">float</span> pressure) <span style="color:#666">=</span> <span style="color:#666">0</span>;
+};
+</code></pre></div>
+<h2 id="观察者显示接口">观察者显示接口 <a aria-label="header link for 观察者显示接口" href="#观察者显示接口" class="header-link">#</a></h2>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#008000;font-weight:bold">class</span> <span style="color:#00f;font-weight:bold">DisplayElement</span> {
+ <span style="color:#008000;font-weight:bold">public</span><span style="color:#666">:</span>
+  <span style="color:#008000;font-weight:bold">virtual</span> <span style="color:#666">~</span>DisplayElement() {} 
+  <span style="color:#008000;font-weight:bold">virtual</span> <span style="color:#b00040">void</span> <span style="color:#00f">display</span>() <span style="color:#666">=</span> <span style="color:#666">0</span>;
+};
+</code></pre></div>
+<h2 id="具体的观察者">具体的观察者 <a aria-label="header link for 具体的观察者" href="#具体的观察者" class="header-link">#</a></h2>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#008000;font-weight:bold">class</span> <span style="color:#00f;font-weight:bold">StatisticsDisplay</span> <span style="color:#666">:</span> <span style="color:#008000;font-weight:bold">public</span> Observer, <span style="color:#008000;font-weight:bold">public</span> DisplayElement {
+ <span style="color:#008000;font-weight:bold">public</span><span style="color:#666">:</span>
+  <span style="color:#008000;font-weight:bold">explicit</span> StatisticsDisplay(Subject <span style="color:#666">*</span>weather_data);
+  <span style="color:#666">~</span>StatisticsDisplay();
+  <span style="color:#008000;font-weight:bold">virtual</span> <span style="color:#b00040">void</span> <span style="color:#00f">update</span>(<span style="color:#b00040">float</span> temp, <span style="color:#b00040">float</span> humidity, <span style="color:#b00040">float</span> pressure);
+  <span style="color:#008000;font-weight:bold">virtual</span> <span style="color:#b00040">void</span> <span style="color:#00f">display</span>();
+ <span style="color:#008000;font-weight:bold">private</span><span style="color:#666">:</span>
+  <span style="color:#b00040">float</span> max_temp_;
+  <span style="color:#b00040">float</span> min_temp_;
+  <span style="color:#b00040">float</span> temp_sum_;
+  <span style="color:#b00040">int</span> num_readings_;
+  Subject <span style="color:#666">*</span>weather_data_;
+  DISALLOW_COPY_AND_ASSIGN(StatisticsDisplay);
+};
+</code></pre></div><pre><code>StatisticsDisplay::StatisticsDisplay(Subject *weather_data)
+    : weather_data_(weather_data), max_temp_(0.0f), min_temp_(200),
+      temp_sum_(0.0f), num_readings_(0) {
+  weather_data_->registerObserver(this);
+}
+
+void StatisticsDisplay::update(float temp, float humidity, float pressure) {
+  temp_sum_ += temp;
+  num_readings_++;
+
+  if (temp > max_temp_) {
+    max_temp_ = temp;
+  }
+  if (temp < min_temp_) {
+    min_temp_ = temp;
+  }
+  display();
+}
+
+void StatisticsDisplay::display() {
+  printf("Avg/Max/Min temperature = %f/%f/%f\n", (temp_sum_ / num_readings_),
+         max_temp_, min_temp_);
+}</code></pre>
+<h2 id="测试">测试 <a aria-label="header link for 测试" href="#测试" class="header-link">#</a></h2>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#b00040">int</span> <span style="color:#00f">main</span>(<span style="color:#b00040">int</span> argc, <span style="color:#b00040">char</span> <span style="color:#666">*</span>argv[]) {
+  WeatherData <span style="color:#666">*</span>weather_data <span style="color:#666">=</span> <span style="color:#008000;font-weight:bold">new</span> WeatherData();
+
+  CurrentConditionsDisplay <span style="color:#666">*</span>current_display <span style="color:#666">=</span>
+      <span style="color:#008000;font-weight:bold">new</span> CurrentConditionsDisplay(weather_data);
+  StatisticsDisplay <span style="color:#666">*</span>statistics_display <span style="color:#666">=</span>
+      <span style="color:#008000;font-weight:bold">new</span> StatisticsDisplay(weather_data);
+  ForecastDisplay <span style="color:#666">*</span>forecast_display <span style="color:#666">=</span>
+      <span style="color:#008000;font-weight:bold">new</span> ForecastDisplay(weather_data);
+
+  weather_data<span style="color:#666">-</span><span style="color:#666">&gt;</span>setMeasurements(<span style="color:#666">80</span>, <span style="color:#666">65</span>, <span style="color:#666">30.4f</span>);
+  weather_data<span style="color:#666">-</span><span style="color:#666">&gt;</span>setMeasurements(<span style="color:#666">82</span>, <span style="color:#666">70</span>, <span style="color:#666">29.2f</span>);
+  weather_data<span style="color:#666">-</span><span style="color:#666">&gt;</span>setMeasurements(<span style="color:#666">78</span>, <span style="color:#666">90</span>, <span style="color:#666">29.2f</span>);
+}
+</code></pre></div>
+
+
+  
+    <br>
+    <strong>Next:</strong> <a href="/interesting_soul/">有趣的人</a>
+  
+
+  
+    <br>
+    <strong>Previous:</strong> <a href="/singleton_pattern/">单例模式</a>
+  
+  
+  
+    <div id="utter-container">
+    <script src="https://utteranc.es/client.js"
+        repo= 'nuhuo08/blog-comments'
+        issue-term= "pathname"
+        theme= 'github-light'
+        crossorigin= "anonymous"
+        async>
+    </script> 
+    </div>
+
+  
+
+
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="usa-footer usa-footer--slim" role="contentinfo">
+      
+      <div class="usa-footer__secondary-section" id="footer-main">
+        <div class="grid-container">
+          <div class="grid-row grid-gap">
+            <div class="grid-col-12 text-center">
+              
+              
+                Made with <a href="https://gohugo.io/">Hugo</a> • Content in <a href="https://github.com/nuhuo08/uswds-hugo-theme">GitHub</a>
+                <br>
+                Last deployed on 2020-11-28
+              
+
+              
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    
+    <script src="/js/uswds.min.fcd9b25a27c51de427f4c618dee88490c2ff0a792a573531e316730d07df3f3d.js"></script>
+
+  </body>
+</html>

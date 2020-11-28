@@ -4,13 +4,73 @@
   
   <url>
     <loc>https://nuhuo08.github.io/</loc>
-    <lastmod>2020-04-03T15:28:26+08:00</lastmod>
+    <lastmod>2020-11-28T21:36:04+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://nuhuo08.github.io/blog/</loc>
-    <lastmod>2020-04-03T15:28:26+08:00</lastmod>
+    <lastmod>2020-11-28T21:36:04+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nuhuo08.github.io/slam_fundamental/</loc>
+    <lastmod>2020-11-28T21:36:04+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nuhuo08.github.io/operating_system/</loc>
+    <lastmod>2020-11-28T21:26:26+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nuhuo08.github.io/algorithm/</loc>
+    <lastmod>2020-11-28T21:25:22+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nuhuo08.github.io/complementary_filter/</loc>
+    <lastmod>2020-11-19T20:24:03+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nuhuo08.github.io/interesting_soul/</loc>
+    <lastmod>2020-11-19T17:15:27+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nuhuo08.github.io/observer_pattern/</loc>
+    <lastmod>2020-11-19T14:31:45+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nuhuo08.github.io/singleton_pattern/</loc>
+    <lastmod>2020-11-18T20:33:14+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nuhuo08.github.io/state_pattern/</loc>
+    <lastmod>2020-11-18T16:18:22+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nuhuo08.github.io/stl/</loc>
+    <lastmod>2020-11-17T22:36:47+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nuhuo08.github.io/design_pattern/</loc>
+    <lastmod>2020-11-17T22:35:05+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nuhuo08.github.io/cpp_property/</loc>
+    <lastmod>2020-11-17T22:14:40+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://nuhuo08.github.io/rich_dad_poor_dad/</loc>
+    <lastmod>2020-11-15T23:32:22+08:00</lastmod>
   </url>
   
   <url>
@@ -85,7 +145,7 @@
   
   <url>
     <loc>https://nuhuo08.github.io/vim/</loc>
-    <lastmod>2020-02-08T19:21:48+08:00</lastmod>
+    <lastmod>2020-11-13T20:41:47+08:00</lastmod>
   </url>
   
   <url>
@@ -125,7 +185,7 @@
   
   <url>
     <loc>https://nuhuo08.github.io/matrix/</loc>
-    <lastmod>2020-01-29T23:12:48+08:00</lastmod>
+    <lastmod>2020-11-13T20:41:47+08:00</lastmod>
   </url>
   
   <url>
